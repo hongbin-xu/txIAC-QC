@@ -17,6 +17,10 @@ with st.sidebar:
     perf_index = st.multiselect(label = "Select measures", options= ["IRI", "RUT"])
 
 
+
+
+
+
 # IRI: Left IRI, Right IRI, Avg IRI
 
 # Rut: Left, right, shallow, deep, severe, failure
@@ -28,4 +32,3 @@ with st.sidebar:
     # JRCP
 
 
-conda install -c conda-forge/label/cf202003 nodejs

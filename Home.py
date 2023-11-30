@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
  
 
-with st.sidebar():
+with st.sidebar:
 
     qc_type = st.selectbox("QC type", ["Year to year", "Audit"], ["Audit"])
     data1 = st.file_uploader("Select Pathway data")

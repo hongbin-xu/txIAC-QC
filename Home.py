@@ -5,11 +5,8 @@ import numpy as np
 
 with st.sidebar:
 
-    qc_type = st.selectbox("QC type", ["Year to year", "Audit"], ["Audit"])
-    data1 = st.file_uploader("Select Pathway data")
+    qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 0)
+    data1 = st.file_uploader("Select Pathway data", str = "QC type")
     if qc_type == "Audit":
         data2 = st.file_uploader("Select audit data")
-    distress = st.selectbox("Select distress")
-
-
-
+    perf_index = st.multiselect(label = "Select measures", options= ["IRI", "RUT"])

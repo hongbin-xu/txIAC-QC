@@ -31,6 +31,8 @@ def main():
 
 
 
+if __name__ == "__main__":
+    main()
 
 # IRI: Left IRI, Right IRI, Avg IRI
 

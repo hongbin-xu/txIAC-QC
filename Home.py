@@ -57,20 +57,10 @@ perf_index_list = {"ACP":
                             "PCC PATCHES": ['JCP PCC PATCHES QTY', 'JCP PCC PATCHES LI','JCP PCC PATCHES UTIL'],
                             "Other": ['JCP PERCENT OF SLABS WITH CRACKS',  'JCP CRACK PERCENT PCT', 'CALCULATED LENGTH', 'JCP APPARENT JOINT SPACING',
                                       'MAP21 Faulting RWP AVG','MAP21 Faulting Condition Category', 'FAULTING MEASURE']
-                        }
+                        },
+                        
                     "Other index":['MAP21 Cracking Percent', 'MAP21 Cracking Condition Category']
                 }
-
-
-
-
-
- 
-
-
-
-
-
 
 
 @st.function
@@ -79,9 +69,8 @@ def data_merge(data1, data2, qctype = "Audit"):
         data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= ["Pathway", "Audit"])
         data = data.loc[(abs(data["BEGINNING DFOPathway"]-data["BEGINNING DFOAudit"])<0.05)&(abs(data["ENDING DFOPathway"]-data["ENDING DFOAudit"])<0.05)]
     if qctype == "Year to year":
-        data1
+        data1 
     return data
-
 
 
 # Steamlit main tab

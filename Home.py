@@ -58,12 +58,12 @@ perf_index_list = {"ACP":
                             "Other": ['JCP PERCENT OF SLABS WITH CRACKS',  'JCP CRACK PERCENT PCT', 'CALCULATED LENGTH', 'JCP APPARENT JOINT SPACING',
                                       'MAP21 Faulting RWP AVG','MAP21 Faulting Condition Category', 'FAULTING MEASURE']
                         },
-                        
+
                     "Other index":['MAP21 Cracking Percent', 'MAP21 Cracking Condition Category']
                 }
 
 
-@st.function
+@st.cache_data
 def data_merge(data1, data2, qctype = "Audit"): 
     if qctype == "Audit":
         data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= ["Pathway", "Audit"])

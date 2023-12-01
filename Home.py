@@ -4,9 +4,7 @@ import numpy as np
  
 
 
-@st.function
-def merge(data1, data2, perf_index, qctype = "Audit")
-    data_combined = data1.merge(data2, how = , by = )
+
 
 
 

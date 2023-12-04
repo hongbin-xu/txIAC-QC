@@ -87,6 +87,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 # Steamlit main tab
 def main():
     with st.sidebar:
+        st.header("PMIS QC")
         qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
         data1_path = st.file_uploader("Select Pathway data") 
         if "data1_path" in globals():
@@ -96,6 +97,8 @@ def main():
             data2_path = st.file_uploader("Select audit data")
             if "data2_path" in globals():
                 data2 = pd.read_csv(data2_path)
+
+            
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         st.write(perf_indx)
@@ -106,7 +109,7 @@ def main():
 
     with st.container():
         for p in perf_indx:
-            st.subheader(p + "(Pathway - Audit)" + "distribution")
+            st.subheader(p + " (Pathway - Audit) " + "distribution")
             for item in perf_indx_list[pav_type][p]:
                 st.write(item)
                 fig = px.histogram(data, x = "d_"+item)

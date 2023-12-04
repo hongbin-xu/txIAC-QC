@@ -99,7 +99,7 @@ def main():
             data1_path = st.file_uploader("Select Pathway data") 
             if "data1_path" in globals():
                 data1 = pd.read_csv(data1_path)
-            st.write(data1.head())
+                st.write(data1.head())
 
             if qc_type == "Audit":
                 data2_path = st.file_uploader("Select audit data")

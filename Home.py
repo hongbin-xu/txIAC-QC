@@ -107,7 +107,7 @@ with st.sidebar:
         st.write(data2.columns)
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
-        #data = data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None)
+        data = data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None)
         st.write(perf_indx)
         st.subheader("Filter")
 

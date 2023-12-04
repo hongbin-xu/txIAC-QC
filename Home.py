@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
- 
+import plotly.express as px
 
 
 perf_indx_list = {"ACP":
@@ -108,13 +108,13 @@ def main():
         for p in perf_indx:
             st.write("Pathway vs. Audit - " + p)
             for item in p:
+                fig = px.
 
-
-
-                
 
     with st.container:
-        st.write()
+        st.write("Filtered data")
+        st.write(datafiltered)
+        st.download_button("Download filterred data", datafiltered, mime = "text/csv")
 
 if __name__ == "__main__":
     main()

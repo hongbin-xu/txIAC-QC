@@ -108,6 +108,7 @@ def main():
         for p in perf_indx:
             st.write("Pathway vs. Audit - " + p)
             for item in p:
+                st.write(item)
                 fig = px.histogram(data, x = "d_"+item)
                 st.plotly_chart(fig)
 

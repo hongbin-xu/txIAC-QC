@@ -104,15 +104,14 @@ def main():
         st.button("Apply filter")
 
 
-    with st.container:
+    with st.container():
         for p in perf_indx:
             st.write("Pathway vs. Audit - " + p)
             for item in p:
                 fig = px.histogram(data, x = "d_"+item)
                 st.plotly_chart(fig)
 
-
-    with st.container:
+    with st.container():
         st.write("Filtered data")
         #st.write(datafiltered)
         #st.download_button("Download filterred data", datafiltered, mime = "text/csv")

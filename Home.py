@@ -90,7 +90,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
     return data
 
 
-# Steamlit main tab
+# Siderbar
 with st.sidebar:
     st.header("PMIS QC")
     st.subheader("I: Load and merge data")
@@ -113,13 +113,28 @@ with st.sidebar:
         data_v1 = data # Filter based on threshold values
         st.button("Apply filter")
 
+# Main
 with st.container():
     for p in perf_indx:
         st.subheader(p + " (Pathway - Audit) " + "distribution")
         for item in perf_indx_list[pav_type][p]:
             st.write(item)
-            fig = px.histogram(data, x = "d_"+item)
+
+
+            fig = px.histogram(data, x = "d_"+item, nbins= 50)
+
+            # Create ECDF
+            ecdf = px.ecdf(data, x="d_"+item)
+            fig.add_scatter(x=ecdf['x'], y=ecdf['y'], mode='lines', name='cdf', yaxis = "y2")
+            fig.update_layout(title='distribution', xaxis_title='Total Bill', yaxis_title='Count', yaxis2_title='cdf')
+            # Set y-axes to be side-by-side
+            #fig.update_layout(yaxis=dict(domain=[0, 0.85]), yaxis2=dict(domain=[0.85, 1]))
+
             st.plotly_chart(fig)
+
+
+
+
 
 with st.container():
     st.subheader("Filtered data")

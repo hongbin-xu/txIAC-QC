@@ -121,7 +121,7 @@ with st.container():
             st.write(item)
 
             # Create histogram
-            fig = px.histogram(data, x = "d_"+item, nbins= 100)
+            fig = px.histogram(data, x = "d_"+item)
 
             # Create ECDF
             ecdf = px.ecdf(data, x="d_"+item)

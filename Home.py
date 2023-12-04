@@ -120,19 +120,15 @@ with st.container():
         for item in perf_indx_list[pav_type][p]:
             st.write(item)
 
-
+            # Create histogram
             fig = px.histogram(data, x = "d_"+item, nbins= 50)
 
             # Create ECDF
             ecdf = px.ecdf(data, x="d_"+item)
-            fig.add_scatter(x=ecdf['x'], y=ecdf['y'], mode='lines', name='cdf', yaxis = "y2")
-            fig.update_layout(title='distribution', xaxis_title='Total Bill', yaxis_title='Count', yaxis2_title='cdf')
-            # Set y-axes to be side-by-side
-            #fig.update_layout(yaxis=dict(domain=[0, 0.85]), yaxis2=dict(domain=[0.85, 1]))
+            fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
 
-            st.plotly_chart(fig)
-
-
+            # Update layout
+            fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
 
 
 

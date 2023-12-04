@@ -129,7 +129,7 @@ with st.container():
 
             # Update layout
             fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-            st.plotly_graph(fig)
+            st.plotly_chart(fig)
 
 
 with st.container():

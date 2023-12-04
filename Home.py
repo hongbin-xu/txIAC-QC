@@ -3,6 +3,12 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 
+st.set_page_config(layout="wide", 
+                   page_title='PMIS QC', 
+                   menu_items={
+                       'Get help': "mailto:hongbinxu@utexas.edu",
+                       'About': "Developed and maintained by Hongbin Xu",
+                   })
 
 perf_indx_list = {"ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
@@ -88,23 +94,27 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 def main():
     with st.sidebar:
         st.header("PMIS QC")
-        qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
-        data1_path = st.file_uploader("Select Pathway data") 
-        if "data1_path" in globals():
-            data1 = pd.read_csv(data1_path)
-        
-        if qc_type == "Audit":
-            data2_path = st.file_uploader("Select audit data")
-            if "data2_path" in globals():
-                data2 = pd.read_csv(data2_path)
-
+        with st.container():
+            qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
+            data1_path = st.file_uploader("Select Pathway data") 
+            if "data1_path" in globals():
+                data1 = pd.read_csv(data1_path)
             
-        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
-        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
-        st.write(perf_indx)
-        st.subheader("Filter")
+            if qc_type == "Audit":
+                data2_path = st.file_uploader("Select audit data")
+                if "data2_path" in globals():
+                    data2 = pd.read_csv(data2_path)
 
-        st.button("Apply filter")
+                
+            pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
+            perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
+            st.write(perf_indx)
+            st.subheader("Filter")
+
+        with st.container():
+            
+
+            st.button("Apply filter")
 
 
     with st.container():

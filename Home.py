@@ -108,7 +108,7 @@ with st.sidebar:
         data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
 
         st.subheader("Filter")
-        for 
+        #for 
 
 
     with st.container():

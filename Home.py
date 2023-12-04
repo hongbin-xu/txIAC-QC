@@ -98,7 +98,7 @@ def main():
                 data2 = pd.read_csv(data2_path)
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
-
+        st.write(perf_indx)
         st.subheader("Filter")
 
         st.button("Apply filter")

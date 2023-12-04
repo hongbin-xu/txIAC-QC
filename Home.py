@@ -103,8 +103,7 @@ with st.sidebar:
         if qc_type == "Audit":
             data2_path = st.file_uploader("Select audit data")
             if "data2_path" in globals():
-                data2 = pd.read_csv(data2_path)
-        st.write(data2.columns)
+                data2 = pd.read_csv(data2_path)#
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)

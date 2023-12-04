@@ -101,7 +101,7 @@ with st.sidebar:
             data1 = pd.read_csv(data1_path)
 
         if qc_type == "Audit":
-            data2_path = st.locals("Select audit data")
+            data2_path = st.file_uploader("Select audit data")
             if "data2_path" in globals():
                 data2 = pd.read_csv(data2_path)
         st.write(data2.columns)

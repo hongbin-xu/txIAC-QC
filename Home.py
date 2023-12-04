@@ -110,10 +110,8 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
-        
-
+        data_v1 = data # Filter based on threshold values
         st.button("Apply filter")
-
 
 with st.container():
     for p in perf_indx:

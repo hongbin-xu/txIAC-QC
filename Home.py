@@ -108,7 +108,7 @@ def main():
         for p in perf_indx:
             st.write("Pathway vs. Audit - " + p)
             for item in p:
-                fig = px.
+                fig = px.histogram(data, x = "d_"+item)
 
 
     with st.container:

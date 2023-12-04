@@ -63,7 +63,7 @@ perf_indx_list = {"ACP":
 
 
 @st.cache_data
-def data_merge(data1, data2, qctype = "Audit", pavtype= "ACP", perf_indx): 
+def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None): 
     if qctype == "Audit":
         data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= ["Pathway", "Audit"])
         data = data.loc[(abs(data["BEGINNING DFOPathway"]-data["BEGINNING DFOAudit"])<0.05)&(abs(data["ENDING DFOPathway"]-data["ENDING DFOAudit"])<0.05)]
@@ -103,6 +103,7 @@ def main():
 
     with st.container():
         
+
 
 
 

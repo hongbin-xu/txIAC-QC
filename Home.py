@@ -4,8 +4,8 @@ import numpy as np
  
 
 
-perf_index_list = {"ACP":
-                        {   
+perf_indx_list = {"ACP":
+                        {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
                             "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE', 'RIDE LI', 'RIDE UTILITY VALUE'], 
                             # Rut
                             "RUT": ['LEFT - WHEELPATH AVERAGE RUT DEPTH',
@@ -38,48 +38,57 @@ perf_index_list = {"ACP":
 
                             "RAVELING": ['ACP RAVELING','ACP RAVELING CODE', 'ACP FLUSHING','ACP FLUSHING CODE'],
 
-                            "Other":['ACP RAVELING','ACP RAVELING CODE', 'ACP FLUSHING','ACP FLUSHING CODE', 'ACP PERCENT AREA CRACKED', 'POTHOLE']
+                            "ACP Other":['ACP RAVELING','ACP RAVELING CODE', 'ACP FLUSHING','ACP FLUSHING CODE', 'ACP PERCENT AREA CRACKED', 'POTHOLE']
                         },
                     "CRCP": 
-                        { 
+                        {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
                             "SPALLED CRACKS":['CRCP SPALLED CRACKS QTY', 'CRCP SPALLED CRACKS LI', 'CRCP SPALLED CRACKS UTIL'],
                             "PUNCHOUT":['CRCP PUNCHOUT QTY', 'CRCP PUNCHOUTS LI','CRCP PUNCHOUTS UTIL'],
                             "PCC PATCHES":['CRCP PCC PATCHES QTY','CRCP PCC PATCHES LI','CRCP PCC PATCHES UTIL'],
                             "ACP PATCHES":['CRCP ACP PATCHES QTY', 'CRCP ACP PATCHES LI', 'CRCP ACP PATCHES UTIL'],
-                            "Other":['CRCP LONGITUDINAL CRACKING MEASURED', 'AVERAGE CRACK SPACING','CRCP PERCENT AREA CRACKED','CRCP LONGITUDE CRACKING PCT']
+                            "CRCP Other":['CRCP LONGITUDINAL CRACKING MEASURED', 'AVERAGE CRACK SPACING','CRCP PERCENT AREA CRACKED','CRCP LONGITUDE CRACKING PCT']
                         },
                     "JCP": 
-                        { 
+                        {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
                             "FAILED JOINTS": ['JCP FAILED JNTS CRACKS QTY', 'JCP FAILED JOINTS LI', 'JCP FAILED JOINTS UTIL'],
                             "FAILURES":['JCP FAILURES QTY','JCP FAILURES LI','JCP FAILURES UTIL'],
                             "SHATTERED SLABS": ['JCP SHATTERED SLABS QTY', 'JCP SHATTERED SLABS LI', 'JCP SHATTERED SLABS UTIL'],
                             "SLABS WITH LONGI CRACKS": ['JCP SLABS WITH LONGITUDINAL CRACKS', 'JCP SLABS WITH LONG CRACKS LI', 'JCP SLABS WITH LONG CRACKS UTIL'],
                             "PCC PATCHES": ['JCP PCC PATCHES QTY', 'JCP PCC PATCHES LI','JCP PCC PATCHES UTIL'],
-                            "Other": ['JCP PERCENT OF SLABS WITH CRACKS',  'JCP CRACK PERCENT PCT', 'CALCULATED LENGTH', 'JCP APPARENT JOINT SPACING',
+                            "JCP Other": ['JCP PERCENT OF SLABS WITH CRACKS',  'JCP CRACK PERCENT PCT', 'CALCULATED LENGTH', 'JCP APPARENT JOINT SPACING',
                                       'MAP21 Faulting RWP AVG','MAP21 Faulting Condition Category', 'FAULTING MEASURE']
                         },
-
-                    "Other index":['MAP21 Cracking Percent', 'MAP21 Cracking Condition Category']
+                    "Other":['MAP21 Cracking Percent', 'MAP21 Cracking Condition Category']
                 }
 
 
 @st.cache_data
-def data_merge(data1, data2, qctype = "Audit"): 
+def data_merge(data1, data2, qctype = "Audit", pavtype= "ACP", perf_indx): 
     if qctype == "Audit":
         data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= ["Pathway", "Audit"])
         data = data.loc[(abs(data["BEGINNING DFOPathway"]-data["BEGINNING DFOAudit"])<0.05)&(abs(data["ENDING DFOPathway"]-data["ENDING DFOAudit"])<0.05)]
-    if qctype == "Year to year":
-        data1 
+        
+        for distress in perf_indx:  
+            for iterm in distress:
+                data["d_"+item] = data[iterm+"Pathway"] - data[iterm+"Audit"]
+    
+    if qctype == "Year to year": 
+        yearList = data1["FISCAL YEAR"].unique().sort()
+        data = data1.loc[data["FISCAL YEAR"] == yearList[0]]
+        for year in yearList[1:]:
+            data = data.merge(data1.loc[data1["FISCAL YEAR"] == yerar], on = "SIGNED HWY AND ROADBED ID", suffixes= [str(year -1), str(year)])
+            data = data.loc[(abs(data["BEGINNING DFO" + str(year -1)]-data["BEGINNING DFO"+str(year)])<0.05)&(abs(data["ENDING DFO"+str(year -1)]-data["ENDING DFO"+str(year)])<0.05)]
+            for distress in perf_indx:  
+                for iterm in distress:
+                    data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[iterm+str(year -1)] - data[iterm+str(year)]
     return data
 
 
 # Steamlit main tab
 def main():
     with st.sidebar:
-
         qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
-        
-        data1_path = st.file_uploader("Select Pathway data")
+        data1_path = st.file_uploader("Select Pathway data") 
         if "data1_path" in globals():
             data1 = pd.read_csv(data1_path)
         
@@ -87,8 +96,16 @@ def main():
             data2_path = st.file_uploader("Select audit data")
             if "data2_path" in globals():
                 data2 = pd.read_csv(data2_path)
+        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
+        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
+
+        st.subheader("Filter")
+
+    with st.container():
         
-        perf_index = st.multiselect(label = "Select measures", options= ["IRI", "RUT"])
+
+
+
 
 
 

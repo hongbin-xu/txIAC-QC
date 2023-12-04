@@ -106,14 +106,14 @@ def main():
 
     with st.container():
         for p in perf_indx:
-            st.write("Pathway vs. Audit - " + p)
+            st.subheader(p + "(Pathway - Audit)" + "distribution")
             for item in perf_indx_list[pav_type][p]:
                 st.write(item)
                 fig = px.histogram(data, x = "d_"+item)
                 st.plotly_chart(fig)
 
     with st.container():
-        st.write("Filtered data")
+        st.subheader("Filtered data")
         #st.write(datafiltered)
         #st.download_button("Download filterred data", datafiltered, mime = "text/csv")
 

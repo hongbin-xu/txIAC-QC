@@ -91,7 +91,6 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 
 
 # Steamlit main tab
-
 with st.sidebar:
     st.header("PMIS QC")
     with st.container():
@@ -107,6 +106,7 @@ with st.sidebar:
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
+        st.write(data.columns)
         st.write(perf_indx)
         st.subheader("Filter")
 

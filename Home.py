@@ -75,7 +75,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
         data = data.loc[(abs(data["BEGINNING DFOPathway"]-data["BEGINNING DFOAudit"])<0.05)&(abs(data["ENDING DFOPathway"]-data["ENDING DFOAudit"])<0.05)]
         
         for distress in perf_indx:  
-            for item in distress:
+            for item in  perf_indx_list[pavtype][distress]:
                 data["d_"+item] = data[item+"Pathway"] - data[item+"Audit"]
     
     if qctype == "Year to year": 
@@ -85,7 +85,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
             data = data.merge(data1.loc[data1["FISCAL YEAR"] == yerar], on = "SIGNED HWY AND ROADBED ID", suffixes= [str(year -1), str(year)])
             data = data.loc[(abs(data["BEGINNING DFO" + str(year -1)]-data["BEGINNING DFO"+str(year)])<0.05)&(abs(data["ENDING DFO"+str(year -1)]-data["ENDING DFO"+str(year)])<0.05)]
             for distress in perf_indx:  
-                for item in distress:
+                for item in  perf_indx_list[pavtype][distress]:
                     data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[item+str(year -1)] - data[item+str(year)]
     return data
 

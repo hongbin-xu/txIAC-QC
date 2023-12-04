@@ -69,8 +69,8 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
         data = data.loc[(abs(data["BEGINNING DFOPathway"]-data["BEGINNING DFOAudit"])<0.05)&(abs(data["ENDING DFOPathway"]-data["ENDING DFOAudit"])<0.05)]
         
         for distress in perf_indx:  
-            for iterm in distress:
-                data["d_"+item] = data[iterm+"Pathway"] - data[iterm+"Audit"]
+            for item in distress:
+                data["d_"+item] = data[item+"Pathway"] - data[item+"Audit"]
     
     if qctype == "Year to year": 
         yearList = data1["FISCAL YEAR"].unique().sort()
@@ -79,8 +79,8 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
             data = data.merge(data1.loc[data1["FISCAL YEAR"] == yerar], on = "SIGNED HWY AND ROADBED ID", suffixes= [str(year -1), str(year)])
             data = data.loc[(abs(data["BEGINNING DFO" + str(year -1)]-data["BEGINNING DFO"+str(year)])<0.05)&(abs(data["ENDING DFO"+str(year -1)]-data["ENDING DFO"+str(year)])<0.05)]
             for distress in perf_indx:  
-                for iterm in distress:
-                    data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[iterm+str(year -1)] - data[iterm+str(year)]
+                for item in distress:
+                    data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[item+str(year -1)] - data[item+str(year)]
     return data
 
 
@@ -101,14 +101,20 @@ def main():
 
         st.subheader("Filter")
 
-
-        
-
+        st.button("Apply filter")
 
 
+    with st.container:
+        for p in perf_indx:
+            st.write("Pathway vs. Audit - " + p)
+            for item in p:
 
 
 
+                
+
+    with st.container:
+        st.write()
 
 if __name__ == "__main__":
     main()

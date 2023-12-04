@@ -93,6 +93,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 # Steamlit main tab
 with st.sidebar:
     st.header("PMIS QC")
+    st.subheader("I: Load and merge data")
     with st.container():
         qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
         data1_path = st.file_uploader("Select Pathway data") 
@@ -107,10 +108,7 @@ with st.sidebar:
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
 
-        st.subheader("Filter")
-        #for 
-
-
+    st.subheader("Data filter")
     with st.container():
         
 

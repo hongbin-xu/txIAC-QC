@@ -91,47 +91,45 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 
 
 # Steamlit main tab
-def main():
-    with st.sidebar:
-        st.header("PMIS QC")
-        with st.container():
-            qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
-            data1_path = st.file_uploader("Select Pathway data") 
-            if "data1_path" in globals():
-                data1 = pd.read_csv(data1_path)
-                st.write(data1_path)
-                st.write(data1.head())
 
-            if qc_type == "Audit":
-                data2_path = st.file_uploader("Select audit data")
-                if "data2_path" in globals():
-                    data2 = pd.read_csv(data2_path)
-                    st.write(data2.head())
-            st.write(data2.columns)
-            pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
-            perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
-            #data = data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None)
-            st.write(perf_indx)
-            st.subheader("Filter")
+with st.sidebar:
+    st.header("PMIS QC")
+    with st.container():
+        qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
+        data1_path = st.file_uploader("Select Pathway data") 
+        if "data1_path" in globals():
+            data1 = pd.read_csv(data1_path)
+            st.write(data1_path)
+            st.write(data1.head())
 
-        with st.container():
-            
-
-            st.button("Apply filter")
-
+        if qc_type == "Audit":
+            data2_path = st.locals("Select audit data")
+            if "data2_path" in globals():
+                data2 = pd.read_csv(data2_path)
+                st.write(data2.head())
+        st.write(data2.columns)
+        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
+        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
+        #data = data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None)
+        st.write(perf_indx)
+        st.subheader("Filter")
 
     with st.container():
-        for p in perf_indx:
-            st.subheader(p + " (Pathway - Audit) " + "distribution")
-            for item in perf_indx_list[pav_type][p]:
-                st.write(item)
-                fig = px.histogram(data, x = "d_"+item)
-                st.plotly_chart(fig)
+        
 
-    with st.container():
-        st.subheader("Filtered data")
-        #st.write(datafiltered)
-        #st.download_button("Download filterred data", datafiltered, mime = "text/csv")
+        st.button("Apply filter")
 
-if __name__ == "__main__":
-    main()
+
+with st.container():
+    for p in perf_indx:
+        st.subheader(p + " (Pathway - Audit) " + "distribution")
+        for item in perf_indx_list[pav_type][p]:
+            st.write(item)
+            fig = px.histogram(data, x = "d_"+item)
+            st.plotly_chart(fig)
+
+with st.container():
+    st.subheader("Filtered data")
+    #st.write(datafiltered)
+    #st.download_button("Download filterred data", datafiltered, mime = "text/csv")
+

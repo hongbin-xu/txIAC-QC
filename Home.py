@@ -109,6 +109,7 @@ with st.sidebar:
     st.subheader("II: Data filter")
     with st.container():
         data_v1 = data.copy()
+        data_v1["flag"] = 0
         thresholds = []
         for p in perf_indx:            
             i = 0
@@ -123,9 +124,9 @@ with st.sidebar:
             for p in perf_indx:            
                 i = 0
                 for item in perf_indx_list[pav_type][p]:
-                    data_v1  = data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i]]
+                    data_v1  = data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
                     i+=1
-            data_v1 = data_v1.reset_index(drop = True)
+            data_v1 = data_v1.loc[data_v1["flag"]].reset_index(drop = True)
 
 # Main
 with st.container():

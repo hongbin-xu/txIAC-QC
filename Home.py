@@ -121,7 +121,6 @@ with st.sidebar:
                 threshold_temp = st.number_input(label = str(i)+"_d_"+item)
                 thresholds.append(threshold_temp)
                 i+=1
-        st.write(thresholds)
         sub_button = st.button("Apply filter")
         if sub_button:
             for p in perf_indx:            
@@ -169,6 +168,6 @@ with st.container():
 with st.container():
     st.subheader("Filtered data")
     st.write(data_v1)
-    st.download_button(label = "Download", data_v1, file_name="filtered.csv", mime="text/csv")
+    st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
     
 

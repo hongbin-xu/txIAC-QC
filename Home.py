@@ -86,7 +86,6 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
             for distress in perf_indx:  
                 for item in  perf_indx_list[pavtype][distress]:
                     data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[item+str(year -1)] - data[item+str(year)]
-                    st.write(item)
     return data
 
 
@@ -107,7 +106,7 @@ with st.sidebar:
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
-
+        st.write(data)
     st.subheader("II: Data filter")
     with st.container():
         data_v1 = data.copy()

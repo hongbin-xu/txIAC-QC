@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import math
 import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide", 
                    page_title='PMIS QC', 
@@ -117,19 +120,34 @@ with st.sidebar:
 with st.container():
     for p in perf_indx:
         st.subheader(p + " (Pathway - Audit) " + "distribution")
+        fig = makesubplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/4)), cols = 4)
+        
+        i = 0
         for item in perf_indx_list[pav_type][p]:
+            row = i//4
+            col = i%4
             st.write(item)
 
             # Create histogram
-            fig = px.histogram(data, x = "d_"+item)
+            #fig = px.histogram(data, x = "d_"+item)
 
             # Create ECDF
-            ecdf = px.ecdf(data, x="d_"+item)
-            fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
-
+            #ecdf = px.ecdf(data, x="d_"+item)
+            #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
+#
             # Update layout
-            fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-            st.plotly_chart(fig)
+            #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+            #st.plotly_chart(fig)
+
+            hist = go.Histogram(x=data["d_"+item], nbinsx=30, name='Histogram')
+            ecdf = px.ecdf(data, x="d_"+item)
+            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='ECDF', yaxis='y2')
+            fig.add_trace(hist, row=row, col=col)
+            fig.add_trace(ecdf, row=row, col=col)
+            fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+            i+=1
+
+        st.plotly_chart(fig)
 
 
 with st.container():

@@ -127,6 +127,7 @@ with st.container():
             row = i//4
             col = i%4
             st.write(item)
+            st.write((row,col))
 
             # Create histogram
             #fig = px.histogram(data, x = "d_"+item)

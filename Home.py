@@ -113,15 +113,23 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
+        data_v1 = data.copy()
         thresholds = []
         for p in perf_indx:            
             i = 0
-            for item in perf_indx_list[pav_type][p]:  
-                threshold_temp = st.number_input(label = "d_"+item)
+            for item in perf_indx_list[pav_type][p]:
+                threshold_temp = st.number_input(label = str(i)+"_d_"+item)
                 thresholds.append(threshold_temp)
-                data_v1 = data # Filter based on threshold values
+                i+=1
         st.write(thresholds)
-        st.button("Apply filter")
+        sub_button = st.button("Apply filter")
+        if sub_button:
+            for p in perf_indx:            
+                i = 0
+                for item in perf_indx_list[pav_type][p]:
+                    data_v1  = data_v1.loc[abs(data_v1["d_"+item])<=thresholds[i]]
+                    i+=1
+
 
 # Main
 with st.container():
@@ -139,7 +147,7 @@ with st.container():
             # Create ECDF
             #ecdf = px.ecdf(data, x="d_"+item)
             #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
-#
+            #
             # Update layout
             #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             #st.plotly_chart(fig)
@@ -160,10 +168,6 @@ with st.container():
 
 with st.container():
     st.subheader("Filtered data")
-    values = []
 
-    for i in range(5):
-        value = st.number_input(f'Enter value {i+1}', min_value=0, max_value=100, step=1)
-        values.append(value)
-
+    
 

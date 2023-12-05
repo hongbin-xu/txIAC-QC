@@ -120,14 +120,12 @@ with st.sidebar:
 with st.container():
     for p in perf_indx:
         st.subheader(p + " (Pathway - Audit) " + "distribution")
-        fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/4)), cols = 4, specs=[[{"secondary_y": True}]*4]*int(math.ceil(len(perf_indx_list[pav_type][p])/4)))
+        fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3, specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)))
         
         i = 0
         for item in perf_indx_list[pav_type][p]:
             row = i//3+1
             col = i%3+1
-            st.write(item)
-
             # Create histogram
             #fig = px.histogram(data, x = "d_"+item)
 

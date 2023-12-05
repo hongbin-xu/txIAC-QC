@@ -130,14 +130,12 @@ with st.container():
     for p in perf_indx:
         st.subheader(p + " (Pathway - Audit) " + "distribution")
         fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3, specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)))
-        st.write(perf_indx_list[pav_type][p])
 
         i = 0
         for item in perf_indx_list[pav_type][p]:
             row = i//3+1
             col = i%3+1
-            st.write("d_"+item)
-            st.write(data["d_"+item])
+
             # Create histogram
             #fig = px.histogram(data, x = "d_"+item)
 

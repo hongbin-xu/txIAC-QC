@@ -124,8 +124,8 @@ with st.container():
         
         i = 0
         for item in perf_indx_list[pav_type][p]:
-            row = i//4
-            col = i%4
+            row = i//4+1
+            col = i%4+1
             st.write(item)
             st.write((row,col))
 

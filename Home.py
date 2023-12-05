@@ -129,7 +129,7 @@ with st.sidebar:
                 for item in perf_indx_list[pav_type][p]:
                     data_v1  = data_v1.loc[abs(data_v1["d_"+item])<=thresholds[i]]
                     i+=1
-
+            data_v1 = data_v1.reset_index(drop = True)
 
 # Main
 with st.container():
@@ -169,6 +169,6 @@ with st.container():
 with st.container():
     st.subheader("Filtered data")
     st.write(data_v1)
-
+    st.download_button(label = "Download", data_v1, file_name="filtered.csv", mime="csv")
     
 

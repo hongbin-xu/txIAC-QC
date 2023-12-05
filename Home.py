@@ -127,7 +127,6 @@ with st.container():
             row = i//4+1
             col = i%4+1
             st.write(item)
-            st.write((row,col))
 
             # Create histogram
             #fig = px.histogram(data, x = "d_"+item)
@@ -140,9 +139,9 @@ with st.container():
             #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             #st.plotly_chart(fig)
 
-            hist = go.Histogram(x=data["d_"+item], nbinsx=30, name='Histogram')
+            hist = go.Histogram(x=data["d_"+item], nbinsx=30, yaxis_title = "count")
             ecdf = px.ecdf(data, x="d_"+item)
-            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='ECDF', yaxis='y2')
+            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', yaxis_title='cdf', yaxis='y2')
             fig.add_trace(hist, row=row, col=col, secondary_y = False)
             fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
             #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))

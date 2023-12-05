@@ -153,6 +153,8 @@ with st.container():
 
 with st.container():
     st.subheader("Filtered data")
-    #st.write(datafiltered)
-    #st.download_button("Download filterred data", datafiltered, mime = "text/csv")
+    for i in range(5):
+        value = st.number_input(f'Enter value {i+1}', min_value=0, max_value=100, step=1)
+        values.append(value)
+
 

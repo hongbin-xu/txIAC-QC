@@ -126,7 +126,7 @@ with st.sidebar:
             for p in perf_indx:            
                 i = 0
                 for item in perf_indx_list[pav_type][p]:
-                    data_v1  = data_v1.loc[abs(data_v1["d_"+item])<=thresholds[i]]
+                    data_v1  = data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i]]
                     i+=1
             data_v1 = data_v1.reset_index(drop = True)
 

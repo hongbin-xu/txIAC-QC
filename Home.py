@@ -20,14 +20,10 @@ perf_indx_list = {"ACP":
                             "RUT": ['LEFT - WHEELPATH AVERAGE RUT DEPTH',
                                     'RIGHT - WHEELPATH AVERAGE RUT DEPTH', 
                                     'MAP21 Rutting AVG',
-
                                     'LEFT - WHEELPATH NO RUT', 'LEFT - WHEELPATH SHALLOW RUT',  'LEFT - WHEELPATH DEEP RUT', 'LEFT - WHEELPATH SEVERE RUT', 'LEFT - WHEELPATH FAILURE RUT',
                                     'RIGHT - WHEELPATH NO RUT','RIGHT - WHEELPATH SHALLOW RUT', 'RIGHT - WHEELPATH DEEP RUT', 'RIGHT - WHEELPATH SEVERE RUT', 'RIGHT - WHEELPATH FAILURE RUT', 
-                                    
                                     'ACP RUT AUTO SHALLOW AVG PCT', 'ACP RUT AUTO DEEP AVG PCT', 'ACP RUT AUTO SEVERE PCT', 'ACP RUT AUTO FAILURE PCT', 
-
                                     'ACP RUT SHALLOW LI', 'ACP RUT DEEP LI', 'ACP RUT SEVERE LI', 
-
                                     'ACP RUT SHALLOW UTIL', 'ACP RUT DEEP UTIL',  'ACP RUT SEVERE UTIL'], 
 
                             "LONGI CRACKS": ['ACP LONGITUDINAL CRACK UNSEALED', 'ACP LONGITUDINAL CRACK SEALED', 'ACP LONGITUDE CRACKING', 
@@ -137,6 +133,7 @@ with st.container():
         fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3, specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)), vertical_spacing=0.25)
         
         i = 0
+        st.write(data[perf_indx_list[pav_type][p]])
         for item in perf_indx_list[pav_type][p]:
             row = i//3+1
             col = i%3+1
@@ -151,7 +148,6 @@ with st.container():
             # Update layout
             #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             #st.plotly_chart(fig)
-
             hist = go.Histogram(x=data["d_"+item], nbinsx=30, showlegend = False)
             ecdf = px.ecdf(data, x="d_"+item)
             ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)

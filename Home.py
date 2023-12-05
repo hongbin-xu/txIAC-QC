@@ -146,8 +146,8 @@ with st.container():
             # Update layout
             #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             #st.plotly_chart(fig)
-            hist = go.Histogram(x=data["d_"+item], nbinsx=30, showlegend = False)
-            ecdf = px.ecdf(data, x="d_"+item)
+            hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
+            ecdf = px.ecdf(data["d_"+item])#, x="d_"+item)
             ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
             fig.add_trace(hist, row=row, col=col, secondary_y = False)
             fig.add_trace(ecdf, row=row, col=col, secondary_y = True)

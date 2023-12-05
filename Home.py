@@ -86,6 +86,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
             for distress in perf_indx:  
                 for item in  perf_indx_list[pavtype][distress]:
                     data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[item+str(year -1)] - data[item+str(year)]
+                    st.write(item)
     return data
 
 

@@ -88,90 +88,92 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
                     data["d_"+item+"_"+str(year -1)+ "_"+str(year)] = data[item+str(year -1)] - data[item+str(year)]
     return data
 
+try:
+    # Siderbar
+    with st.sidebar:
+        st.header("PMIS QC")
+        st.subheader("I: Load and merge data")
+        with st.container():
+            qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
+            data1_path = st.file_uploader("Select Pathway data") 
+            if "data1_path" in globals():
+                data1 = pd.read_csv(data1_path)
 
-# Siderbar
-with st.sidebar:
-    st.header("PMIS QC")
-    st.subheader("I: Load and merge data")
-    with st.container():
-        qc_type = st.selectbox(label = "QC type", options= ["Year to year", "Audit"], index = 1)
-        data1_path = st.file_uploader("Select Pathway data") 
-        if "data1_path" in globals():
-            data1 = pd.read_csv(data1_path)
-
-        if qc_type == "Audit":
-            data2_path = st.file_uploader("Select audit data")
-            if "data2_path" in globals():
-                data2 = pd.read_csv(data2_path)#
-        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
-        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
-        data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
-    st.subheader("II: Data filter")
-    with st.container():
-        data_v1 = data.copy()
-        data_v1["flag"] = 0
-        thresholds = []
-        for p in perf_indx:            
-            i = 0
-            for item in perf_indx_list[pav_type][p]:
-                threshold_temp = st.number_input(label = str(i)+"_d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
-                thresholds.append(threshold_temp)
-                #st.write(np.quantile(abs(data["d_"+item]), 0.95))
-
-                i+=1
-        sub_button = st.button("Apply filter")
-        if sub_button:
+            if qc_type == "Audit":
+                data2_path = st.file_uploader("Select audit data")
+                if "data2_path" in globals():
+                    data2 = pd.read_csv(data2_path)#
+            pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
+            perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
+            data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
+        st.subheader("II: Data filter")
+        with st.container():
+            data_v1 = data.copy()
+            data_v1["flag"] = 0
+            thresholds = []
             for p in perf_indx:            
                 i = 0
                 for item in perf_indx_list[pav_type][p]:
-                    data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+                    threshold_temp = st.number_input(label = str(i)+"_d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
+                    thresholds.append(threshold_temp)
+                    #st.write(np.quantile(abs(data["d_"+item]), 0.95))
+
                     i+=1
-            data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
+            sub_button = st.button("Apply filter")
+            if sub_button:
+                for p in perf_indx:            
+                    i = 0
+                    for item in perf_indx_list[pav_type][p]:
+                        data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+                        i+=1
+                data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
 
-# Main
-with st.container():
-    for p in perf_indx:
-        rows = int(math.ceil(len(perf_indx_list[pav_type][p])/3))
-        st.subheader(p + " (Pathway - Audit) " + "distribution")
-        fig = make_subplots(rows= rows, cols = 3,
-                            specs=[[{"secondary_y": True}]*3]*rows)#,
-                            #horizontal_spacing=0.1,
-                            #vertical_spacing = .5)
+    # Main
+    with st.container():
+        for p in perf_indx:
+            rows = int(math.ceil(len(perf_indx_list[pav_type][p])/3))
+            st.subheader(p + " (Pathway - Audit) " + "distribution")
+            fig = make_subplots(rows= rows, cols = 3,
+                                specs=[[{"secondary_y": True}]*3]*rows)#,
+                                #horizontal_spacing=0.1,
+                                #vertical_spacing = .5)
 
-        i = 0
-        for item in perf_indx_list[pav_type][p]:
-            row = i//3+1
-            col = i%3+1
+            i = 0
+            for item in perf_indx_list[pav_type][p]:
+                row = i//3+1
+                col = i%3+1
 
-            # Create histogram
-            #fig = px.histogram(data, x = "d_"+item)
+                # Create histogram
+                #fig = px.histogram(data, x = "d_"+item)
 
-            # Create ECDF
-            #ecdf = px.ecdf(data, x="d_"+item)
-            #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
-            #
-            # Update layout
-            #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-            #st.plotly_chart(fig)
-            hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
-            ecdf = px.ecdf(abs(data["d_"+item]))#, x="d_"+item)
-            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
-            fig.add_trace(hist, row=row, col=col, secondary_y = False)
-            fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
-            #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-            fig.update_xaxes(title_text = "d_"+item, row = row, col = col)
-            fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
-            fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
-            i+=1
-        
-        fig.update_layout(height=400*rows)
-        st.plotly_chart(fig, use_container_width= True)
+                # Create ECDF
+                #ecdf = px.ecdf(data, x="d_"+item)
+                #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
+                #
+                # Update layout
+                #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                #st.plotly_chart(fig)
+                hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
+                ecdf = px.ecdf(abs(data["d_"+item]))#, x="d_"+item)
+                ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
+                fig.add_trace(hist, row=row, col=col, secondary_y = False)
+                fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
+                #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                fig.update_xaxes(title_text = "d_"+item, row = row, col = col)
+                fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
+                fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
+                i+=1
+            
+            fig.update_layout(height=400*rows)
+            st.plotly_chart(fig, use_container_width= True)
 
 
-with st.container():
-    st.subheader("Filtered data")
-    st.write("Number of rows: "+ str(data_v1.shape[0]))
-    st.write(data_v1)
-    st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
-    
+    with st.container():
+        st.subheader("Filtered data")
+        st.write("Number of rows: "+ str(data_v1.shape[0]))
+        st.write(data_v1)
+        st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+except:
+    pass
+
 

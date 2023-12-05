@@ -133,7 +133,7 @@ with st.container():
         fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3, specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)), vertical_spacing=0.25)
         
         i = 0
-        st.write(data[perf_indx_list[pav_type][p]])
+        st.write(perf_indx_list[pav_type][p])
         for item in perf_indx_list[pav_type][p]:
             row = i//3+1
             col = i%3+1

@@ -168,6 +168,7 @@ with st.container():
 
 with st.container():
     st.subheader("Filtered data")
+    st.write(data_v1)
 
     
 

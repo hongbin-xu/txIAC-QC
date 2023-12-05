@@ -135,7 +135,7 @@ with st.container():
         fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3,
                             specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)),
                             horizontal_spacing=0.1,
-                            vertical_spacing = .1)
+                            vertical_spacing = .5)
 
         i = 0
         for item in perf_indx_list[pav_type][p]:

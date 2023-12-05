@@ -131,9 +131,10 @@ with st.sidebar:
 # Main
 with st.container():
     for p in perf_indx:
+        rows = int(math.ceil(len(perf_indx_list[pav_type][p])/3))
         st.subheader(p + " (Pathway - Audit) " + "distribution")
-        fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3,
-                            specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)))#,
+        fig = make_subplots(rows= rows, cols = 3,
+                            specs=[[{"secondary_y": True}]*3]*rows)#,
                             #horizontal_spacing=0.1,
                             #vertical_spacing = .5)
 
@@ -163,7 +164,7 @@ with st.container():
             fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
             i+=1
         
-        fig.update_layout(height=800)
+        fig.update_layout(height=400*rows)
         st.plotly_chart(fig, use_container_width= True)
 
 

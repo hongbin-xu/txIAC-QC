@@ -114,8 +114,9 @@ with st.sidebar:
             i = 0
             for item in perf_indx_list[pav_type][p]:
                 threshold_temp = st.number_input(label = str(i)+"_d_"+item, value = np.quantile(abs(data["d_"+item]), 0.95))
-                st.write(np.quantile(abs(data["d_"+item]), 0.95))
                 thresholds.append(threshold_temp)
+                st.write(np.quantile(abs(data["d_"+item]), 0.95))
+
                 i+=1
         sub_button = st.button("Apply filter")
         if sub_button:

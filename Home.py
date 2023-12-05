@@ -169,6 +169,6 @@ with st.container():
 with st.container():
     st.subheader("Filtered data")
     st.write(data_v1)
-    st.download_button(label = "Download", data_v1, file_name="filtered.csv", mime="csv")
+    st.download_button(label = "Download", data_v1, file_name="filtered.csv", mime="text/csv")
     
 

@@ -139,12 +139,15 @@ with st.container():
             #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             #st.plotly_chart(fig)
 
-            hist = go.Histogram(x=data["d_"+item], nbinsx=30)
+            hist = go.Histogram(x=data["d_"+item], nbinsx=30, showlegend = False)
             ecdf = px.ecdf(data, x="d_"+item)
-            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2')
+            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
             fig.add_trace(hist, row=row, col=col, secondary_y = False)
             fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
             #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+            fig.update_xaxes(title_text = "d_"+item, row = row, col = col)
+            fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
+            fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
             i+=1
 
         st.plotly_chart(fig, use_container_width= True)

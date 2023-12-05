@@ -113,12 +113,14 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
-        thresholds = {}
+        thresholds = []
         for p in perf_indx:            
             i = 0
             for item in perf_indx_list[pav_type][p]:  
-                thresholds[item] = st.number_input()
+                threshold_temp = st.number_input()
+                thresholds.append(threshold_temp)
                 data_v1 = data # Filter based on threshold values
+        st.write(thresholds)
         st.button("Apply filter")
 
 # Main

@@ -106,7 +106,6 @@ with st.sidebar:
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
-        st.write(data)
     st.subheader("II: Data filter")
     with st.container():
         data_v1 = data.copy()
@@ -136,6 +135,7 @@ with st.container():
         for item in perf_indx_list[pav_type][p]:
             row = i//3+1
             col = i%3+1
+            st.write("d_"+item)
             st.write(data["d_"+item])
             # Create histogram
             #fig = px.histogram(data, x = "d_"+item)

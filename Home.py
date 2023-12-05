@@ -120,7 +120,7 @@ with st.sidebar:
 with st.container():
     for p in perf_indx:
         st.subheader(p + " (Pathway - Audit) " + "distribution")
-        fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/4)), cols = 4)
+        fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/4)), cols = 4, specs=[[{"secondary_y": True}]*4]*int(math.ceil(len(perf_indx_list[pav_type][p])/4)))
         
         i = 0
         for item in perf_indx_list[pav_type][p]:
@@ -145,7 +145,7 @@ with st.container():
             ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='ECDF', yaxis='y2')
             fig.add_trace(hist, row=row, col=col, secondary_y = False)
             fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
-            fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+            #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             i+=1
 
         st.plotly_chart(fig, use_container_width= True)

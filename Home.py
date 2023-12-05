@@ -140,6 +140,7 @@ with st.container():
         for item in perf_indx_list[pav_type][p]:
             row = i//3+1
             col = i%3+1
+            st.write(item)
             # Create histogram
             #fig = px.histogram(data, x = "d_"+item)
 

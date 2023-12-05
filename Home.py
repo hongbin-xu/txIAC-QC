@@ -143,8 +143,8 @@ with st.container():
             hist = go.Histogram(x=data["d_"+item], nbinsx=30, name='Histogram')
             ecdf = px.ecdf(data, x="d_"+item)
             ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='ECDF', yaxis='y2')
-            fig.add_trace(hist, row=row, col=col)
-            fig.add_trace(ecdf, row=row, col=col)
+            fig.add_trace(hist, row=row, col=col, secondary_y = False)
+            fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
             fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
             i+=1
 

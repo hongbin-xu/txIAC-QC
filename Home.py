@@ -129,6 +129,7 @@ with st.sidebar:
 with st.container():
     for p in perf_indx:
         st.subheader(p + " (Pathway - Audit) " + "distribution")
+        st.write(perf_indx_list[pav_type][p])
         fig = make_subplots(rows= int(math.ceil(len(perf_indx_list[pav_type][p])/3)), cols = 3, specs=[[{"secondary_y": True}]*3]*int(math.ceil(len(perf_indx_list[pav_type][p])/3)), vertical_spacing=0.25)
         
         i = 0

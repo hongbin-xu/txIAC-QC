@@ -117,7 +117,7 @@ with st.sidebar:
         for p in perf_indx:            
             i = 0
             for item in perf_indx_list[pav_type][p]:  
-                threshold_temp = st.number_input()
+                threshold_temp = st.number_input(label = "d_"+item)
                 thresholds.append(threshold_temp)
                 data_v1 = data # Filter based on threshold values
         st.write(thresholds)

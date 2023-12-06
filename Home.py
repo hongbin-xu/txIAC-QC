@@ -6,12 +6,21 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
 st.set_page_config(layout="wide", 
                    page_title='PMIS QC', 
                    menu_items={
                        'Get help': "mailto:hongbinxu@utexas.edu",
                        'About': "Developed and maintained by Hongbin Xu",
                    })
+
+
 
 perf_indx_list = {"ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],

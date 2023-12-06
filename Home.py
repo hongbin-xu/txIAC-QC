@@ -15,8 +15,6 @@ st.set_page_config(layout="wide",
                        'About': "Developed and maintained by Hongbin Xu",
                    })
 
-
-
 perf_indx_list = {"ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
                             "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE', 'RIDE LI', 'RIDE UTILITY VALUE'], 
@@ -179,3 +177,9 @@ try:
         st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
 except:
     pass
+hide_menu_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    </style>
+    """
+st.markdown(hide_menu_style, unsafe_allow_html=True)

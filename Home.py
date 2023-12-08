@@ -74,7 +74,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 
     # merging data1 and data2
     data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= suffixes) # merge data
-    data = data.loc[(abs(data["BEGINNING DFOPathway"]-data["BEGINNING DFOAudit"])<0.05)&(abs(data["ENDING DFOPathway"]-data["ENDING DFOAudit"])<0.05)]
+    data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
     
     for distress in perf_indx:  # compute difference
         for item in  perf_indx_list[pavtype][distress]:

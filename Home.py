@@ -87,7 +87,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
 def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None):
     item_list = [item for item in perf_indx_list[pavtype][distress] for distress in perf_indx]
     if qc_type == "Audit":
-        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]+].groupby()
+        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]]
 
     if qc_type =="Year by year":
         iri_sum_county

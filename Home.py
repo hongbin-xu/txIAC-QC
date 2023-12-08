@@ -65,10 +65,12 @@ perf_indx_list = {"ACP":
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
 def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None): 
+    # List of performance measures
     item_list = []
     for distress in perf_indx:  # compute difference
         for item in  perf_indx_list[pavtype][distress]:
             item_list = item_list +[item]
+    
     # Suffixes
     if qctype == "Audit":
         suffixes = ["_Pathway", "_Audit"]
@@ -91,15 +93,20 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", p
     for distress in perf_indx:  # compute difference
         for item in  perf_indx_list[pavtype][distress]:
             item_list = item_list +[item]
-    if qc_type == "Audit":
-        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]]
 
+    if qctype == "Audit":
+        suffixes = ["Pathway", "Audit"]
+    if qctype == "Year by year": 
+        year1, year2 = data1["FISCAL YEAR"].unique(), data2["FISCAL YEAR"].unique()
+        suffixes = [str(year1), str(year2)]
 
-
-    return 2
-
-
-
+    data1_sum = data1.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    data1_sum["RATING CYCLE CODE"] = suffixes[0]
+    data2_sum = data2.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    data2_sum["RATING CYCLE CODE"] = suffixes[1]
+    data_sum = pd.concat([data1_sum, data2_sum]).reset_index(drop=True)
+    data_sum = data_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+    return data_sum
 
 
 # Siderbar

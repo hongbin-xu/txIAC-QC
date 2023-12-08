@@ -78,7 +78,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
     
     for distress in perf_indx:  # compute difference
         for item in  perf_indx_list[pavtype][distress]:
-            data["d_"+item] = data[item+"_"+suffixes[0]] - data[item+"_"+suffixes[1]]
+            data["d_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)
 

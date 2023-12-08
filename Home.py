@@ -92,16 +92,13 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", p
         for item in  perf_indx_list[pavtype][distress]:
             item_list = item_list +[item]
     if qc_type == "Audit":
-        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]+].groupby()
-
-    if qc_type =="Year by year":
-        iri_sum_county
-        rut_sum_county
-
-        return 
+        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]]
 
 
-    x =2
+
+    return 2
+
+
 
 
 

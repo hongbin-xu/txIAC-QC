@@ -65,6 +65,8 @@ perf_indx_list = {"ACP":
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
 def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None): 
+    item_list = [item for item in perf_indx_list[pavtype][distress] for distress in perf_indx]
+
     # Suffixes
     if qctype == "Audit":
         suffixes = ["_Pathway", "_Audit"]
@@ -76,15 +78,22 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
     data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= suffixes) # merge data
     data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
     
-    for distress in perf_indx:  # compute difference
-        for item in  perf_indx_list[pavtype][distress]:
-            data["d_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
+    for item in  item_list:
+        data["d_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)
 
 @st.cache_data
-def diff_summary(data1 = None, data2 = None, qctype = "Audit"):
-    x =2
+def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None):
+    item_list = [item for item in perf_indx_list[pavtype][distress] for distress in perf_indx]
+    if qc_type == "Audit":
+        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]+].groupby()
+
+    if qc_type =="Year by year":
+        iri_sum_county
+        rut_sum_county
+
+    return 2
 
 
 

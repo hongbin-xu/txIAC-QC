@@ -143,7 +143,8 @@ with st.sidebar:
         st.session_state.path1 = st.file_uploader("QC data") 
         st.session_state.path2 = st.file_uploader("Data to compare") 
 
-        if (st.session_state.path1 is not None)& (st.session_state.path2 is not None):
+        if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
+            st.write("run data loader")
             data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
             st.write(data1)
         # Pavement type and performance index selector

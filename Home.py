@@ -64,7 +64,7 @@ perf_indx_list = {"ACP":
 
 
 # Data loading
-@ st.cache_data
+@ st.cache_data(experimental_allow_widgets=True)
 def data_load():
     # File uploading
     data1_path = st.file_uploader("QC data") 

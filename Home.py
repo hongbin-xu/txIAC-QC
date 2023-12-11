@@ -17,7 +17,7 @@ st.set_page_config(layout="wide",
 # List of distresses
 perf_indx_list = {"ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
-                            "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE','RIDE UTILITY VALUE'], 
+                            "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE','RIDE UTILITY VALUE'],
                             # Rut
                             "RUT": ['LEFT - WHEELPATH AVERAGE RUT DEPTH',
                                     'RIGHT - WHEELPATH AVERAGE RUT DEPTH', 

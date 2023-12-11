@@ -101,7 +101,7 @@ def filter(data= None, thresholds = None, item_list=None):
     data_v1["flag"] = 0
     i = 0
     for item in item_list:
-        if "UTIL" not in item_list:
+        if "UTIL" not in item:
             data_v1.loc[abs(data_v1["diff_"+item])>=thresholds[i], "flag"]=1
             i+=1
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)

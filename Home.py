@@ -171,7 +171,7 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
-        if data is not None:        
+        try:        
             thresholds = []
             i = 0
             for item in item_list:
@@ -179,7 +179,8 @@ with st.sidebar:
                     threshold_temp = st.number_input(label = "d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
                     thresholds.append(threshold_temp)
                     i+=1
-            
+        except:
+            pass
         sub_button = st.button("Apply filter")
         # filter add function
         if sub_button:

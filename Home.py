@@ -141,14 +141,11 @@ with st.sidebar:
 
         #st.session_state.path1 = st.file_uploader("QC data") 
         st.session_state.path1 = st.file_uploader("QC data", type ="csv") 
-        st.session_state.path2 = st.file_uploader("Data to compare", type ="csv") 
-        st.write(st.session_state.path1.type)
-        
+        st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
-            st.write("run data loader")
             data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.write(data1)
+
         # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
@@ -158,14 +155,16 @@ with st.sidebar:
         for distress in perf_indx:  # compute difference
             for item in  perf_indx_list[pav_type][distress]:
                 item_list = item_list +[item]
-
+       
         # Data merging
-        data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
+        merge_button = st.button("Merge data")
+        if merge_button:
+            data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
 
     st.subheader("II: Data filter")
     with st.container():
-
-
+        
+        
         # thresholds Add function
         data_v1 = data.copy()
         data_v1["flag"] = 0

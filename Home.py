@@ -92,10 +92,18 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
     return data.reset_index(drop = True)
 
 
+# filter function
 @st.cache_data
-def filter(data= None, item_list=None):
-    x =1
-    return x
+def filter(data= None, thresholds = None, item_list=None):
+    data_v1 = data.copy()
+    data_v1["flag"] = 0
+    i = 0
+    for item in item_list:
+        if "UTIL" not in item_list:
+            data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+            i+=1
+    data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
+    return data_v1
 
 
 
@@ -163,29 +171,19 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
-        
-        
-        # thresholds Add function
-        data_v1 = data.copy()
-        data_v1["flag"] = 0
-        thresholds = []
-        i = 0
-        for item in item_list:
-            if "UTIL" not in item_list:
-                threshold_temp = st.number_input(label = "d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
-                thresholds.append(threshold_temp)
-                i+=1
-            
-        sub_button = st.button("Apply filter")
-
-        # filter add function
-        if sub_button:
+        if data is not None:        
+            thresholds = []
             i = 0
             for item in item_list:
                 if "UTIL" not in item_list:
-                    data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+                    threshold_temp = st.number_input(label = "d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
+                    thresholds.append(threshold_temp)
                     i+=1
-            data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
+            
+        sub_button = st.button("Apply filter")
+        # filter add function
+        if sub_button:
+            data_v1 = filter(data= data, thresholds = thresholds, item_list=item_list)
 
 # Main
 with st.container():

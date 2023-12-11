@@ -140,11 +140,9 @@ with st.sidebar:
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 
         #st.session_state.path1 = st.file_uploader("QC data") 
-        data1_path = st.file_uploader("QC data") 
-        if "data1_path" in globals():
-            data1 = pd.read_csv(data1_path)
-        st.write(data1)
+        st.session_state.path1 = st.file_uploader("QC data") 
         st.session_state.path2 = st.file_uploader("Data to compare") 
+        st.write(st.session_state.patha1)
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.write("run data loader")

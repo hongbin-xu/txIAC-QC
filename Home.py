@@ -179,6 +179,7 @@ with st.sidebar:
                     threshold_temp = st.number_input(label = "d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
                     thresholds.append(threshold_temp)
                     i+=1
+            st.write(thresholds)
         except:
             pass
         sub_button = st.button("Apply filter")

@@ -100,13 +100,11 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
 
     # merging data1 and data2
     data = data1.loc[data1["COUNTY"].isin(data2["COUNTY"])]
-    data = data.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= suffixes) # merge data
+    data = data.merge(data2, on = ["SIGNED HWY AND ROADBED ID", "COUNTY"], suffixes= suffixes) # merge data
     data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
 
     for item in  item_list:
         if "UTIL" not in item:
-            st.write(data[item+suffixes[0]])
-            st.write(data[item+suffixes[1]])
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)
@@ -162,8 +160,6 @@ with st.sidebar:
     st.header("PMIS QC")
     st.subheader("I: Load and merge data")
     with st.container():
-        # List of items
-
         # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 

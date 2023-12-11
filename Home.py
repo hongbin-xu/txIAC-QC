@@ -199,30 +199,31 @@ with st.container():
 
         i = 0
         for item in perf_indx_list[pav_type][p]:
-            row = i//3+1
-            col = i%3+1
+            if "UTIL" not in item:
+                row = i//3+1
+                col = i%3+1
 
-            # Create histogram
-            #fig = px.histogram(data, x = "d_"+item)
+                # Create histogram
+                #fig = px.histogram(data, x = "d_"+item)
 
-            # Create ECDF
-            #ecdf = px.ecdf(data, x="d_"+item)
-            #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
-            #
-            # Update layout
-            #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-            #st.plotly_chart(fig)
-            hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
-            ecdf = px.ecdf(abs(data["d_"+item]))#, x="d_"+item)
-            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
-            fig.add_trace(hist, row=row, col=col, secondary_y = False)
-            fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
-            #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-            fig.update_xaxes(title_text = "d_"+item, row = row, col = col)
-            fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
-            fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
-            i+=1
-        
+                # Create ECDF
+                #ecdf = px.ecdf(data, x="d_"+item)
+                #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
+                #
+                # Update layout
+                #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                #st.plotly_chart(fig)
+                hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
+                ecdf = px.ecdf(abs(data["d_"+item]))#, x="d_"+item)
+                ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
+                fig.add_trace(hist, row=row, col=col, secondary_y = False)
+                fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
+                #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                fig.update_xaxes(title_text = "d_"+item, row = row, col = col)
+                fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
+                fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
+                i+=1
+            
         fig.update_layout(height=400*rows)
         st.plotly_chart(fig, use_container_width= True)
 

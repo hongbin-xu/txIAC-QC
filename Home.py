@@ -99,7 +99,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
         suffixes = ["_"+str(year1), "_"+str(year2)]
 
     # merging data1 and data2
-    data = data1.loc[data["COUNTY"].isin(data2["COUNTY"])]
+    data = data1.loc[data1["COUNTY"].isin(data2["COUNTY"])]
     data = data.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= suffixes) # merge data
     data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
 

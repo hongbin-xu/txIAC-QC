@@ -17,23 +17,24 @@ st.set_page_config(layout="wide",
 # List of distresses
 perf_indx_list = {"ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
-                            "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE'], 
+                            "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE','RIDE UTILITY VALUE'], 
                             # Rut
                             "RUT": ['LEFT - WHEELPATH AVERAGE RUT DEPTH',
                                     'RIGHT - WHEELPATH AVERAGE RUT DEPTH', 
                                     'MAP21 Rutting AVG', 
-                                    'ACP RUT AUTO SHALLOW AVG PCT', 'ACP RUT AUTO DEEP AVG PCT', 'ACP RUT AUTO SEVERE PCT', 'ACP RUT AUTO FAILURE PCT'], 
+                                    'ACP RUT AUTO SHALLOW AVG PCT', 'ACP RUT AUTO DEEP AVG PCT', 'ACP RUT AUTO SEVERE PCT', 'ACP RUT AUTO FAILURE PCT',
+                                    'ACP RUT SHALLOW UTIL', 'ACP RUT DEEP UTIL',  'ACP RUT SEVERE UTIL'], 
 
-                            "LONGI CRACKS": ['ACP LONGITUDE CRACKING'],
+                            "LONGI CRACKS": ['ACP LONGITUDE CRACKING','ACP LONGIT CRACKS UTIL'],
 
-                            "TRANS CRACKS": ['ACP TRANSVERSE CRACKING QTY'],
+                            "TRANS CRACKS": ['ACP TRANSVERSE CRACKING QTY', 'ACP TRANSVERSE CRACKS UTIL'],
 
-                            "ALLIG CRACKS":['ACP ALLIGATOR CRACKING PCT'],
-                            "BLOCK CRACKS":['ACP BLOCK CRACKING PCT'],
+                            "ALLIG CRACKS":['ACP ALLIGATOR CRACKING PCT', 'ACP ALLIG CRK UTIL'],
+                            "BLOCK CRACKS":['ACP BLOCK CRACKING PCT', 'ACP BLOCK CRK UTIL'],
 
-                            "PATCHING":['ACP PATCHING PCT'], 
+                            "PATCHING":['ACP PATCHING PCT', 'ACP PATCHING UTIL'], 
 
-                            "FAILURES":['ACP FAILURE QTY'],
+                            "FAILURES":['ACP FAILURE QTY',  'ACP FAILURES UTIL'],
 
                             "RAVELING": ['ACP RAVELING'], 
                             "FLUSHING": ['ACP FLUSHING'],
@@ -64,12 +65,7 @@ perf_indx_list = {"ACP":
 
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
-def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None): 
-    # List of performance measures
-    item_list = []
-    for distress in perf_indx:  # compute difference
-        for item in  perf_indx_list[pavtype][distress]:
-            item_list = item_list +[item]
+def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None): 
     
     # Suffixes
     if qctype == "Audit":
@@ -83,30 +79,41 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
     data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
 
     for item in  item_list:
-        data["d_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
+        if "UTIL" not in item:
+            data["d_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)
 
+# Summary by district or county
 @st.cache_data
-def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None):
-    item_list = []
-    for distress in perf_indx:  # compute difference
-        for item in  perf_indx_list[pavtype][distress]:
-            item_list = item_list +[item]
-
+def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None):
+    # prefix
     if qctype == "Audit":
         suffixes = ["Pathway", "Audit"]
     if qctype == "Year by year": 
         year1, year2 = data1["FISCAL YEAR"].unique(), data2["FISCAL YEAR"].unique()
         suffixes = [str(year1), str(year2)]
 
-    data1_sum = data1.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
-    data1_sum["RATING CYCLE CODE"] = suffixes[0]
-    data2_sum = data2.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
-    data2_sum["RATING CYCLE CODE"] = suffixes[1]
-    data_sum = pd.concat([data1_sum, data2_sum]).reset_index(drop=True)
-    data_sum = data_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
-    return data_sum
+    # county level summary
+    county_sum1 = data1.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    county_sum1["RATING CYCLE CODE"] = suffixes[0]
+    county_sum2 = data2.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    county_sum2["RATING CYCLE CODE"] = suffixes[1]
+    county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
+    county_sum = county_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+
+    # District level, true when compare year by year
+    if qctype == "Year by year":
+
+        dist_sum1 = data1.pivot_table(values = [x for x in item_list if "UTIL" in x], index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
+        dist_sum2 = data2.pivot_table(values = [x for x in item_list if "UTIL" in x], index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
+
+        dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
+        dist_sum = county_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+        
+        return dist_sum, county_sum
+    else:
+        return county_sum
 
 
 # Siderbar
@@ -114,20 +121,34 @@ with st.sidebar:
     st.header("PMIS QC")
     st.subheader("I: Load and merge data")
     with st.container():
+        # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 
+        # File uploading
         data1_path = st.file_uploader("QC data") 
-        if "data1_path" in globals():
+        try:
             data1 = pd.read_csv(data1_path)
+        except:
+            st.write("Upload file to be QC")
 
         data2_path = st.file_uploader("Data to compare")
-        if "data2_path" in globals():
+        try:
             data2 = pd.read_csv(data2_path)#
+        except:
+            st.write("upload data to compare")
 
+        # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
 
-        data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, perf_indx = perf_indx)
+        # List of items
+        item_list = []
+        for distress in perf_indx:  # compute difference
+            for item in  perf_indx_list[pav_type][distress]:
+                item_list = item_list +[item]
+
+        # Data merging
+        data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
 
     st.subheader("II: Data filter")
     with st.container():
@@ -136,7 +157,7 @@ with st.sidebar:
         thresholds = []
         for p in perf_indx:            
             i = 0
-            for item in perf_indx_list[pav_type][p]:
+            for item in item_list:
                 threshold_temp = st.number_input(label = str(i)+"_d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
                 thresholds.append(threshold_temp)
                 #st.write(np.quantile(abs(data["d_"+item]), 0.95))
@@ -144,11 +165,9 @@ with st.sidebar:
                 i+=1
         sub_button = st.button("Apply filter")
         if sub_button:
-            for p in perf_indx:            
-                i = 0
-                for item in perf_indx_list[pav_type][p]:
-                    data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
-                    i+=1
+            for item in perf_indx_list[pav_type][p]:
+                data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+                i+=1
             data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
 
 # Main

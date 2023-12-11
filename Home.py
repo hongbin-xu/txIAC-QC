@@ -82,6 +82,9 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
     for distress in perf_indx:  # compute difference
         for item in  perf_indx_list[pavtype][distress]:
             item_list = item_list +[item]
+<<<<<<< HEAD
+>>>>>>> parent of 35b4a8f (Update Home.py)
+=======
 >>>>>>> parent of 35b4a8f (Update Home.py)
     # Suffixes
     if qctype == "Audit":
@@ -100,6 +103,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", per
     
     return data.reset_index(drop = True)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 @st.cache_data
@@ -139,6 +143,23 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
         return dist_sum, county_sum
     else:
         return county_sum
+=======
+@st.cache_data
+def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None):
+    item_list = []
+    for distress in perf_indx:  # compute difference
+        for item in  perf_indx_list[pavtype][distress]:
+            item_list = item_list +[item]
+    if qc_type == "Audit":
+        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]]
+
+
+
+    return 2
+
+
+
+>>>>>>> parent of 35b4a8f (Update Home.py)
 =======
 @st.cache_data
 def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None):

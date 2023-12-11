@@ -63,6 +63,17 @@ perf_indx_list = {"ACP":
                 }
 
 
+# Data loading
+@ st.cache_data
+def data_load():
+    # File uploading
+    data1_path = st.file_uploader("QC data") 
+    data1 = pd.read_csv(data1_path)
+
+    data2_path = st.file_uploader("Data to compare")
+    data2 = pd.read_csv(data2_path)#
+    return data1, data2
+
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
 def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None): 
@@ -124,18 +135,7 @@ with st.sidebar:
         # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 
-        # File uploading
-        data1_path = st.file_uploader("QC data") 
-        try:
-            data1 = pd.read_csv(data1_path)
-        except:
-            st.write("Upload file to be QC")
-
-        data2_path = st.file_uploader("Data to compare")
-        try:
-            data2 = pd.read_csv(data2_path)#
-        except:
-            st.write("upload data to compare")
+        data1, data2 = data_load()
 
         # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])

@@ -216,9 +216,9 @@ with st.container():
         data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = "Audit", pavtype= "ACP", item_list = item_list)
         if qc_type =="Audit":
 
-
+            x =2
         if qc_type == "Year by year":
-
+            x =1
 
     except:
         pass

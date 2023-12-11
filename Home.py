@@ -144,7 +144,7 @@ with st.sidebar:
         st.session_state.path2 = st.file_uploader("Data to compare") 
 
         data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-
+        st.write(data1)
         # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())

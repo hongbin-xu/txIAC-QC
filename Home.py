@@ -93,7 +93,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
     return data.reset_index(drop = True)
 
 
-@st.chache_data
+@st.cache_data
 def filter(data= None, item_list=None):
     x =1
     return x

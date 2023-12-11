@@ -142,7 +142,7 @@ with st.sidebar:
         #st.session_state.path1 = st.file_uploader("QC data") 
         st.session_state.path1 = st.file_uploader("QC data") 
         st.session_state.path2 = st.file_uploader("Data to compare") 
-        st.write(st.session_state.patha1)
+        st.write(st.session_state.path1)
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.write("run data loader")

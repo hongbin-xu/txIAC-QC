@@ -142,8 +142,8 @@ with st.sidebar:
 
         path1 = st.file_uploader("QC data") 
         st.session_state.path2 = st.file_uploader("Data to compare") 
-        st.write(st.session_state.path1)
-        data1 = pd.read_csv(data1)
+        st.write(path1)
+        data1 = pd.read_csv(path1)
         st.write(data1)
 
         data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)

@@ -78,7 +78,7 @@ inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
                 'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
                 'USER UPDATE', 'DATE UPDATE', 'ROUGHNESS (IRI) - AVERAGE',
                 'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
-                'DFO FROM', 'DFO TO', 'MAP21 Rutting AVG','PMIS HIGHWAY SYSTEM','District']
+                'DFO FROM', 'DFO TO', 'MAP21 Rutting AVG','PMIS HIGHWAY SYSTEM']
 
 # Data loading
 @ st.cache_data

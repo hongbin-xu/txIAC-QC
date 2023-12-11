@@ -62,6 +62,23 @@ perf_indx_list = {"ACP":
                         }
                 }
 
+inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
+                'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
+                'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
+                'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
+                'RESPONSIBLE DISTRICT', 'COUNTY', 'RESPONSIBLE MAINTENANCE SECTION',
+                'LANE NUMBER', 'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
+                'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
+                'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
+                'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
+                'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
+                'DISTRESS COMMENT CODE', 'LANE WIDTH',
+                'DETAILED PVMNT TYPE ROAD LIFE',
+                'DETAILED PVMNT TYPE VISUAL CODE', 
+                'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
+                'USER UPDATE', 'DATE UPDATE', 'ROUGHNESS (IRI) - AVERAGE',
+                'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
+                'DFO FROM', 'DFO TO', 'MAP21 Rutting AVG','PMIS HIGHWAY SYSTEM','District']
 
 # Data loading
 @ st.cache_data
@@ -82,7 +99,8 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
         suffixes = ["_"+str(year1), "_"+str(year2)]
 
     # merging data1 and data2
-    data = data1.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= suffixes) # merge data
+    data = data1.loc[data["COUNTY"].isin(data2["COUNTY"])]
+    data = data.merge(data2, on = "SIGNED HWY AND ROADBED ID", suffixes= suffixes) # merge data
     data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
 
     for item in  item_list:
@@ -90,7 +108,6 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)
-
 
 # filter function
 @st.cache_data
@@ -143,6 +160,12 @@ with st.sidebar:
     st.header("PMIS QC")
     st.subheader("I: Load and merge data")
     with st.container():
+        # List of items
+        item_list = []
+        for distress in perf_indx:  # compute difference
+            for item in  perf_indx_list[pav_type][distress]:
+                item_list = item_list +[item]
+
         # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 
@@ -152,22 +175,19 @@ with st.sidebar:
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state.data1, st.session_state.data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
+            st.session_state.data1 = st.session_state.data1[inf_list + item_list]
+            st.session_state.data2 = st.session_state.data2[inf_list + item_list]
 
         # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
 
-        # List of items
-        item_list = []
-        for distress in perf_indx:  # compute difference
-            for item in  perf_indx_list[pav_type][distress]:
-                item_list = item_list +[item]
-       
         # Data merging
         merge_button = st.button("Merge data")
         if merge_button:
             st.session_state.data = data_merge(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
             st.session_state.data_v1 = st.session_state.data.copy()
+
     st.subheader("II: Data filter")
     with st.container():
         try:        
@@ -189,8 +209,17 @@ with st.sidebar:
 # Main
 # Summary
 with st.container():
-    st.subheader("Summary")
-    x = 1
+    # Summary
+    try:
+        data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = "Audit", pavtype= "ACP", item_list = item_list)
+        if qc_type =="Audit":
+
+
+        if qc_type == "Year by year":
+
+
+    except:
+        pass
 
 # Plot
 with st.container():

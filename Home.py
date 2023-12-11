@@ -95,6 +95,8 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
 # filter function
 @st.cache_data
 def filter(data= None, thresholds = None, item_list=None):
+    st.write(thresholds)
+    st.write(item_list)
     data_v1 = data.copy()
     data_v1["flag"] = 0
     i = 0
@@ -216,7 +218,7 @@ with st.container():
                     fig.add_trace(hist, row=row, col=col, secondary_y = False)
                     fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
                     #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                    fig.update_xaxes(title_text = "Abs diff of "+item, row = row, col = col)
+                    fig.update_xaxes(title_text = "Abs diff: "+item, row = row, col = col)
                     fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
                     fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
                 except:

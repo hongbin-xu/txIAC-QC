@@ -73,8 +73,16 @@ def data_load(data1_path, data2_path):
 
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
+<<<<<<< HEAD
 def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None): 
     
+=======
+def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None): 
+    item_list = []
+    for distress in perf_indx:  # compute difference
+        for item in  perf_indx_list[pavtype][distress]:
+            item_list = item_list +[item]
+>>>>>>> parent of 35b4a8f (Update Home.py)
     # Suffixes
     if qctype == "Audit":
         suffixes = ["_Pathway", "_Audit"]
@@ -92,6 +100,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
     
     return data.reset_index(drop = True)
 
+<<<<<<< HEAD
 
 @st.cache_data
 def filter(data= None, item_list=None):
@@ -130,6 +139,23 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
         return dist_sum, county_sum
     else:
         return county_sum
+=======
+@st.cache_data
+def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", perf_indx = None):
+    item_list = []
+    for distress in perf_indx:  # compute difference
+        for item in  perf_indx_list[pavtype][distress]:
+            item_list = item_list +[item]
+    if qc_type == "Audit":
+        data1_sum = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["COUNTY"]]
+
+
+
+    return 2
+
+
+
+>>>>>>> parent of 35b4a8f (Update Home.py)
 
 
 # Siderbar

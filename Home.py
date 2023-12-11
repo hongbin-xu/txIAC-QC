@@ -87,7 +87,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
 
     for item in  item_list:
         if "UTIL" not in item:
-            data["d_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
+            data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)
 
@@ -100,7 +100,7 @@ def filter(data= None, thresholds = None, item_list=None):
     i = 0
     for item in item_list:
         if "UTIL" not in item_list:
-            data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+            data_v1.loc[abs(data_v1["diff_"+item])>=thresholds[i], "flag"]=1
             i+=1
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
     return data_v1
@@ -176,7 +176,7 @@ with st.sidebar:
             i = 0
             for item in item_list:
                 if "UTIL" not in item_list:
-                    threshold_temp = st.number_input(label = "d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
+                    threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state.data["diff_"+item]), 95))
                     thresholds.append(threshold_temp)
                     i+=1
             st.write(thresholds)
@@ -188,15 +188,21 @@ with st.sidebar:
             st.session_state.data_v1 = filter(data= st.session_state.data, thresholds = thresholds, item_list=item_list)
 
 # Main
+# Summary
 with st.container():
+    st.subheader("Summary")
+    x = 1
+
+
+# Plot
+with st.container():
+    st.subheader("Distribution Plots")
     for p in perf_indx:
         list_temp = [x for x in perf_indx_list[pav_type][p] if "UTIL" not in x]
         rows = int(math.ceil(len(list_temp)/3))
         st.subheader(p + " (Pathway - Audit) " + "distribution")
         fig = make_subplots(rows= rows, cols = 3,
-                            specs=[[{"secondary_y": True}]*3]*rows)#,
-                            #horizontal_spacing=0.1,
-                            #vertical_spacing = .5)
+                            specs=[[{"secondary_y": True}]*3]*rows)
 
         i = 0
         for item in list_temp:
@@ -210,7 +216,7 @@ with st.container():
                     fig.add_trace(hist, row=row, col=col, secondary_y = False)
                     fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
                     #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                    fig.update_xaxes(title_text = "d_"+item, row = row, col = col)
+                    fig.update_xaxes(title_text = "Abs diff of "+item, row = row, col = col)
                     fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
                     fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
                 except:
@@ -220,13 +226,13 @@ with st.container():
         fig.update_layout(height=400*rows)
         st.plotly_chart(fig, use_container_width= True)
 
-
+# Filtered data
 with st.container():
     st.subheader("Filtered data")
     try:
         st.write("Number of rows: "+ str(st.session_state.data_v1.shape[0]))
         st.write(st.session_state.data_v1)
-        st.download_button(label="Download filtered data", data=st.session_state.data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+        st.downloadiff_button(label="Download filtered data", data=st.session_state.data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
     except:
         pass
 

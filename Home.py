@@ -140,14 +140,12 @@ with st.sidebar:
         # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 
-        path1 = st.file_uploader("QC data") 
-        data1 = pd.read_csv(path1)
-
+        st.session_state.path1 = st.file_uploader("QC data") 
         st.session_state.path2 = st.file_uploader("Data to compare") 
-        st.write(path1)
-        st.write(data1)
 
-        #data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
+        if (st.session_state.path1 is not None)& st.session_state.path2 is not None):
+            data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
+            st.write(data1)
         # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())

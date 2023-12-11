@@ -161,10 +161,6 @@ with st.sidebar:
     st.subheader("I: Load and merge data")
     with st.container():
         # List of items
-        item_list = []
-        for distress in perf_indx:  # compute difference
-            for item in  perf_indx_list[pav_type][distress]:
-                item_list = item_list +[item]
 
         # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
@@ -173,14 +169,20 @@ with st.sidebar:
         st.session_state.path1 = st.file_uploader("QC data", type ="csv") 
         st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
+        # Pavement type and performance index selector
+        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
+        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
+        
+        # List of items
+        item_list = []
+        for distress in perf_indx:  # compute difference
+            for item in  perf_indx_list[pav_type][distress]:
+                item_list = item_list +[item]
+
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state.data1, st.session_state.data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
             st.session_state.data1 = st.session_state.data1[inf_list + item_list]
             st.session_state.data2 = st.session_state.data2[inf_list + item_list]
-
-        # Pavement type and performance index selector
-        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
-        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
 
         # Data merging
         merge_button = st.button("Merge data")

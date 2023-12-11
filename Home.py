@@ -95,8 +95,6 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
 # filter function
 @st.cache_data
 def filter(data= None, thresholds = None, item_list=None):
-    st.write(thresholds)
-    st.write(item_list)
     data_v1 = data.copy()
     data_v1["flag"] = 0
     i = 0
@@ -106,7 +104,6 @@ def filter(data= None, thresholds = None, item_list=None):
             i+=1
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
     return data_v1
-
 
 
 # Summary by district or county
@@ -170,7 +167,7 @@ with st.sidebar:
         merge_button = st.button("Merge data")
         if merge_button:
             st.session_state.data = data_merge(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
-
+            st.session_state.data_v1 = st.session_state.data.copy()
     st.subheader("II: Data filter")
     with st.container():
         try:        
@@ -194,7 +191,6 @@ with st.sidebar:
 with st.container():
     st.subheader("Summary")
     x = 1
-
 
 # Plot
 with st.container():

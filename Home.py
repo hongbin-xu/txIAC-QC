@@ -182,15 +182,16 @@ with st.sidebar:
             st.write(thresholds)
         except:
             pass
-        sub_button = st.button("Apply filter")
+        filter_button = st.button("Apply filter")
         # filter add function
-        if sub_button:
+        if filter_button:
             data_v1 = filter(data= data, thresholds = thresholds, item_list=item_list)
 
 # Main
 with st.container():
     for p in perf_indx:
-        rows = int(math.ceil(len(perf_indx_list[pav_type][p])/3))
+        list_temp = [x for x in perf_indx_list[pav_type][p] if "UTIL" not in x]
+        rows = int(math.ceil(len(list_temp)/3))
         st.subheader(p + " (Pathway - Audit) " + "distribution")
         fig = make_subplots(rows= rows, cols = 3,
                             specs=[[{"secondary_y": True}]*3]*rows)#,
@@ -198,21 +199,10 @@ with st.container():
                             #vertical_spacing = .5)
 
         i = 0
-        for item in perf_indx_list[pav_type][p]:
+        for item in list_temp:
             if "UTIL" not in item:
                 row = i//3+1
                 col = i%3+1
-
-                # Create histogram
-                #fig = px.histogram(data, x = "d_"+item)
-
-                # Create ECDF
-                #ecdf = px.ecdf(data, x="d_"+item)
-                #fig.add_scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines', name='cdf', yaxis='y2')
-                #
-                # Update layout
-                #fig.update_layout(yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                #st.plotly_chart(fig)
                 hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
                 ecdf = px.ecdf(abs(data["d_"+item]))#, x="d_"+item)
                 ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)

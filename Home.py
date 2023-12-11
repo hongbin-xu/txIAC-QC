@@ -140,8 +140,8 @@ with st.sidebar:
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
 
         #st.session_state.path1 = st.file_uploader("QC data") 
-        st.session_state.path1 = st.file_uploader("QC data") 
-        st.session_state.path2 = st.file_uploader("Data to compare") 
+        st.session_state.path1 = st.file_uploader("QC data", type ="text/csv") 
+        st.session_state.path2 = st.file_uploader("Data to compare", type ="text/csv") 
         st.write(st.session_state.path1.type)
         
 

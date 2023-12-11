@@ -152,7 +152,7 @@ with st.sidebar:
         st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
-            data1, data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
+            st.session_state.data1, st.session_state.data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
 
         # Pavement type and performance index selector
         pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
@@ -167,7 +167,7 @@ with st.sidebar:
         # Data merging
         merge_button = st.button("Merge data")
         if merge_button:
-            data = data_merge(data1 = data1, data2 = data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
+            st.session_state.data = data_merge(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
 
     st.subheader("II: Data filter")
     with st.container():
@@ -185,7 +185,7 @@ with st.sidebar:
         filter_button = st.button("Apply filter")
         # filter add function
         if filter_button:
-            data_v1 = filter(data= data, thresholds = thresholds, item_list=item_list)
+            st.session_state.data_v1 = filter(data= st.session_state.data, thresholds = thresholds, item_list=item_list)
 
 # Main
 with st.container():
@@ -203,8 +203,8 @@ with st.container():
             if "UTIL" not in item:
                 row = i//3+1
                 col = i%3+1
-                hist = go.Histogram(x=abs(data["d_"+item]), nbinsx=30, showlegend = False)
-                ecdf = px.ecdf(abs(data["d_"+item]))#, x="d_"+item)
+                hist = go.Histogram(x=abs(st.session_state.data["d_"+item]), nbinsx=30, showlegend = False)
+                ecdf = px.ecdf(abs(st.session_state.data["d_"+item]))#, x="d_"+item)
                 ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
                 fig.add_trace(hist, row=row, col=col, secondary_y = False)
                 fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
@@ -221,9 +221,9 @@ with st.container():
 with st.container():
     st.subheader("Filtered data")
     try:
-        st.write("Number of rows: "+ str(data_v1.shape[0]))
-        st.write(data_v1)
-        st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+        st.write("Number of rows: "+ str(st.session_state.data_v1.shape[0]))
+        st.write(st.session_state.data_v1)
+        st.download_button(label="Download filtered data", data=st.session_state.data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
     except:
         pass
 

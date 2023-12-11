@@ -105,6 +105,8 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
 
     for item in  item_list:
         if "UTIL" not in item:
+            st.write(data[item+suffixes[0]])
+            st.write(data[item+suffixes[1]])
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
     return data.reset_index(drop = True)

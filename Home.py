@@ -92,6 +92,14 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
     
     return data.reset_index(drop = True)
 
+
+@st.chache_data
+def filter(data= None, item_list=None):
+    x =1
+    return x
+
+
+
 # Summary by district or county
 @st.cache_data
 def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None):
@@ -152,22 +160,28 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
+
+
+        # thresholds Add function
         data_v1 = data.copy()
         data_v1["flag"] = 0
         thresholds = []
-        for p in perf_indx:            
+        i = 0
+        for item in item_list:
+            if "UTIL" not in item_list:
+                threshold_temp = st.number_input(label = "d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
+                thresholds.append(threshold_temp)
+                i+=1
+            
+        sub_button = st.button("Apply filter")
+
+        # filter add function
+        if sub_button:
             i = 0
             for item in item_list:
-                threshold_temp = st.number_input(label = str(i)+"_d_"+item, value = np.nanpercentile(abs(data["d_"+item]), 95))
-                thresholds.append(threshold_temp)
-                #st.write(np.quantile(abs(data["d_"+item]), 0.95))
-
-                i+=1
-        sub_button = st.button("Apply filter")
-        if sub_button:
-            for item in perf_indx_list[pav_type][p]:
-                data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
-                i+=1
+                if "UTIL" not in item_list:
+                    data_v1.loc[abs(data_v1["d_"+item])>=thresholds[i], "flag"]=1
+                    i+=1
             data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
 
 # Main

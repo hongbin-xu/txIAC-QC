@@ -220,7 +220,10 @@ with st.container():
 
 with st.container():
     st.subheader("Filtered data")
-    st.write("Number of rows: "+ str(data_v1.shape[0]))
-    st.write(data_v1)
-    st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+    try:
+        st.write("Number of rows: "+ str(data_v1.shape[0]))
+        st.write(data_v1)
+        st.download_button(label="Download filtered data", data=data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+    except:
+        pass
 

@@ -14,6 +14,8 @@ st.set_page_config(layout="wide",
                        'About': "Developed and maintained by Hongbin Xu",
                    })
 
+
+pav_list = {"ACP": "A", "CRCP":"C", "JCP":"J"}
 # List of distresses
 perf_indx_list = {"ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
@@ -82,10 +84,14 @@ inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
 
 # Data loading
 @ st.cache_data
-def data_load(data1_path, data2_path):
+def data_load(data1_path, data2_path, pavtype = "ACP"):
+
     # File uploading
     data1 = pd.read_csv(data1_path)
+    data1 = data1.loc[data1["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list["pavtype"]].reset_index(drop=True)
     data2 = pd.read_csv(data2_path)#
+    data2 = data2.loc[data2["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list["pavtype"]].reset_index(drop=True)
+
     return data1, data2
 
 # Function to merge data1 and data2 based on routename and DFO

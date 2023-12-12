@@ -245,7 +245,7 @@ with st.container():
         dist_sum1 = st.session_state["data1"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum2 = st.session_state["data2"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-
+        st.write(dist_sum)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         
         st.write(dist_sum)

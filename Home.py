@@ -191,14 +191,14 @@ with st.sidebar:
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.session_state["data1"] = st.session_state.data1[inf_list + item_list]
-            st.session_state["data2"] = st.session_state.data2[inf_list + item_list]
+            st.session_state["data1"] = st.session_state["data1"][inf_list + item_list]
+            st.session_state["data2"] = st.session_state["data2"][inf_list + item_list]
 
         # Data merging
         merge_button = st.button("Merge data")
         if merge_button:
-            st.session_state["data"] = data_merge(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
-            st.session_state["data_v1"] = st.session_state.data.copy()
+            st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
+            st.session_state["data_v1"] = st.session_state["data"].copy()
 
     st.subheader("II: Data filter")
     with st.container():
@@ -207,7 +207,7 @@ with st.sidebar:
             i = 0
             for item in item_list:
                 if "UTIL" not in item_list:
-                    threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state.data["diff_"+item]), 95))
+                    threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item]), 95))
                     thresholds.append(threshold_temp)
                     i+=1
             st.write(thresholds)
@@ -216,15 +216,15 @@ with st.sidebar:
         filter_button = st.button("Apply filter")
         # filter add function
         if filter_button:
-            st.session_state["data_v1" ]= filter(data= st.session_state.data, thresholds = thresholds, item_list=item_list)
+            st.session_state["data_v1" ]= filter(data= st.session_state["data"], thresholds = thresholds, item_list=item_list)
 
 # Main
 # Summary
 with st.container():
     # Summary
-    st.write(st.session_state.data1.head())
+    st.write(st.session_state["data1"].head())
     
-    data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
+    data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
     if qc_type =="Audit":
         st.subheader("County summary")
         st.write(data_sum)
@@ -251,8 +251,8 @@ with st.container():
                 row = i//3+1
                 col = i%3+1
                 try:
-                    hist = go.Histogram(x=abs(st.session_state.data["diff_"+item]), nbinsx=30, showlegend = False)
-                    ecdf = px.ecdf(abs(st.session_state.data["diff_"+item]))#, x="d_"+item)
+                    hist = go.Histogram(x=abs(st.session_state["data"]["diff_"+item]), nbinsx=30, showlegend = False)
+                    ecdf = px.ecdf(abs(st.session_state["data"]["diff_"+item]))#, x="d_"+item)
                     ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
                     fig.add_trace(hist, row=row, col=col, secondary_y = False)
                     fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
@@ -271,9 +271,9 @@ with st.container():
 with st.container():
     st.subheader("Filtered data")
     try:
-        st.write("Number of rows: "+ str(st.session_state.data_v1.shape[0]))
-        st.write(st.session_state.data_v1)
-        st.downloadiff_button(label="Download filtered data", data=st.session_state.data_v1.to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+        st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
+        st.write(st.session_state["data_v1"])
+        st.downloadiff_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
     except:
         pass
 

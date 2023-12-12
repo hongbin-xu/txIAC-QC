@@ -225,15 +225,16 @@ with st.container():
     if qc_type == "Audit":
         suffixes = ["Pathway", "Audit"]
     if qc_type == "Year by year": 
-        year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique(), st.session_state["data2"]["FISCAL YEAR"].unique()
+        year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
         suffixes = [str(year1), str(year2)]
 
     # county level summary
     county_sum1 = st.session_state["data1"].pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
     county_sum1["RATING CYCLE CODE"] = suffixes[0]
-    st.write(county_sum1)
     county_sum2 = st.session_state["data2"].pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
     county_sum2["RATING CYCLE CODE"] = suffixes[1]
+    st.write(county_sum2)
+
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
 

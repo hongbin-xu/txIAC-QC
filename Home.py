@@ -119,7 +119,7 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
         if "UTIL" not in item:
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     
-    return data.reset_index(drop = True)
+    return data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
 # filter function
 @st.cache_data

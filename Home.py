@@ -257,8 +257,8 @@ with st.container():
                 row = i//3+1
                 col = i%3+1
                 try:
-                    hist = go.Histogram(x=abs(st.session_state["data"]["diff_"+item]), nbinsx=30, showlegend = False)
-                    ecdf = px.ecdf(abs(st.session_state["data"]["diff_"+item]))#, x="d_"+item)
+                    hist = go.Histogram(x=abs(st.session_state["data"][~st.session_state["data"]["diff_"+item].isnan()]["diff_"+item]), nbinsx=30, showlegend = False)
+                    ecdf = px.ecdf(abs(st.session_state["data"][~st.session_state["data"]["diff_"+item].isnan()]["diff_"+item]))#, x="d_"+item)
                     ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
                     fig.add_trace(hist, row=row, col=col, secondary_y = False)
                     fig.add_trace(ecdf, row=row, col=col, secondary_y = True)

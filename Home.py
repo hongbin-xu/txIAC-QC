@@ -222,8 +222,9 @@ with st.sidebar:
 # Summary
 with st.container():
     # Summary
+    st.write(st.session_state.data1.head())
     
-    data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = "Audit", pavtype= "ACP", item_list = item_list)
+    data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
     if qc_type =="Audit":
         st.subheader("County summary")
         st.write(data_sum)

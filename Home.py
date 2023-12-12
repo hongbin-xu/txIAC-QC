@@ -160,7 +160,7 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
         dist_sum2 = data2.pivot_table(values = [x for x in item_list if "UTIL" in x], index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
 
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-        dist_sum = county_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+        dist_sum = dist_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["RATING CYCLE CODE"])
         
         return dist_sum, county_sum
     else:
@@ -245,7 +245,8 @@ with st.container():
         dist_sum1 = st.session_state["data1"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum2 = st.session_state["data2"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-        dist_sum = dist_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["RATING CYCLE CODE"])
+
+        dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         
         st.write(dist_sum)
 

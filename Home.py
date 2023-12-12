@@ -88,9 +88,9 @@ def data_load(data1_path, data2_path, pavtype = "ACP"):
 
     # File uploading
     data1 = pd.read_csv(data1_path)
-    data1 = data1.loc[data1["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list["pavtype"]].reset_index(drop=True)
+    data1 = data1.loc[data1["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list[pavtype]].reset_index(drop=True)
     data2 = pd.read_csv(data2_path)#
-    data2 = data2.loc[data2["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list["pavtype"]].reset_index(drop=True)
+    data2 = data2.loc[data2["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list[pavtype]].reset_index(drop=True)
 
     return data1, data2
 

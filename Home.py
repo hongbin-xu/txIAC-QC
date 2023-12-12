@@ -223,16 +223,17 @@ with st.sidebar:
 with st.container():
     # Summary
     st.write(st.session_state["data1"].head())
-    
-    data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
-    if qc_type =="Audit":
-        st.subheader("County summary")
-        st.write(data_sum)
-    if qc_type == "Year by year":
-        st.subheader("District summary")
-        st.write(data_sum[0])
-        st.subheader("County summary")
-        st.write(data_sum[1])
+    county_sum1 = st.session_state["data1"].pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    st.write(county_sum1)
+    # data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
+    # if qc_type =="Audit":
+    #     st.subheader("County summary")
+    #     st.write(data_sum)
+    # if qc_type == "Year by year":
+    #     st.subheader("District summary")
+    #     st.write(data_sum[0])
+    #     st.subheader("County summary")
+    #     st.write(data_sum[1])
 
 
 # Plot

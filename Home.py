@@ -230,8 +230,8 @@ with st.container():
 
     # county level summary
     county_sum1 = st.session_state["data1"].pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
-    st.write(county_sum1)
     county_sum1["RATING CYCLE CODE"] = suffixes[0]
+    st.write(county_sum1)
     county_sum2 = st.session_state["data2"].pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
     county_sum2["RATING CYCLE CODE"] = suffixes[1]
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)

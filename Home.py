@@ -155,11 +155,12 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
 
     # District level, true when compare year by year
     if qctype == "Year by year":
-
-        dist_sum1 = data1.pivot_table(values = [x for x in item_list if "UTIL" in x], index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
-        dist_sum2 = data2.pivot_table(values = [x for x in item_list if "UTIL" in x], index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
-
+        util_list = [x for x in item_list if "UTIL" in x]
+        dist_sum1 = data1.pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
+        dist_sum2 = data2.pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
+        dist_sum.rename(columns = {"FISCAL YEAR": "RATING CYCLE CODE"}, inplace= True)
+
         dist_sum = dist_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["RATING CYCLE CODE"])
         
         return dist_sum, county_sum
@@ -239,28 +240,24 @@ with st.container():
 
     # District level, true when compare year by year
     if qc_type == "Year by year":
-        st.write("county sum success")
-        util_list = [x for x in item_list if "UTIL" in x]
-        st.write(util_list)
-        dist_sum1 = st.session_state["data1"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
-        dist_sum2 = st.session_state["data2"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
-        dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-        st.write(dist_sum)
-        dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
+        # st.write("county sum success")
+        # util_list = [x for x in item_list if "UTIL" in x]
+        # st.write(util_list)
+        # dist_sum1 = st.session_state["data1"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
+        # dist_sum2 = st.session_state["data2"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
+        # dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
+        # dist_sum.rename(columns = {"FISCAL YEAR": "RATING CYCLE CODE"}, inplace= True)
+        # dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         
-        st.write(dist_sum)
-
-
-
-    # data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
-    # if qc_type =="Audit":
-    #     st.subheader("County summary")
-    #     st.write(data_sum)
-    # if qc_type == "Year by year":
-    #     st.subheader("District summary")
-    #     st.write(data_sum[0])
-    #     st.subheader("County summary")
-    #     st.write(data_sum[1])
+        data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
+        if qc_type =="Audit":
+            st.subheader("County summary")
+            st.write(data_sum)
+        if qc_type == "Year by year":
+            st.subheader("District summary")
+            st.write(data_sum[0])
+            st.subheader("County summary")
+            st.write(data_sum[1])
 
 
 # Plot

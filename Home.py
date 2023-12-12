@@ -247,7 +247,6 @@ with st.container():
         dist_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
         
         st.write(dist_sum)
-    st.write(county_sum)
 
 
 

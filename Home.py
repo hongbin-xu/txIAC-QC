@@ -208,12 +208,9 @@ with st.sidebar:
             i = 0
             for item in item_list:
                 if "UTIL" not in item:
-                    st.write(item)
-
                     threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item]), 95))
                     thresholds.append(threshold_temp)
                     i+=1
-            st.write(thresholds)
         except:
             pass
         filter_button = st.button("Apply filter")

@@ -242,7 +242,6 @@ with st.container():
     if qc_type == "Year by year":
         st.write("county sum success")
         util_list = [x for x in item_list if "UTIL" in x]
-        st.write(util_list)
         dist_sum1 = st.session_state["data1"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum2 = st.session_state["data2"].pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)

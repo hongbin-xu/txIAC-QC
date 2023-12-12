@@ -222,18 +222,17 @@ with st.sidebar:
 # Summary
 with st.container():
     # Summary
-    try:
-        data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = "Audit", pavtype= "ACP", item_list = item_list)
-        if qc_type =="Audit":
-            st.subheader("County summary")
-            st.write(data_sum)
-        if qc_type == "Year by year":
-            st.subheader("District summary")
-            st.write(data_sum[0])
-            st.subheader("County summary")
-            st.write(data_sum[1])
-    except:
-        pass
+    
+    data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = "Audit", pavtype= "ACP", item_list = item_list)
+    if qc_type =="Audit":
+        st.subheader("County summary")
+        st.write(data_sum)
+    if qc_type == "Year by year":
+        st.subheader("District summary")
+        st.write(data_sum[0])
+        st.subheader("County summary")
+        st.write(data_sum[1])
+
 
 # Plot
 with st.container():
@@ -241,7 +240,7 @@ with st.container():
     for p in perf_indx:
         list_temp = [x for x in perf_indx_list[pav_type][p] if "UTIL" not in x]
         rows = int(math.ceil(len(list_temp)/3))
-        st.subheader(p + " (Pathway - Audit) " + "distribution")
+        st.write(p + " (Pathway - Audit) " + "distribution")
         fig = make_subplots(rows= rows, cols = 3,
                             specs=[[{"secondary_y": True}]*3]*rows)
 

@@ -190,15 +190,15 @@ with st.sidebar:
                 item_list = item_list +[item]
 
         if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
-            st.session_state.data1, st.session_state.data2 = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.session_state.data1 = st.session_state.data1[inf_list + item_list]
-            st.session_state.data2 = st.session_state.data2[inf_list + item_list]
+            st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
+            st.session_state["data1"] = st.session_state.data1[inf_list + item_list]
+            st.session_state["data2"] = st.session_state.data2[inf_list + item_list]
 
         # Data merging
         merge_button = st.button("Merge data")
         if merge_button:
-            st.session_state.data = data_merge(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
-            st.session_state.data_v1 = st.session_state.data.copy()
+            st.session_state["data"] = data_merge(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = qc_type, pavtype= pav_type, item_list = item_list)
+            st.session_state["data_v1"] = st.session_state.data.copy()
 
     st.subheader("II: Data filter")
     with st.container():
@@ -216,7 +216,7 @@ with st.sidebar:
         filter_button = st.button("Apply filter")
         # filter add function
         if filter_button:
-            st.session_state.data_v1 = filter(data= st.session_state.data, thresholds = thresholds, item_list=item_list)
+            st.session_state["data_v1" ]= filter(data= st.session_state.data, thresholds = thresholds, item_list=item_list)
 
 # Main
 # Summary

@@ -151,7 +151,7 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
     county_sum2 = data2.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
     county_sum2["RATING CYCLE CODE"] = suffixes[1]
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
-    county_sum = county_sum[["RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+    county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
 
     # District level, true when compare year by year
     if qctype == "Year by year":
@@ -236,7 +236,6 @@ with st.container():
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
-    st.write(county_sum)
 
     # District level, true when compare year by year
     if qc_type == "Year by year":

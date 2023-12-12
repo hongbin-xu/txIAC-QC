@@ -99,9 +99,21 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
         suffixes = ["_"+str(year1), "_"+str(year2)]
 
     # merging data1 and data2
-    data = data1.loc[data1["COUNTY"].isin(data2["COUNTY"])]
-    data = data.merge(data2, on = ["SIGNED HWY AND ROADBED ID", "COUNTY"], suffixes= suffixes) # merge data
-    data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
+    data_v1 = data1.loc[data1["COUNTY"].isin(data2["COUNTY"]), ["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO"]].reset_index(drop = True)
+    data_v1["id"]= np.arange(data_v1.shape[0])
+    data_v2 = data2[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO"]]
+    data_v2["id"] = np.arange(data_v2.shape[0])
+
+    id_match = data_v1.merge(data_v2,
+                            how ="left", 
+                            on = ["SIGNED HWY AND ROADBED ID", "COUNTY"],
+                            suffixes= suffixes)
+    
+    id_match = id_match.loc[(abs(id_match["BEGINNING DFO"+suffixes[0]]-id_match["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(id_match["ENDING DFO"+suffixes[0]]-id_match["ENDING DFO"+suffixes[1]])<0.05)]
+    #data = data.merge(data2, on = ["SIGNED HWY AND ROADBED ID", "COUNTY"], suffixes= suffixes) # merge data
+    #data = data.loc[(abs(data["BEGINNING DFO"+suffixes[0]]-data["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(data["ENDING DFO"+suffixes[0]]-data["ENDING DFO"+suffixes[1]])<0.05)]
+    data = id_match[["id"+suffixes[0], "id"+suffixes[1]]].merge(data1, how = "left", left_on = "id"+suffixes[0], right_on = "id") # merge data
+    data = data.merge(data2, how = "left", left_on = "id"+suffixes[1], right_on = "id")
 
     for item in  item_list:
         if "UTIL" not in item:
@@ -213,11 +225,13 @@ with st.container():
     try:
         data_sum = diff_summary(data1 = st.session_state.data1, data2 = st.session_state.data2, qctype = "Audit", pavtype= "ACP", item_list = item_list)
         if qc_type =="Audit":
-
-            x =2
+            st.subheader("County summary")
+            st.write(data_sum)
         if qc_type == "Year by year":
-            x =1
-
+            st.subheader("District summary")
+            st.write(data_sum[0])
+            st.subheader("County summary")
+            st.write(data_sum[1])
     except:
         pass
 

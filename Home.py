@@ -17,7 +17,7 @@ st.set_page_config(layout="wide",
 
 pav_list = {"ACP": "A", "CRCP":"C", "JCP":"J"}
 # List of distresses
-perf_indx_list = {"ACP":
+perf_indx_list = {  "ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
                             "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE','RIDE UTILITY VALUE'],
                             # Rut
@@ -65,22 +65,22 @@ perf_indx_list = {"ACP":
                 }
 
 inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
-                'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
-                'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
-                'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
-                'RESPONSIBLE DISTRICT', 'COUNTY', 'RESPONSIBLE MAINTENANCE SECTION',
-                'LANE NUMBER', 'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
-                'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
-                'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
-                'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
-                'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
-                'DISTRESS COMMENT CODE', 'LANE WIDTH',
-                'DETAILED PVMNT TYPE ROAD LIFE',
-                'DETAILED PVMNT TYPE VISUAL CODE', 
-                'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
-                'USER UPDATE', 'DATE UPDATE', 
-                'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
-                'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM']
+            'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
+            'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
+            'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
+            'RESPONSIBLE DISTRICT', 'COUNTY', 'RESPONSIBLE MAINTENANCE SECTION',
+            'LANE NUMBER', 'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
+            'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
+            'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
+            'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
+            'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
+            'DISTRESS COMMENT CODE', 'LANE WIDTH',
+            'DETAILED PVMNT TYPE ROAD LIFE',
+            'DETAILED PVMNT TYPE VISUAL CODE', 
+            'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
+            'USER UPDATE', 'DATE UPDATE', 
+            'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
+            'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM']
 
 # Data loading
 @ st.cache_data
@@ -221,8 +221,8 @@ with st.sidebar:
             pass
         filter_button = st.button("Apply filter")
         # filter add function
-        if filter_button:
-            st.session_state["data_v1" ]= filter(data= st.session_state["data"], thresholds = thresholds, item_list=item_list)
+        if (filter_button)&("data_v1" in st.session_state):
+            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, item_list=item_list)
 
 # Main
 # Summary
@@ -263,6 +263,7 @@ with st.container():
                 row = i//3+1
                 col = i%3+1
                 try:
+                    xdata = abs(st.session_state["data"]["diff_"+item])
                     hist = go.Histogram(x=abs(st.session_state["data"]["diff_"+item]), nbinsx=30, showlegend = False)
                     ecdf = px.ecdf(abs(st.session_state["data"]["diff_"+item]))#, x="d_"+item)
                     ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)

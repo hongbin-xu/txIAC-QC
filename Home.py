@@ -221,7 +221,7 @@ with st.sidebar:
             pass
         filter_button = st.button("Apply filter")
         # filter add function
-        if (filter_button)&("data_v1" in st.session_state):
+        if (filter_button):
             st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, item_list=item_list)
 
 # Main
@@ -230,7 +230,7 @@ with st.container():
     # Summary
     if qc_type == "Audit":
         suffixes = ["Pathway", "Audit"]
-    if qc_type == "Year by year": 
+    if (qc_type == "Year by year")&("data1" in st.session_state): 
         year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
         suffixes = [str(year1), str(year2)]
 

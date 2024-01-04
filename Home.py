@@ -230,12 +230,11 @@ with st.container():
     # Summary
     if qc_type == "Audit":
         suffixes = ["Pathway", "Audit"]
-    if (qc_type == "Year by year")&("data1" in st.session_state): 
+    if (qc_type == "Year by year")&("data1" in st.session_state)&("data2" in st.session_state): 
         year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
         suffixes = [str(year1), str(year2)]
 
     # District level, true when compare year by year
-    if qc_type == "Year by year":
         data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
         if qc_type =="Audit":
             st.subheader("County summary")

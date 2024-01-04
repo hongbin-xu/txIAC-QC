@@ -233,7 +233,6 @@ with st.container():
     if (qc_type == "Year by year")&("data1" in st.session_state)&("data2" in st.session_state): 
         year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
         suffixes = [str(year1), str(year2)]
-
     # District level, true when compare year by year
         data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
         if qc_type =="Audit":
@@ -245,47 +244,48 @@ with st.container():
             st.subheader("County summary")
             st.write(data_sum[1])
 
+if "data" in st.session_state:
 
-# Plot
-with st.container():
-    st.subheader("Distribution Plots")
-    for p in perf_indx:
-        list_temp = [x for x in perf_indx_list[pav_type][p] if "UTIL" not in x]
-        rows = int(math.ceil(len(list_temp)/3))
-        st.write(p + " (Pathway - Audit) " + "distribution")
-        fig = make_subplots(rows= rows, cols = 3,
-                            specs=[[{"secondary_y": True}]*3]*rows)
+    # Plot
+    with st.container():
+        st.subheader("Distribution Plots")
+        for p in perf_indx:
+            list_temp = [x for x in perf_indx_list[pav_type][p] if "UTIL" not in x]
+            rows = int(math.ceil(len(list_temp)/3))
+            st.write(p + " (Pathway - Audit) " + "distribution")
+            fig = make_subplots(rows= rows, cols = 3,
+                                specs=[[{"secondary_y": True}]*3]*rows)
 
-        i = 0
-        for item in list_temp:
-            if "UTIL" not in item:
-                row = i//3+1
-                col = i%3+1
-                try:
-                    xdata = abs(st.session_state["data"]["diff_"+item])
-                    hist = go.Histogram(x=abs(st.session_state["data"]["diff_"+item]), nbinsx=30, showlegend = False)
-                    ecdf = px.ecdf(abs(st.session_state["data"]["diff_"+item]))#, x="d_"+item)
-                    ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
-                    fig.add_trace(hist, row=row, col=col, secondary_y = False)
-                    fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
-                    #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                    fig.update_xaxes(title_text = "Abs diff: "+item, row = row, col = col)
-                    fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
-                    fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
-                except:
-                    break
-                i+=1
-            
-        fig.update_layout(height=400*rows)
-        st.plotly_chart(fig, use_container_width= True)
+            i = 0
+            for item in list_temp:
+                if "UTIL" not in item:
+                    row = i//3+1
+                    col = i%3+1
+                    try:
+                        xdata = abs(st.session_state["data"]["diff_"+item])
+                        hist = go.Histogram(x=abs(st.session_state["data"]["diff_"+item]), nbinsx=30, showlegend = False)
+                        ecdf = px.ecdf(abs(st.session_state["data"]["diff_"+item]))#, x="d_"+item)
+                        ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
+                        fig.add_trace(hist, row=row, col=col, secondary_y = False)
+                        fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
+                        #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                        fig.update_xaxes(title_text = "Abs diff: "+item, row = row, col = col)
+                        fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
+                        fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
+                    except:
+                        break
+                    i+=1
+                
+            fig.update_layout(height=400*rows)
+            st.plotly_chart(fig, use_container_width= True)
 
-# Filtered data
-with st.container():
-    st.subheader("Filtered data")
-    try:
-        st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
-        st.write(st.session_state["data_v1"])
-        st.downloadiff_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
-    except:
-        pass
+    # Filtered data
+    with st.container():
+        st.subheader("Filtered data")
+        try:
+            st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
+            st.write(st.session_state["data_v1"])
+            st.downloadiff_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+        except:
+            pass
 

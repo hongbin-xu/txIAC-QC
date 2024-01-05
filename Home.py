@@ -14,8 +14,9 @@ st.set_page_config(layout="wide",
                        'About': "Developed and maintained by Hongbin Xu",
                    })
 
+# Pavement list code 
+pav_list = {"ACP": "A - ASPHALTIC CONCRETE PAVEMENT (ACP)", "CRCP":"C - CONTINUOUSLY REINFORCED CONCRETE PAVEMENT (CRCP)", "JCP":"J - JOINTED CONCRETE PAVEMENT (JCP)"}
 
-pav_list = {"ACP": "A", "CRCP":"C", "JCP":"J"}
 # List of distresses
 perf_indx_list = {  "ACP":
                         {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
@@ -64,6 +65,7 @@ perf_indx_list = {  "ACP":
                         }
                 }
 
+# Information list contains informaiton about location and measurement information
 inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
             'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
             'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
@@ -88,9 +90,9 @@ def data_load(data1_path, data2_path, pavtype = "ACP"):
 
     # File uploading
     data1 = pd.read_csv(data1_path)
-    data1 = data1.loc[data1["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list[pavtype]].reset_index(drop=True)
+    data1 = data1.loc[data1["MODIFIED BROAD PAVEMENT TYPE"]==pav_list[pavtype]].reset_index(drop=True)
     data2 = pd.read_csv(data2_path)#
-    data2 = data2.loc[data2["BROAD PAVEMENT TYPE SHAPEFILE"]==pav_list[pavtype]].reset_index(drop=True)
+    data2 = data2.loc[data2["MODIFIED BROAD PAVEMENT TYPE"]==pav_list[pavtype]].reset_index(drop=True)
 
     return data1, data2
 
@@ -177,7 +179,7 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
 # Siderbar
 with st.sidebar:
     st.header("PMIS QC")
-    st.subheader("I: Load and merge data")
+    st.subheader("I: Data Loading and Merging")
     with st.container():
         # QC type selector
         qc_type = st.selectbox(label = "QC type", options= ["Year by year", "Audit"], index = 1)
@@ -196,14 +198,12 @@ with st.sidebar:
             for item in  perf_indx_list[pav_type][distress]:
                 item_list = item_list +[item]
 
-        if (st.session_state.path1 is not None)&(st.session_state.path2 is not None):
+        # Data merging
+        merge_button = st.button("Load and merge data")
+        if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
             st.session_state["data1"] = st.session_state["data1"][inf_list + item_list]
             st.session_state["data2"] = st.session_state["data2"][inf_list + item_list]
-
-        # Data merging
-        merge_button = st.button("Merge data")
-        if merge_button:
             st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
             st.session_state["data_v1"] = st.session_state["data"].copy()
 

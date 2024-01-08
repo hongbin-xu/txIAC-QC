@@ -149,7 +149,12 @@ with st.sidebar:
 
         # Pavement type and performance index selector
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list.keys())
-        pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
+        
+        if "IRI" in perf_indx:
+            pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
+        else:
+            pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
+
 
         # List of items
         item_list = []

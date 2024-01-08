@@ -154,7 +154,7 @@ with st.sidebar:
         # List of items
         item_list = []
         for distress in perf_indx:  # compute difference
-            for item in  perf_indx_list[pav_type][distress]:
+            for item in  perf_indx_list[distress]:
                 item_list = item_list +[item]
 
         # Data merging
@@ -209,7 +209,7 @@ if "data" in st.session_state:
     with st.container():
         st.subheader("Distribution Plots")
         for p in perf_indx:
-            list_temp = [x for x in perf_indx_list[pav_type][p] if "UTIL" not in x]
+            list_temp = [x for x in perf_indx_list[p] if "UTIL" not in x]
             rows = int(math.ceil(len(list_temp)/3))
             st.write(p + " (Pathway - Audit) " + "distribution")
             fig = make_subplots(rows= rows, cols = 3,

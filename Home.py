@@ -148,9 +148,9 @@ with st.sidebar:
         st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
         # Pavement type and performance index selector
+        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list.keys())
         pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
-        perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
-        
+
         # List of items
         item_list = []
         for distress in perf_indx:  # compute difference

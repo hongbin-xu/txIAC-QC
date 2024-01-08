@@ -15,58 +15,21 @@ st.set_page_config(layout="wide",
                    })
 
 # Pavement list code 
-pav_list = {"ACP": "A - ASPHALTIC CONCRETE PAVEMENT (ACP)", "CRCP":"C - CONTINUOUSLY REINFORCED CONCRETE PAVEMENT (CRCP)", "JCP":"J - JOINTED CONCRETE PAVEMENT (JCP)"}
+pav_list = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)", "C - CONTINUOUSLY REINFORCED CONCRETE PAVEMENT (CRCP)", "J - JOINTED CONCRETE PAVEMENT (JCP)"]
 
 # List of distresses
-perf_indx_list = {  "ACP":
-                        {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
-                            "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE','RIDE UTILITY VALUE'],
-                            # Rut
-                            "RUT": ['LEFT - WHEELPATH AVERAGE RUT DEPTH',
-                                    'RIGHT - WHEELPATH AVERAGE RUT DEPTH', 
-                                    'MAP21 Rutting AVG', 
-                                    'ACP RUT AUTO SHALLOW AVG PCT', 'ACP RUT AUTO DEEP AVG PCT', 'ACP RUT AUTO SEVERE PCT', 'ACP RUT AUTO FAILURE PCT',
-                                    'ACP RUT SHALLOW UTIL', 'ACP RUT DEEP UTIL',  'ACP RUT SEVERE UTIL'], 
-
-                            "LONGI CRACKS": ['ACP LONGITUDE CRACKING','ACP LONGIT CRACKS UTIL'],
-
-                            "TRANS CRACKS": ['ACP TRANSVERSE CRACKING QTY', 'ACP TRANSVERSE CRACKS UTIL'],
-
-                            "ALLIG CRACKS":['ACP ALLIGATOR CRACKING PCT', 'ACP ALLIG CRK UTIL'],
-                            "BLOCK CRACKS":['ACP BLOCK CRACKING PCT', 'ACP BLOCK CRK UTIL'],
-
-                            "PATCHING":['ACP PATCHING PCT', 'ACP PATCHING UTIL'], 
-
-                            "FAILURES":['ACP FAILURE QTY',  'ACP FAILURES UTIL'],
-
-                            "RAVELING": ['ACP RAVELING'], 
-                            "FLUSHING": ['ACP FLUSHING'],
-
-                            "ACP Other":['ACP PERCENT AREA CRACKED', 'POTHOLE']
-                        },
-
-                    "CRCP": 
-                        {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
-                            "SPALLED CRACKS":['CRCP SPALLED CRACKS QTY'],
-                            "PUNCHOUT":['CRCP PUNCHOUT QTY'],
-                            "PCC PATCHES":['CRCP PCC PATCHES QTY'],
-                            "ACP PATCHES":['CRCP ACP PATCHES QTY'],
-                            "CRCP Other":['CRCP LONGITUDINAL CRACKING MEASURED', 'AVERAGE CRACK SPACING','CRCP PERCENT AREA CRACKED','CRCP LONGITUDE CRACKING PCT']
-                        },
-                    "JCP": 
-                        {   "Aggregated": ['DISTRESS SCORE','RIDE SCORE', 'CONDITION SCORE'],
-                            "FAILED JOINTS": ['JCP FAILED JNTS CRACKS QTY'],
-                            "FAILURES":['JCP FAILURES QTY'],
-                            "SHATTERED SLABS": ['JCP SHATTERED SLABS QTY'],
-                            "SLABS WITH LONGI CRACKS": ['JCP SLABS WITH LONGITUDINAL CRACKS'],
-                            "PCC PATCHES": ['JCP PCC PATCHES QTY'],
-                            "JCP Other": ['JCP PERCENT OF SLABS WITH CRACKS',  'JCP CRACK PERCENT PCT', 'CALCULATED LENGTH', 'JCP APPARENT JOINT SPACING',
-                                      'MAP21 Faulting RWP AVG','MAP21 Faulting Condition Category', 'FAULTING MEASURE']
-                        }
+perf_indx_list = {  "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) - RIGHT WHEELPATH', 'ROUGHNESS (IRI) - AVERAGE','RIDE UTILITY VALUE'],
+                    
+                    # Rut
+                    "RUT": ['LEFT - WHEELPATH AVERAGE RUT DEPTH',
+                            'RIGHT - WHEELPATH AVERAGE RUT DEPTH', 
+                            'MAP21 Rutting AVG', 
+                            'ACP RUT AUTO SHALLOW AVG PCT', 'ACP RUT AUTO DEEP AVG PCT', 'ACP RUT AUTO SEVERE PCT', 'ACP RUT AUTO FAILURE PCT',
+                            'ACP RUT SHALLOW UTIL', 'ACP RUT DEEP UTIL',  'ACP RUT SEVERE UTIL']
                 }
 
 # Information list contains informaiton about location and measurement information
-inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
+inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
             'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
             'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
             'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
@@ -86,19 +49,16 @@ inf_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
 
 # Data loading
 @ st.cache_data
-def data_load(data1_path, data2_path, pavtype = "ACP"):
-
+def data_load(data1_path, data2_path):
     # File uploading
     data1 = pd.read_csv(data1_path)
-    data1 = data1.loc[data1["MODIFIED BROAD PAVEMENT TYPE"]==pav_list[pavtype]].reset_index(drop=True)
     data2 = pd.read_csv(data2_path)#
-    data2 = data2.loc[data2["MODIFIED BROAD PAVEMENT TYPE"]==pav_list[pavtype]].reset_index(drop=True)
-
     return data1, data2
 
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
-def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None): 
+def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_list = inv_list, item_list = None): 
+   
     # Suffixes
     if qctype == "Audit":
         suffixes = ["_Pathway", "_Audit"]
@@ -106,27 +66,28 @@ def data_merge(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", ite
         year1, year2 = data1["FISCAL YEAR"].unique()[0], data2["FISCAL YEAR"].unique()[0]
         suffixes = ["_"+str(year1), "_"+str(year2)]
 
+    # filter based on pavement type code
+    data1_v1 = data1.loc[data1["MODIFIED BROAD PAVEMENT TYPE"].isin(pavtype), inv_list +item_list].reset_index(drop=True)
+    data2_v1 = data2.loc[data2["MODIFIED BROAD PAVEMENT TYPE"].isin(pavtype), inv_list +item_list].reset_index(drop=True)
+    
     # merging data1 and data2
-    data_v1 = data1.loc[data1["COUNTY"].isin(data2["COUNTY"])].reset_index(drop = True)
-    data_v1["id"]= np.arange(data_v1.shape[0])
-    data_v2 = data2.copy()
-    data_v2["id"] = np.arange(data_v2.shape[0])
+    data1_v1 = data1_v1.loc[data1_v1["COUNTY"].isin(data2_v1["COUNTY"])].reset_index(drop = True)
+    data1_v1["id"]= np.arange(data1_v1.shape[0])
+    data2_v1["id"] = np.arange(data2_v1.shape[0])
 
-    id_match = data_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "id"]].merge(data_v2[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "id"]],
+    id_match = data1_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "id"]].merge(data2_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "id"]],
                                                                                                             how ="left", 
                                                                                                             on = ["SIGNED HWY AND ROADBED ID", "COUNTY"],
                                                                                                             suffixes= suffixes)
     id_match = id_match.loc[(abs(id_match["BEGINNING DFO"+suffixes[0]]-id_match["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(id_match["ENDING DFO"+suffixes[0]]-id_match["ENDING DFO"+suffixes[1]])<0.05)]
 
-
     # id_2024, id_2023, id
-    data = id_match[["id"+suffixes[0], "id"+suffixes[1]]].merge(data_v1, how = "left", left_on = "id"+suffixes[0], right_on = "id") # merge data
-    data = data.drop(columns = ["id"+suffixes[0], "id"]).merge(data_v2, how = "left", left_on = "id"+suffixes[1], right_on = "id", suffixes = suffixes) # merge data
+    data = id_match[["id"+suffixes[0], "id"+suffixes[1]]].merge(data1_v1, how = "left", left_on = "id"+suffixes[0], right_on = "id") # merge data
+    data = data.drop(columns = ["id"+suffixes[0], "id"]).merge(data2_v1, how = "left", left_on = "id"+suffixes[1], right_on = "id", suffixes = suffixes) # merge data
 
     for item in  item_list:
         if "UTIL" not in item:
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
-    
     return data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
 # filter function
@@ -142,10 +103,9 @@ def filter(data= None, thresholds = None, item_list=None):
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
     return data_v1
 
-
 # Summary by district or county
 @st.cache_data
-def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", item_list = None):
+def diff_summary(data1 = None, data2 = None, qctype = "Audit", item_list = None):
     # prefix
     if qctype == "Audit":
         suffixes = ["Pathway", "Audit"]
@@ -175,7 +135,6 @@ def diff_summary(data1 = None, data2 = None, qctype = "Audit", pavtype= "ACP", i
     else:
         return county_sum
 
-
 # Siderbar
 with st.sidebar:
     st.header("PMIS QC")
@@ -189,7 +148,7 @@ with st.sidebar:
         st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
         # Pavement type and performance index selector
-        pav_type = st.selectbox(label = "Pavement type", options = ["ACP", "CRCP", "JCP"])
+        pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list[pav_type].keys())
         
         # List of items
@@ -202,8 +161,8 @@ with st.sidebar:
         merge_button = st.button("Load and merge data")
         if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.session_state["data1"] = st.session_state["data1"][inf_list + item_list]
-            st.session_state["data2"] = st.session_state["data2"][inf_list + item_list]
+            st.session_state["data1"] = st.session_state["data1"][inv_list + item_list]
+            st.session_state["data2"] = st.session_state["data2"][inv_list + item_list]
             st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
             st.session_state["data_v1"] = st.session_state["data"].copy()
 

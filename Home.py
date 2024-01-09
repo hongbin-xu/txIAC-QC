@@ -186,8 +186,8 @@ with st.sidebar:
                 if "UTIL" not in item:
                     threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
                     threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
-                    #threshold_temp = st.number_input(label = "diff_"+item, value = threvals)
-                    #thresholds[item] = threshold_temp
+                    threshold_temp = st.number_input(label = "diff_"+item, value = threvals)
+                    thresholds[item] = threshold_temp
 
         st.write(thresholds)
 

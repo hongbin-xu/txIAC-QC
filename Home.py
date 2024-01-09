@@ -188,7 +188,7 @@ with st.sidebar:
                     threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
                     st.write(item)
                     st.write(threvals)
-                    threshold_temp = st.number_input(label = "diff_"+item, value = threvals)
+                    threshold_temp = [st.number_input(label = "mindiff_"+item, value = threvals[0]), st.number_input(label = "maxdiff_"+item, value = threvals[1])]
                     thresholds[item] = threshold_temp
 
         st.write(thresholds)

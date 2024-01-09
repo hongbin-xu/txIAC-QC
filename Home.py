@@ -171,20 +171,37 @@ with st.sidebar:
 
     st.subheader("II: Data filter")
     with st.container():
-        
+        out_type = st.selectbox("Threshold identifier", options=["percentile", "box-style"], key = 1)
+
         try:        
             thresholds = dict()
-            for item in item_list:
-                if "UTIL" not in item:
-                    threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
-                    thresholds[item] = threshold_temp
-                    st.write(thresholds)
+            if out_type == "percentile":
+                for item in item_list:
+                    if "UTIL" not in item:
+                        threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
+                        thresholds[item] = threshold_temp
+
+            if out_type == "box-style":
+                for item in item_list:
+                    if "UTIL" not in item:
+                        threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
+                        threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
+                        threshold_temp = st.number_input(label = "diff_"+item, value = threvals)
+                        thresholds[item] = threshold_temp
+
+            st.write(thresholds)
+
         except:
             pass
+
+
+
+
+
         filter_button = st.button("Apply filter")
         # filter add function
         if (filter_button):
-            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds)
+            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, qctype = qc_type)
 
 # Main
 # Summary

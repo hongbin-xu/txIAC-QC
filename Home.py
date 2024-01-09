@@ -47,12 +47,16 @@ inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
             'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
             'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM']
 
+ 
+
 # Data loading
 @ st.cache_data
-def data_load(data1_path, data2_path):
+def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_indx_list["RUT"], inv_list = inv_list):
     # File uploading
     data1 = pd.read_csv(data1_path)
     data2 = pd.read_csv(data2_path)#
+    data1 = data1[inv_list + item_list]
+    data2 = data2[inv_list + item_list]
     return data1, data2
 
 # Function to merge data1 and data2 based on routename and DFO
@@ -92,14 +96,11 @@ def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_li
 
 # filter function
 @st.cache_data
-def filter(data= None, thresholds = None, item_list=None):
+def filter(data= None, thresholds = None):
     data_v1 = data.copy()
     data_v1["flag"] = 0
-    i = 0
-    for item in item_list:
-        if "UTIL" not in item:
-            data_v1.loc[abs(data_v1["diff_"+item])>=thresholds[i], "flag"]=1
-            i+=1
+    for key in thresholds:
+            data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key], "flag"]=1
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
     return data_v1
 
@@ -147,7 +148,7 @@ with st.sidebar:
         st.session_state.path1 = st.file_uploader("QC data", type ="csv") 
         st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
-        # Pavement type and performance index selector
+        # performance index Pavement type selector
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list.keys())
         
         if "IRI" in perf_indx:
@@ -155,38 +156,35 @@ with st.sidebar:
         else:
             pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
 
-
         # List of items
         item_list = []
-        for distress in perf_indx:  # compute difference
+        for distress in perf_indx:
             for item in  perf_indx_list[distress]:
                 item_list = item_list +[item]
 
-        # Data merging
+        # Data loading and merging
         merge_button = st.button("Load and merge data")
         if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.session_state["data1"] = st.session_state["data1"][inv_list + item_list]
-            st.session_state["data2"] = st.session_state["data2"][inv_list + item_list]
             st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
-            st.session_state["data_v1"] = st.session_state["data"].copy()
+            st.session_state["data_v1"] = st.session_state["data"].copy() # add data_v1 
 
     st.subheader("II: Data filter")
     with st.container():
+        
         try:        
-            thresholds = []
-            i = 0
+            thresholds = dict()
             for item in item_list:
                 if "UTIL" not in item:
                     threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
-                    thresholds.append(threshold_temp)
-                    i+=1
+                    thresholds[item] = threshold_temp
+                    st.write(thresholds)
         except:
             pass
         filter_button = st.button("Apply filter")
         # filter add function
         if (filter_button):
-            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, item_list=item_list)
+            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds)
 
 # Main
 # Summary

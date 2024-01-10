@@ -48,7 +48,6 @@ inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
             'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM']
 
  
-
 # Data loading
 @ st.cache_data
 def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_indx_list["RUT"], inv_list = inv_list):
@@ -99,12 +98,12 @@ def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_li
 def filter(data= None, thresholds = None, qctype = None):
     data_v1 = data.copy()
     data_v1["flag"] = 0
-    if qctype =="percentile":
+    if qctype =="Audit":
         for key in thresholds:
-                data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key], "flag"]=1
-    if qctype == "box-style":
+            data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key][1], "flag"]=1
+    if qctype == "Year by year":
         for key in thresholds:
-            data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key], "flag"]=1 
+            data_v1.loc[(data_v1["diff_"+key]>=thresholds[key][1])|(data_v1["diff_"+key]<=thresholds[key][0]), "flag"]=1 
 
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
     return data_v1
@@ -200,7 +199,7 @@ with st.sidebar:
                     for item in item_list:
                         if "UTIL" not in item:
                             threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
-                            thresholds[item] = threshold_temp
+                            thresholds[item] = [0, threshold_temp]
 
                 if out_type == "box-style":
                     for item in item_list:
@@ -208,14 +207,14 @@ with st.sidebar:
                             threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
                             threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
                             threshold_temp = st.number_input(label = "diff_"+item, value = threvals[1])
-                            thresholds[item] = threshold_temp          
+                            thresholds[item] = [0, threshold_temp]          
         except:
             pass
 
         filter_button = st.button("Apply filter")
         # filter add function
         if (filter_button):
-            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, qctype = qc_type)
+            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
 
 # Main
 # Summary
@@ -227,7 +226,7 @@ with st.container():
         year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
         suffixes = [str(year1), str(year2)]
     # District level, true when compare year by year
-        data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
+        data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,item_list = item_list)
         if qc_type =="Audit":
             st.subheader("County summary")
             st.write(data_sum)

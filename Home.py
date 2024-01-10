@@ -96,11 +96,16 @@ def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_li
 
 # filter function
 @st.cache_data
-def filter(data= None, thresholds = None):
+def filter(data= None, thresholds = None, qctype = None):
     data_v1 = data.copy()
     data_v1["flag"] = 0
-    for key in thresholds:
-            data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key], "flag"]=1
+    if qctype =="percentile":
+        for key in thresholds:
+                data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key], "flag"]=1
+    if qctype == "box-style":
+        for key in thresholds:
+            data_v1.loc[abs(data_v1["diff_"+key])>=thresholds[key], "flag"]=1 
+
     data_v1 = data_v1.loc[data_v1["flag"]==1].reset_index(drop = True)
     return data_v1
 
@@ -173,30 +178,39 @@ with st.sidebar:
     with st.container():
         out_type = st.selectbox("Threshold identifier", options=["percentile", "box-style"], key = 1)
 
-        #try:        
-        thresholds = dict()
-        if out_type == "percentile":
-            for item in item_list:
-                if "UTIL" not in item:
-                    threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
-                    thresholds[item] = threshold_temp
+        try:
+            thresholds = dict()
+            if qc_type == "Year by year":        
+                if out_type == "percentile":
+                    for item in item_list:
+                        if "UTIL" not in item:
+                            threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [2.5, 97.5])
+                            threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
+                            thresholds[item] = threshold_temp
 
-        if out_type == "box-style":
-            for item in item_list:
-                if "UTIL" not in item:
-                    threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
-                    threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
-                    threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
-                    thresholds[item] = threshold_temp
+                if out_type == "box-style":
+                    for item in item_list:
+                        if "UTIL" not in item:
+                            threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [25, 75])
+                            threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
+                            threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
+                            thresholds[item] = threshold_temp
+            if qc_type =="Audit":
+                if out_type == "percentile":
+                    for item in item_list:
+                        if "UTIL" not in item:
+                            threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
+                            thresholds[item] = threshold_temp
 
-        st.write(thresholds)
-
-        #except:
-        #    pass
-
-
-
-
+                if out_type == "box-style":
+                    for item in item_list:
+                        if "UTIL" not in item:
+                            threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
+                            threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
+                            threshold_temp = st.number_input(label = "diff_"+item, value = threvals[1])
+                            thresholds[item] = threshold_temp          
+        except:
+            pass
 
         filter_button = st.button("Apply filter")
         # filter add function

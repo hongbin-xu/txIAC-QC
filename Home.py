@@ -193,7 +193,7 @@ with st.sidebar:
             dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], item_list+["RATING CYCLE CODE"])), inplace= True)
             dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
             dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
-            st.write(st.session_state["data_v1"])
+            st.write(dist_sum)
 
     st.subheader("II: Data filter")
     with st.container():

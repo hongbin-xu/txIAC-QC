@@ -296,12 +296,8 @@ if "data" in st.session_state:
                         if qc_type == "Year by year":
                             xdata = st.session_state["data"]["diff_"+item]
 
-                        if "IRI" in item:
 
-                            xbins = [float('-inf')]+[i for i in range(-250, 251, 25)] + [float('inf')]
-                            hist = go.Histogram(x=xdata, xbins=xbins, showlegend = False)
-                        else:
-                            hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)
+                        hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)
                         ecdf = px.ecdf(xdata)#, x="d_"+item)
                         ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
                         fig.add_trace(hist, row=row, col=col, secondary_y = False)

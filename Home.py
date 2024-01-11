@@ -96,6 +96,17 @@ def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_li
 # filter function
 @st.cache_data
 def filter(data= None, thresholds = None, qctype = None):
+    """
+    Filters the data based on the specified thresholds and quality control type.
+
+    Parameters:
+    - data: Pandas DataFrame, optional. The input data to be filtered. If not provided, the function will return an empty DataFrame.
+    - thresholds: dict, optional. A dictionary containing the thresholds for each key. The keys are the column names in the data DataFrame and the values are tuples with the lower and upper thresholds. If not provided, the function will return the unfiltered data.
+    - qctype: str, optional. The quality control type. Possible values are "Audit" and "Year by year". If not provided, the function will return the unfiltered data.
+
+    Returns:
+    - data_v1: Pandas DataFrame. The filtered data based on the specified thresholds and quality control type. If no data meets the thresholds, an empty DataFrame will be returned.
+    """
     data_v1 = data.copy()
     data_v1["flag"] = 0
     if qctype =="Audit":
@@ -110,7 +121,7 @@ def filter(data= None, thresholds = None, qctype = None):
 
 # Summary by district or county
 @st.cache_data
-def diff_summary(data= None, qctype = "Audit", item_list = None):
+def diff_summary(data= None, qctype = None, item_list = None):
     # prefix
     if qctype == "Audit":
         suffixes = ["Pathway", "Audit"]
@@ -138,7 +149,6 @@ def diff_summary(data= None, qctype = "Audit", item_list = None):
         dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], item_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
-        
         return dist_sum, county_sum
     else:
         return county_sum
@@ -175,6 +185,7 @@ with st.sidebar:
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
             st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
             st.session_state["data_v1"] = st.session_state["data"].copy() # add data_v1 
+            st.write(st.session_state["data_v1"])
 
     st.subheader("II: Data filter")
     with st.container():
@@ -220,7 +231,6 @@ with st.sidebar:
             st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
 
 # Main
-# Summary
 with st.container():
     # Summary
     if qc_type == "Audit":
@@ -284,3 +294,19 @@ if "data" in st.session_state:
         except:
             pass
 
+    # Container for show distribution of outliers across different variables and location
+    with st.container():
+        st.subheader("Distribution of outliers")
+        try:
+            st.write()
+
+            #- PMIS vs Pathway or year1 vs year2 
+            # Pathway vehicle
+            # Txdot vehicle
+            # measurement date
+            # location
+            # Operator
+            # 
+
+        except:
+            pass

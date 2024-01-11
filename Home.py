@@ -146,7 +146,7 @@ def diff_summary(data= None, qctype = None, item_list = None):
         dist_sum1 = data.pivot_table(values = [x+"_"+suffixes[0] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
         dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[0] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[0]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum2 = data.pivot_table(values = [x+"_"+suffixes[1] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
-        dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
+        dist_sum2.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         return dist_sum, county_sum
@@ -185,6 +185,17 @@ with st.sidebar:
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
             st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
             st.session_state["data_v1"] = st.session_state["data"].copy() # add data_v1 
+
+            util_list = [x for x in item_list if "UTIL" in x]
+            dist_sum1 = st.session_state["data_v1"].pivot_table(values = [x+"_"+"2024" for x in util_list], index= ["FISCAL YEAR"+"_"+"2024"],aggfunc = "mean").reset_index()
+            st.write(dist_sum1)
+            dist_sum1.rename(columns = dict(zip([x+"_"+"2024" for x in util_list] +["FISCAL YEAR"+"_"+"2024"], util_list+["RATING CYCLE CODE"])), inplace= True)
+            st.write(dist_sum1)
+            dist_sum2 = st.session_state["data_v1"].pivot_table(values = [x+"_"+"2023" for x in util_list], index= ["FISCAL YEAR"+"_"+"2023"],aggfunc = "mean").reset_index()
+            dist_sum2.rename(columns = dict(zip([x+"_"+"2023" for x in util_list] +["FISCAL YEAR"+"_"+"2023"], util_list+["RATING CYCLE CODE"])), inplace= True)
+            dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
+            dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
+            st.write(dist_sum)
 
     st.subheader("II: Data filter")
     with st.container():

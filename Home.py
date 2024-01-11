@@ -295,7 +295,8 @@ if "data" in st.session_state:
                             xdata = abs(st.session_state["data"]["diff_"+item])
                         if qc_type == "Year by year":
                             xdata = st.session_state["data"]["diff_"+item]
-
+                        xbins = [float('-inf')]+[i for i in range(-250, 251, 25)] + [float('inf')]
+                        hist = go.Histogram(x=xdata, xbins=xbins, showlegend = False)
                         if "IRI" in item:
                             if qc_type == "Audit":
                                 xbins = [i for i in range(0, 251, 25)] + [float('inf')]

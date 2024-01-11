@@ -122,21 +122,21 @@ def filter(data= None, thresholds = None, qctype = None):
 # Summary by district or county
 @st.cache_data
 def diff_summary(data= None, qctype = None, item_list = None):
-"""
-    A function that generates a summary of the data based on the provided parameters.
+    """
+        A function that generates a summary of the data based on the provided parameters.
 
-    Parameters:
-    - data (pandas.DataFrame): The input data used for generating the summary.
-    - qctype (str): The type of quality control, which can be "Audit" or "Year by year".
-    - item_list (list): A list of items to include in the summary.
+        Parameters:
+        - data (pandas.DataFrame): The input data used for generating the summary.
+        - qctype (str): The type of quality control, which can be "Audit" or "Year by year".
+        - item_list (list): A list of items to include in the summary.
 
-    Returns:
-    - If qctype is "Year by year":
-    - dist_sum (pandas.DataFrame): The district-level summary of the data.
-    - county_sum (pandas.DataFrame): The county-level summary of the data.
-    - Otherwise:
-    - county_sum (pandas.DataFrame): The county-level summary of the data.
-"""
+        Returns:
+        - If qctype is "Year by year":
+        - dist_sum (pandas.DataFrame): The district-level summary of the data.
+        - county_sum (pandas.DataFrame): The county-level summary of the data.
+        - Otherwise:
+        - county_sum (pandas.DataFrame): The county-level summary of the data.
+    """
     # prefix
     if qctype == "Audit":
         suffixes = ["Pathway", "Audit"]

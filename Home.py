@@ -229,7 +229,7 @@ with st.container():
         year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
         suffixes = [str(year1), str(year2)]
     # District level, true when compare year by year
-        data_sum = diff_summary(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,item_list = item_list)
+        data_sum = diff_summary(data= st.session_state["data_v1"], qctype = qc_type, item_list = item_list)
         if qc_type =="Audit":
             st.subheader("County summary")
             st.write(data_sum)

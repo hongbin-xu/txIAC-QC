@@ -190,6 +190,7 @@ with st.sidebar:
             dist_sum1 = st.session_state["data_v1"].pivot_table(values = [x+"_"+"2024" for x in util_list], index= ["FISCAL YEAR"+"_"+"2024"],aggfunc = "mean").reset_index()
             st.write(dist_sum1)
             dist_sum1.rename(columns = dict(zip([x+"_"+"2024" for x in util_list] +["FISCAL YEAR"+"_"+"2024"], item_list+["RATING CYCLE CODE"])), inplace= True)
+            st.write(dist_sum1)
             dist_sum2 = st.session_state["data_v1"].pivot_table(values = [x+"_"+"2023" for x in util_list], index= ["FISCAL YEAR"+"_"+"2023"],aggfunc = "mean").reset_index()
             dist_sum1.rename(columns = dict(zip([x+"_"+"2023" for x in util_list] +["FISCAL YEAR"+"_"+"2023"], item_list+["RATING CYCLE CODE"])), inplace= True)
             dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)

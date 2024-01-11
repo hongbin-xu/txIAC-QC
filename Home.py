@@ -275,7 +275,6 @@ with st.container():
             st.write(data_sum[1])
 
 if "data" in st.session_state:
-
     # Plot
     with st.container():
         st.subheader("Distribution Plots")
@@ -292,9 +291,13 @@ if "data" in st.session_state:
                     row = i//3+1
                     col = i%3+1
                     try:
-                        xdata = abs(st.session_state["data"]["diff_"+item])
-                        hist = go.Histogram(x=abs(st.session_state["data"]["diff_"+item]), nbinsx=30, showlegend = False)
-                        ecdf = px.ecdf(abs(st.session_state["data"]["diff_"+item]))#, x="d_"+item)
+                        if qc_type == "Audit":
+                            xdata = abs(st.session_state["data"]["diff_"+item])
+                        if qc_type == "Year by year":
+                            xdata = st.session_state["data"]["diff_"+item]
+                        
+                        hist = go.Histogram(x=xdata, nbinsx=30, showlegend = False)
+                        ecdf = px.ecdf(xdata)#, x="d_"+item)
                         ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
                         fig.add_trace(hist, row=row, col=col, secondary_y = False)
                         fig.add_trace(ecdf, row=row, col=col, secondary_y = True)

@@ -110,30 +110,33 @@ def filter(data= None, thresholds = None, qctype = None):
 
 # Summary by district or county
 @st.cache_data
-def diff_summary(data1 = None, data2 = None, qctype = "Audit", item_list = None):
+def diff_summary(data= None, qctype = "Audit", item_list = None):
     # prefix
     if qctype == "Audit":
         suffixes = ["Pathway", "Audit"]
     if qctype == "Year by year": 
-        year1, year2 = data1["FISCAL YEAR"].unique()[0], data2["FISCAL YEAR"].unique()[0]
-        suffixes = [str(year1), str(year2)]
+        years = [x for x in data.columns if "FISCAL YEAR" in x]
+        suffixes = [str(years[0][-4:]), str(years[1][-4:])]
 
-    # county level summary
-    county_sum1 = data1.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    # county level summary (only matched data records)
+    county_sum1 = data.pivot_table(values = [x+"_"+suffixes[0] for x in item_list], index= ["COUNTY"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
     county_sum1["RATING CYCLE CODE"] = suffixes[0]
-    county_sum2 = data2.pivot_table(values = item_list, index= ["COUNTY"],aggfunc = "mean").reset_index()
+    county_sum1.rename(columns = dict(zip([x+"_"+suffixes[0] for x in item_list] +["COUNTY"+"_"+suffixes[0]], item_list+["COUNTY"])), inplace = True)
+    county_sum2 = data.pivot_table(values = [x+"_"+suffixes[1] for x in item_list], index= ["COUNTY"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
     county_sum2["RATING CYCLE CODE"] = suffixes[1]
+    county_sum2.rename(columns = dict(zip([x+"_"+suffixes[1] for x in item_list] +["COUNTY"+"_"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
+
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
 
     # District level, true when compare year by year
     if qctype == "Year by year":
         util_list = [x for x in item_list if "UTIL" in x]
-        dist_sum1 = data1.pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
-        dist_sum2 = data2.pivot_table(values = util_list, index= ["FISCAL YEAR"],aggfunc = "mean").reset_index()
+        dist_sum1 = data.pivot_table(values = [x+"_"+suffixes[0] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
+        dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[0] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[0]], item_list+["RATING CYCLE CODE"])), inplace= True)
+        dist_sum2 = data.pivot_table(values = [x+"_"+suffixes[1] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
+        dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], item_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-        dist_sum.rename(columns = {"FISCAL YEAR": "RATING CYCLE CODE"}, inplace= True)
-
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         
         return dist_sum, county_sum

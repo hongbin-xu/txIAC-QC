@@ -297,10 +297,8 @@ if "data" in st.session_state:
                             xdata = st.session_state["data"]["diff_"+item]
 
                         if "IRI" in item:
-                            if qc_type == "Audit":
-                                xbins = [i for i in range(0, 251, 25)] + [float('inf')]
-                            if qc_type == "Year by year":
-                                xbins = [float('-inf')]+[i for i in range(-250, 251, 25)] + [float('inf')]
+
+                            xbins = [float('-inf')]+[i for i in range(-250, 251, 25)] + [float('inf')]
                             hist = go.Histogram(x=xdata, xbins=xbins, showlegend = False)
                         else:
                             hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)

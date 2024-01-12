@@ -337,7 +337,7 @@ if "data" in st.session_state:
             # measurement date
             # location
             # Operator
-            # 
+            st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024")
 
         except:
             pass

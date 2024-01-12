@@ -266,7 +266,8 @@ with st.sidebar:
 with st.container():
 
     # District level, true when compare year by year
-    data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
+    if "data" in st.session_state:
+        data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
     if qc_type =="Audit":
         st.subheader("County summary")
         st.write(data_sum)

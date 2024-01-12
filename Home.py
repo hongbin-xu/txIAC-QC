@@ -139,7 +139,7 @@ def thre_filter(data= None, thresholds = None, qctype = None):
 
 # Summary by district or county
 @st.cache_data
-def diff_summary(data= None, qctype = None, item_list = None):
+def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
     """
         A function that generates a summary of the data based on the provided parameters.
 
@@ -161,12 +161,12 @@ def diff_summary(data= None, qctype = None, item_list = None):
     if qctype == "Year by year": 
         years = [x for x in data.columns if "FISCAL YEAR" in x]
         suffixes = [str(years[0][-4:]), str(years[1][-4:])]
-
+    data1 = data.loc[data[[x for x in data.columns if "MODIFIED BROAD PAVEMENT TYPE" in x][0]].isin(pavtype)]
     # county level summary (only matched data records)
-    county_sum1 = data.pivot_table(values = [x+"_"+suffixes[0] for x in item_list], index= ["COUNTY"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
+    county_sum1 = data1.pivot_table(values = [x+"_"+suffixes[0] for x in item_list], index= ["COUNTY"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
     county_sum1["RATING CYCLE CODE"] = suffixes[0]
     county_sum1.rename(columns = dict(zip([x+"_"+suffixes[0] for x in item_list] +["COUNTY"+"_"+suffixes[0]], item_list+["COUNTY"])), inplace = True)
-    county_sum2 = data.pivot_table(values = [x+"_"+suffixes[1] for x in item_list], index= ["COUNTY"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
+    county_sum2 = data1.pivot_table(values = [x+"_"+suffixes[1] for x in item_list], index= ["COUNTY"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
     county_sum2["RATING CYCLE CODE"] = suffixes[1]
     county_sum2.rename(columns = dict(zip([x+"_"+suffixes[1] for x in item_list] +["COUNTY"+"_"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
@@ -176,9 +176,9 @@ def diff_summary(data= None, qctype = None, item_list = None):
     # District level, true when compare year by year
     if qctype == "Year by year":
         util_list = [x for x in item_list if "UTIL" in x]
-        dist_sum1 = data.pivot_table(values = [x+"_"+suffixes[0] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
+        dist_sum1 = data1.pivot_table(values = [x+"_"+suffixes[0] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[0]],aggfunc = "mean").reset_index()
         dist_sum1.rename(columns = dict(zip([x+"_"+suffixes[0] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[0]], util_list+["RATING CYCLE CODE"])), inplace= True)
-        dist_sum2 = data.pivot_table(values = [x+"_"+suffixes[1] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
+        dist_sum2 = data1.pivot_table(values = [x+"_"+suffixes[1] for x in util_list], index= ["FISCAL YEAR"+"_"+suffixes[1]],aggfunc = "mean").reset_index()
         dist_sum2.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
@@ -216,9 +216,7 @@ with st.sidebar:
             pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
         else:
             pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
-       
         st.session_state["data_v1"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
-        st.write(st.session_state["data"])
 
     st.subheader("II: Data filter")
     with st.container():
@@ -267,7 +265,7 @@ with st.sidebar:
 with st.container():
 
     # District level, true when compare year by year
-    data_sum = diff_summary(data= st.session_state["data_v1"], qctype = qc_type, item_list = item_list)
+    data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
     if qc_type =="Audit":
         st.subheader("County summary")
         st.write(data_sum)

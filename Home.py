@@ -108,7 +108,7 @@ def pav_filter(data = None, pavtype = None):
     """
     data_v1 = data.copy()
     if pavtype:
-        data_v1 = data_v1.loc[data_v1["MODIFIED BROAD PAVEMENT TYPE"].isin(pavtype)]
+        data_v1 = data_v1.loc[data_v1[[x for x in data_v1.columns if "MODIFIED BROAD PAVEMENT TYPE" in x][0]].isin(pavtype)]
     return data_v1
 
 # filter function

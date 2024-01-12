@@ -329,7 +329,7 @@ if "data" in st.session_state:
     with st.container():
         st.subheader("Distribution of outliers")
         try:
-            st.write()
+            st.write(st.session_state["data_v1"].columns)
 
             #- PMIS vs Pathway or year1 vs year2 
             # Pathway vehicle

@@ -60,7 +60,7 @@ def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_i
 
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
-def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_list = inv_list, item_list = None): 
+def data_merge(data1 = None, data2 = None, qctype = None, inv_list = inv_list, item_list = None): 
    
     # Suffixes
     if qctype == "Audit":
@@ -70,8 +70,8 @@ def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_li
         suffixes = ["_"+str(year1), "_"+str(year2)]
 
     # filter based on pavement type code
-    data1_v1 = data1.loc[data1["MODIFIED BROAD PAVEMENT TYPE"].isin(pavtype), inv_list +item_list].reset_index(drop=True)
-    data2_v1 = data2.loc[data2["MODIFIED BROAD PAVEMENT TYPE"].isin(pavtype), inv_list +item_list].reset_index(drop=True)
+    data1_v1 = data1[inv_list +item_list].reset_index(drop=True)
+    data2_v1 = data2[inv_list +item_list].reset_index(drop=True)
     
     # merging data1 and data2
     data1_v1 = data1_v1.loc[data1_v1["COUNTY"].isin(data2_v1["COUNTY"])].reset_index(drop = True)
@@ -93,9 +93,27 @@ def data_merge(data1 = None, data2 = None, qctype = None, pavtype = None, inv_li
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     return data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
+
+@st.cache_data
+def pav_filter(data = None, pavtype = None):
+    """
+    Filters the data based on the specified pavement type.
+
+    Parameters:
+    - data: Pandas DataFrame, optional. The input data to be filtered. If not provided, the function will return an empty DataFrame.
+    - pavtype: list, optional. A list of pavement type codes to filter the data. If not provided, the function will return the unfiltered data.
+
+    Returns:
+    - data_v1: Pandas DataFrame. The filtered data based on the specified pavement type. If no data meets the filter criteria, an empty DataFrame will be returned.
+    """
+    data_v1 = data.copy()
+    if pavtype:
+        data_v1 = data_v1.loc[data_v1["MODIFIED BROAD PAVEMENT TYPE"].isin(pavtype)]
+    return data_v1
+
 # filter function
 @st.cache_data
-def filter(data= None, thresholds = None, qctype = None):
+def thre_filter(data= None, thresholds = None, qctype = None):
     """
     Filters the data based on the specified thresholds and quality control type.
 
@@ -180,15 +198,8 @@ with st.sidebar:
         st.session_state.path1 = st.file_uploader("QC data", type ="csv") 
         st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
-        # performance index Pavement type selector
+        # performance index Pavement type selector and generate list of items
         perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list.keys())
-        
-        if "IRI" in perf_indx:
-            pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
-        else:
-            pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
-
-        # List of items
         item_list = []
         for distress in perf_indx:
             for item in  perf_indx_list[distress]:
@@ -198,19 +209,16 @@ with st.sidebar:
         merge_button = st.button("Load and merge data")
         if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type, pavtype= pav_type, item_list = item_list)
-            st.session_state["data_v1"] = st.session_state["data"].copy() # add data_v1 
+            st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
 
-            util_list = [x for x in item_list if "UTIL" in x]
-            dist_sum1 = st.session_state["data_v1"].pivot_table(values = [x+"_"+"2024" for x in util_list], index= ["FISCAL YEAR"+"_"+"2024"],aggfunc = "mean").reset_index()
-            st.write(dist_sum1)
-            dist_sum1.rename(columns = dict(zip([x+"_"+"2024" for x in util_list] +["FISCAL YEAR"+"_"+"2024"], util_list+["RATING CYCLE CODE"])), inplace= True)
-            st.write(dist_sum1)
-            dist_sum2 = st.session_state["data_v1"].pivot_table(values = [x+"_"+"2023" for x in util_list], index= ["FISCAL YEAR"+"_"+"2023"],aggfunc = "mean").reset_index()
-            dist_sum2.rename(columns = dict(zip([x+"_"+"2023" for x in util_list] +["FISCAL YEAR"+"_"+"2023"], util_list+["RATING CYCLE CODE"])), inplace= True)
-            dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-            dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
-            st.write(dist_sum)
+        # Pavement type selector
+        if "IRI" in perf_indx:
+            pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
+        else:
+            pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
+       
+        st.session_state["data_v1"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
+
 
     st.subheader("II: Data filter")
     with st.container():
@@ -253,26 +261,21 @@ with st.sidebar:
         filter_button = st.button("Apply filter")
         # filter add function
         if (filter_button):
-            st.session_state["data_v1"]= filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
+            st.session_state["data_v1"]= thre_filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
 
 # Main
 with st.container():
-    # Summary
-    if qc_type == "Audit":
-        suffixes = ["Pathway", "Audit"]
-    if (qc_type == "Year by year")&("data1" in st.session_state)&("data2" in st.session_state): 
-        year1, year2 = st.session_state["data1"]["FISCAL YEAR"].unique()[0], st.session_state["data2"]["FISCAL YEAR"].unique()[0]
-        suffixes = [str(year1), str(year2)]
+
     # District level, true when compare year by year
-        data_sum = diff_summary(data= st.session_state["data_v1"], qctype = qc_type, item_list = item_list)
-        if qc_type =="Audit":
-            st.subheader("County summary")
-            st.write(data_sum)
-        if qc_type == "Year by year":
-            st.subheader("District summary")
-            st.write(data_sum[0])
-            st.subheader("County summary")
-            st.write(data_sum[1])
+    data_sum = diff_summary(data= st.session_state["data_v1"], qctype = qc_type, item_list = item_list)
+    if qc_type =="Audit":
+        st.subheader("County summary")
+        st.write(data_sum)
+    if qc_type == "Year by year":
+        st.subheader("District summary")
+        st.write(data_sum[0])
+        st.subheader("County summary")
+        st.write(data_sum[1])
 
 if "data" in st.session_state:
     # Plot
@@ -346,3 +349,6 @@ if "data" in st.session_state:
 
         except:
             pass
+
+
+

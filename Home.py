@@ -218,7 +218,7 @@ with st.sidebar:
             pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
        
         st.session_state["data_v1"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
-
+        st.write(st.session_state["data"])
 
     st.subheader("II: Data filter")
     with st.container():

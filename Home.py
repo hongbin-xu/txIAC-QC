@@ -341,6 +341,7 @@ if "data" in st.session_state:
             st.write("1-SIGNED HWY AND ROADBED ID")
             df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+suffixes[0]).size().reset_index(name = "count")
             fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+suffixes[0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
             
             # Lane number
             st.write("2-LANE NUMBER")

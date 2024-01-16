@@ -386,24 +386,24 @@ if "data" in st.session_state:
 
 #Year by year
 
-""" 'FISCAL YEAR', 
-'SIGNED HWY AND ROADBED ID', # all in count 
-'LANE NUMBER',  # count summary for consistent lane number or inconsistent
-'DIRECTION', # count summary for consistent direction or inconsistent
-'BEGINNING DFO', # Overlapping 
-'ENDING DFO', # 
-'COUNTY', # count summary
+# """ 'FISCAL YEAR', 
+# 'SIGNED HWY AND ROADBED ID', # all in count 
+# 'LANE NUMBER',  # count summary for consistent lane number or inconsistent
+# 'DIRECTION', # count summary for consistent direction or inconsistent
+# 'BEGINNING DFO', # Overlapping 
+# 'ENDING DFO', # 
+# 'COUNTY', # count summary
 
-'START TIME', # time differnce between start time and end time
-'VEHICLE ID', # count for both txdot and pmis
-#'OPERATOR NAME', # count for both txdot and pmis
-'AVERAGE SPEED', # speed difference txdot and pmis
-#'MODIFIED BROAD PAVEMENT TYPE', # all in count
-'RIDE COMMENT CODE', # 
-'ACP RUT AUTO COMMENT CODE', 
-#'RATER NAME1', 
-'INTERFACE FLAG', 
-#'RATER NAME2',
-#'DISTRESS COMMENT CODE',
-'LANE WIDTH',
-#'DETAILED PVMNT TYPE ROAD LIFE', """
+# 'START TIME', # time differnce between start time and end time
+# 'VEHICLE ID', # count for both txdot and pmis
+# #'OPERATOR NAME', # count for both txdot and pmis
+# 'AVERAGE SPEED', # speed difference txdot and pmis
+# #'MODIFIED BROAD PAVEMENT TYPE', # all in count
+# 'RIDE COMMENT CODE', # 
+# 'ACP RUT AUTO COMMENT CODE', 
+# #'RATER NAME1', 
+# 'INTERFACE FLAG', 
+# #'RATER NAME2',
+# #'DISTRESS COMMENT CODE',
+# 'LANE WIDTH',
+# #'DETAILED PVMNT TYPE ROAD LIFE', """

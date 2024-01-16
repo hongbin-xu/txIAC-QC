@@ -340,6 +340,7 @@ if "data" in st.session_state:
             # count of the filtered data based on SIGNED HWY AND ROADBED ID
             st.write("1-SIGNED HWY AND ROADBED ID")
             df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+suffixes[0]).size().reset_index(name = "count")
+            st.write(df_temp)
             fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+suffixes[0], y = "count")
             st.plotly_chart(fig, use_container_width= True)
 

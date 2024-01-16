@@ -332,10 +332,10 @@ if "data" in st.session_state:
         st.subheader("Distribution of outliers")
         try:
             st.write("0-Location & Matching")
-            fig = make_subplots(rows= 1, cols = 2)
+            #fig = make_subplots(rows= 1, cols = 2)
 
             
-            st.plotly_chart(fig, use_container_width= True)
+            #st.plotly_chart(fig, use_container_width= True)
             
             # count of the filtered data based on SIGNED HWY AND ROADBED ID
             st.write("1-SIGNED HWY AND ROADBED ID")

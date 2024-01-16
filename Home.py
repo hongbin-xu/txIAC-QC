@@ -42,10 +42,10 @@ inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
             'DISTRESS COMMENT CODE', 'LANE WIDTH',
             'DETAILED PVMNT TYPE ROAD LIFE',
             'DETAILED PVMNT TYPE VISUAL CODE', 
-            'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
+            'SIGNED HWY AND ROADBED ID', 'DIRECTION','LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
             'USER UPDATE', 'DATE UPDATE', 
             'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
-            'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM']
+            'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM', 'LAST YEAR LANE ERROR']
 
  
 # Data loading
@@ -93,7 +93,7 @@ def data_merge(data1 = None, data2 = None, qctype = None, inv_list = inv_list, i
     for item in  item_list:
         if "UTIL" not in item:
             data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
-    return data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
+    return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
 
 @st.cache_data
@@ -211,7 +211,7 @@ with st.sidebar:
         merge_button = st.button("Load and merge data")
         if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
+            suffixes, st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
 
         # Pavement type selector
         if "IRI" in perf_indx:
@@ -331,21 +331,51 @@ if "data" in st.session_state:
     with st.container():
         st.subheader("Distribution of outliers")
         try:
-            st.write(st.session_state["data_v1"].columns)
+            st.write("0-Location & Matching")
+            fig = make_subplots(rows= 1, cols = 2)
 
-            st.write("Route")
+            
+            st.plotly_chart(fig, use_container_width= True)
+            
+            # count of the filtered data based on SIGNED HWY AND ROADBED ID
+            st.write("1-SIGNED HWY AND ROADBED ID")
+            df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+suffixes[0]).size().reset_index(name = "count")
+            fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+suffixes[0], y = "count")
+            
+            # Lane number
+            st.write("2-LANE NUMBER")
 
-            st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024")
+            
+            st.plotly_chart(fig, use_container_width= True)
+
+            st.write("3-DIRECTION")     
+            fig = make_subplots(rows= rows, cols = 2)
+            
+            st.plotly_chart(fig, use_container_width= True)
+
+            st.write("4-COUNTY")
 
 
-            st.write("")
+            st.write("5-START TIME")
 
-            #- PMIS vs Pathway or year1 vs year2 
-            # Pathway vehicle
-            # Txdot vehicle
-            # measurement date
-            # location
-            # Operator
+
+            st.write("6-VEHICLE ID")
+
+
+            st.write("7-AVERAGE SPEED")
+
+
+            st.write("8-RIDE COMMENT CODE")
+
+
+            st.write("9-ACP RUT AUTO COMMENT CODE")
+
+
+            st.write("10-INTERFACE FLAG")
+
+
+            st.write("11-LANE WIDTH")
+
             #st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024", size=20)
 
         except:
@@ -356,20 +386,24 @@ if "data" in st.session_state:
 
 #Year by year
 
-'FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
-            'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
-            'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
-            'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
-            'RESPONSIBLE DISTRICT', 'COUNTY', 'RESPONSIBLE MAINTENANCE SECTION',
-            'LANE NUMBER', 'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
-            'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
-            'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
-            'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
-            'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
-            'DISTRESS COMMENT CODE', 'LANE WIDTH',
-            'DETAILED PVMNT TYPE ROAD LIFE',
-            'DETAILED PVMNT TYPE VISUAL CODE', 
-            'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
-            'USER UPDATE', 'DATE UPDATE', 
-            'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
-            'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM'
+""" 'FISCAL YEAR', 
+'SIGNED HWY AND ROADBED ID', # all in count 
+'LANE NUMBER',  # count summary for consistent lane number or inconsistent
+'DIRECTION', # count summary for consistent direction or inconsistent
+'BEGINNING DFO', # Overlapping 
+'ENDING DFO', # 
+'COUNTY', # count summary
+
+'START TIME', # time differnce between start time and end time
+'VEHICLE ID', # count for both txdot and pmis
+#'OPERATOR NAME', # count for both txdot and pmis
+'AVERAGE SPEED', # speed difference txdot and pmis
+#'MODIFIED BROAD PAVEMENT TYPE', # all in count
+'RIDE COMMENT CODE', # 
+'ACP RUT AUTO COMMENT CODE', 
+#'RATER NAME1', 
+'INTERFACE FLAG', 
+#'RATER NAME2',
+#'DISTRESS COMMENT CODE',
+'LANE WIDTH',
+#'DETAILED PVMNT TYPE ROAD LIFE', """

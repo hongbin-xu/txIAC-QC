@@ -53,7 +53,9 @@ inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
 def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_indx_list["RUT"], inv_list = inv_list):
     # File uploading
     data1 = pd.read_csv(data1_path)
+    data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
     data2 = pd.read_csv(data2_path)#
+    data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
     data1 = data1[inv_list + item_list]
     data2 = data2[inv_list + item_list]
     return data1, data2
@@ -293,10 +295,10 @@ if "data" in st.session_state:
                     row = i//3+1
                     col = i%3+1
                     try:
-                        if qc_type == "Audit":
-                            xdata = abs(st.session_state["data"]["diff_"+item])
-                        if qc_type == "Year by year":
-                            xdata = st.session_state["data"]["diff_"+item]
+                        #if qc_type == "Audit":
+                        #    xdata = abs(st.session_state["data"]["diff_"+item])
+                        #if qc_type == "Year by year":
+                        xdata = st.session_state["data"]["diff_"+item]
 
                         hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)
                         ecdf = px.ecdf(xdata)#, x="d_"+item)
@@ -305,7 +307,7 @@ if "data" in st.session_state:
                         fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
                         #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
                         fig.update_layout(template="simple_white")
-                        fig.update_xaxes(title_text = "Abs diff: "+item, row = row, col = col)
+                        fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
                         fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
                         fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
                     except:
@@ -350,4 +352,24 @@ if "data" in st.session_state:
             pass
 
 
+#Audit
 
+#Year by year
+
+'FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
+            'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
+            'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
+            'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
+            'RESPONSIBLE DISTRICT', 'COUNTY', 'RESPONSIBLE MAINTENANCE SECTION',
+            'LANE NUMBER', 'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
+            'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
+            'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
+            'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
+            'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
+            'DISTRESS COMMENT CODE', 'LANE WIDTH',
+            'DETAILED PVMNT TYPE ROAD LIFE',
+            'DETAILED PVMNT TYPE VISUAL CODE', 
+            'SIGNED HWY AND ROADBED ID', 'LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
+            'USER UPDATE', 'DATE UPDATE', 
+            'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
+            'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM'

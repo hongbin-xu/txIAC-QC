@@ -264,7 +264,6 @@ with st.sidebar:
 
 # Main
 with st.container():
-
     # District level, true when compare year by year
     if "data" in st.session_state:
         data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
@@ -305,6 +304,7 @@ if "data" in st.session_state:
                         fig.add_trace(hist, row=row, col=col, secondary_y = False)
                         fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
                         #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                        fig.update_layout(template="simple_white")
                         fig.update_xaxes(title_text = "Abs diff: "+item, row = row, col = col)
                         fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
                         fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
@@ -331,13 +331,20 @@ if "data" in st.session_state:
         try:
             st.write(st.session_state["data_v1"].columns)
 
+            st.write("Route")
+
+            st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024")
+
+
+            st.write("")
+
             #- PMIS vs Pathway or year1 vs year2 
             # Pathway vehicle
             # Txdot vehicle
             # measurement date
             # location
             # Operator
-            st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024", size=20)
+            #st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024", size=20)
 
         except:
             pass

@@ -211,7 +211,7 @@ with st.sidebar:
         merge_button = st.button("Load and merge data")
         if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-            suffixes, st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
+            st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
 
         # Pavement type selector
         if "IRI" in perf_indx:
@@ -339,9 +339,9 @@ if "data" in st.session_state:
         
         # count of the filtered data based on SIGNED HWY AND ROADBED ID
         st.write("1-SIGNED HWY AND ROADBED ID")
-        df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+suffixes[0]).size().reset_index(name = "count")
+        df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+suffixes[0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
         st.write(df_temp)
-        fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+suffixes[0], y = "count")
+        fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count")
         st.plotly_chart(fig, use_container_width= True)
 
         # Lane number

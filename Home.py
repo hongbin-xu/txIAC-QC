@@ -335,7 +335,7 @@ if "data" in st.session_state:
         st.markdown("- Location & Matching")
         #fig = make_subplots(rows= 1, cols = 2)
 
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2, gap = "medium")
 
         with col1:
             

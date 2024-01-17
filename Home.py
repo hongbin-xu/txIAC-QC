@@ -271,12 +271,12 @@ with st.container():
         data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
         if qc_type =="Audit":
             st.subheader("County summary")
-            st.write(data_sum)
+            st.dataframe(data_sum)
         if qc_type == "Year by year":
             st.subheader("District summary")
-            st.write(data_sum[0])
+            st.dataframe(data_sum[0])
             st.subheader("County summary")
-            st.write(data_sum[1])
+            st.dataframe(data_sum[1])
 
 if "data" in st.session_state:
     # Plot

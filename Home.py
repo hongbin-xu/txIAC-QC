@@ -349,7 +349,7 @@ if "data" in st.session_state:
         st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]] == st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]]
         df1 = st.session_state["data_v1"].groupby(by = "LANE NUMBER"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
         df2 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-        plot1 = go.Bar(x = df1["LANE NUMBER"+st.session_state["suffixes"][0]], y = df1["count"], showlegend= False)
+        plot1 = go.Bar(x = df1["LANE NUMBER"+st.session_state["suffixes"][0]].astype("str"), y = df1["count"], showlegend= False)
         plot2 = go.Bar(x = df2["indicator"], y = df2["count"], showlegend= False)
         fig.add_trace(plot1, row = 1, col=1)
         fig.add_trace(plot2, row = 1, col=2)

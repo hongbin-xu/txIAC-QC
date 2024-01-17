@@ -388,7 +388,7 @@ if "data" in st.session_state:
 
             st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
             df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df1["time_diff"] = df1["time_diff"].astype("timedelta64[d]")
+            df1["time_diff"] = df1["time_diff"].dt.days
             fig= px.bar(df1, x = "time_diff", y = "count")
             st.plotly_chart(fig, use_container_width= True)
 

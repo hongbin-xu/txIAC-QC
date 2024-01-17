@@ -346,7 +346,7 @@ if "data" in st.session_state:
         # Lane number
         st.markdown("- LANE NUMBER")
         fig = make_subplots(rows= 1, cols = 2)
-        st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]] == st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]]
+        st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
         df1 = st.session_state["data_v1"].groupby(by = "LANE NUMBER"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
         df2 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
         plot1 = go.Bar(x = df1["LANE NUMBER"+st.session_state["suffixes"][0]].astype("category"), y = df1["count"], showlegend= False)

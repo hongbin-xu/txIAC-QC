@@ -345,14 +345,9 @@ if "data" in st.session_state:
 
         # Lane number
         st.markdown("- LANE NUMBER")
-        fig = make_subplots(rows= 1, cols = 2)
         st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
-        df1 = st.session_state["data_v1"].groupby(by = "LANE NUMBER"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-        df2 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-        plot1 = go.Bar(x = df1["LANE NUMBER"+st.session_state["suffixes"][0]].astype("category"), y = df1["count"], showlegend= False)
-        plot2 = go.Bar(x = df2["indicator"], y = df2["count"], showlegend= False)
-        fig.add_trace(plot1, row = 1, col=1)
-        fig.add_trace(plot2, row = 1, col=2)
+        df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "indicator", y = "count")
         st.plotly_chart(fig, use_container_width= True)
 
         # Direction

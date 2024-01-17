@@ -386,7 +386,10 @@ if "data" in st.session_state:
             fig= px.bar(df1, x = "START TIME" + st.session_state["suffixes"][0], y = "count")
             st.plotly_chart(fig, use_container_width= True)
 
-            
+            st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
+            df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "time_diff", y = "count")
+            st.plotly_chart(fig, use_container_width= True)
 
             # RIDE COMMENT CODE
             st.markdown("- RIDE COMMENT CODE")

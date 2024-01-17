@@ -368,23 +368,36 @@ if "data" in st.session_state:
 
         # Vehicle id
         st.markdown("- VEHICLE ID")
+        df1 = st.session_state["data_v1"].groupby(by = "VEHICLE ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "VEHICLE ID"+st.session_state["suffixes"][0], y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         # Average speed
         st.markdown("- AVERAGE SPEED")
 
         # RIDE COMMENT CODE
         st.markdown("- RIDE COMMENT CODE")
+        df1 = st.session_state["data_v1"].groupby(by = "RIDE COMMENT CODE"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "RIDE COMMENT CODE"+st.session_state["suffixes"][0], y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         # ACP RUT AUTO COMMENT CODE
         st.markdown("- ACP RUT AUTO COMMENT CODE")
+        df1 = st.session_state["data_v1"].groupby(by = "ACP RUT AUTO COMMENT CODE"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "ACP RUT AUTO COMMENT CODE"+st.session_state["suffixes"][0], y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         # INTERFACE FLAG
         st.markdown("- INTERFACE FLAG")
+        df1 = st.session_state["data_v1"].groupby(by = "INTERFACE FLAG"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "INTERFACE FLAG"+st.session_state["suffixes"][0], y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         # LANE WIDTH
         st.markdown("- LANE WIDTH")
-
-        #st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024", size=20)
+        df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "LANE WIDTH"+st.session_state["suffixes"][0], y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         #except:
         #    pass

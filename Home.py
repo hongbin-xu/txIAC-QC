@@ -371,10 +371,10 @@ if "data" in st.session_state:
             fig= px.bar(df1, x = "VEHICLE ID"+st.session_state["suffixes"][0], y = "count")
             st.plotly_chart(fig, use_container_width= True)
 
-        with col2:
             # Average speed
             st.markdown("- AVERAGE SPEED")
-
+        
+        with col2:
             # Start time
             st.markdown("- START TIME")
 

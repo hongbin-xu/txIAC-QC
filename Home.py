@@ -373,6 +373,8 @@ if "data" in st.session_state:
 
             # Average speed
             st.markdown("- AVERAGE SPEED")
+            fig = px.histogram(st.session_state["data_v1"], x = "AVERAGE SPEED"+st.session_state["suffixes"][0])
+            st.plotly_chart(fig, use_container_width= True)
         
         with col2:
             # Start time

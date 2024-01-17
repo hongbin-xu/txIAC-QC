@@ -382,6 +382,11 @@ if "data" in st.session_state:
         with col2:
             # Start time
             st.markdown("- START TIME")
+            df1 = st.session_state["data_v1"].groupby(by = "START TIME" + st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "START TIME" + st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+
+            
 
             # RIDE COMMENT CODE
             st.markdown("- RIDE COMMENT CODE")

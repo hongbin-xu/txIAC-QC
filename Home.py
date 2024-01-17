@@ -331,7 +331,7 @@ if "data" in st.session_state:
     with st.container():
         st.subheader("Distribution of outliers")
         #try:
-        st.write("0-Location & Matching")
+        st.markdown("- Location & Matching")
         #fig = make_subplots(rows= 1, cols = 2)
 
         
@@ -339,41 +339,43 @@ if "data" in st.session_state:
         
         # count of the filtered data based on SIGNED HWY AND ROADBED ID
         st.markdown("- SIGNED HWY AND ROADBED ID")
-        df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-        fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count")
+        df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+"_"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+"_"+st.session_state["suffixes"][0], y = "count")
         st.plotly_chart(fig, use_container_width= True)
 
         # Lane number
-        st.write("2-LANE NUMBER")
-
+        st.markdown("- LANE NUMBER")
+        fig = make_subplots(rows= 1, cols = 2)
+        st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]] == st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]]
         
+        st.plotly_chart(fig, use_container_width= True)
 
+        # Direction
+        st.markdown("- DIRECTION")     
 
-        st.write("3-DIRECTION")     
+        # County
+        st.markdown("- COUNTY")
 
+        # Start time
+        st.markdown("- START TIME")
 
-        st.write("4-COUNTY")
+        # Vehicle id
+        st.markdown("- VEHICLE ID")
 
+        # Average speed
+        st.markdown("- AVERAGE SPEED")
 
-        st.write("5-START TIME")
+        # RIDE COMMENT CODE
+        st.markdown("- RIDE COMMENT CODE")
 
+        # ACP RUT AUTO COMMENT CODE
+        st.markdown("- ACP RUT AUTO COMMENT CODE")
 
-        st.write("6-VEHICLE ID")
+        # INTERFACE FLAG
+        st.markdown("- INTERFACE FLAG")
 
-
-        st.write("7-AVERAGE SPEED")
-
-
-        st.write("8-RIDE COMMENT CODE")
-
-
-        st.write("9-ACP RUT AUTO COMMENT CODE")
-
-
-        st.write("10-INTERFACE FLAG")
-
-
-        st.write("11-LANE WIDTH")
+        # LANE WIDTH
+        st.markdown("- LANE WIDTH")
 
         #st.map(st.session_state["data_v1"], latitude= "LATITUDE BEGIN_2024", longitude=	"LONGITUDE BEGIN_2024", size=20)
 

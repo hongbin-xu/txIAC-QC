@@ -333,12 +333,12 @@ if "data" in st.session_state:
         #try:
         st.write("0-Location & Matching")
         #fig = make_subplots(rows= 1, cols = 2)
-        
+
         
         #st.plotly_chart(fig, use_container_width= True)
         
         # count of the filtered data based on SIGNED HWY AND ROADBED ID
-        st.write("1-SIGNED HWY AND ROADBED ID")
+        st.markdown("- SIGNED HWY AND ROADBED ID")
         df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
         fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count")
         st.plotly_chart(fig, use_container_width= True)

@@ -352,6 +352,10 @@ if "data" in st.session_state:
 
         # Direction
         st.markdown("- DIRECTION")     
+        st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
+        df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "indicator", y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         # County
         st.markdown("- COUNTY")

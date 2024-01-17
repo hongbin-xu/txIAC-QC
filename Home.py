@@ -351,8 +351,8 @@ if "data" in st.session_state:
         df2 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
         plot1 = go.Bar(x = df1["LANE NUMBER"+st.session_state["suffixes"][0]], y = df1["count"], showlegend= False)
         plot2 = go.Bar(x = df2["indicator"], y = df2["count"], showlegend= False)
-        fig.add_traces(plot1, row = 0, col=0)
-        fig.add_traces(plot2, row = 0, col=1)
+        fig.add_trace(plot1, row = 0, col=0)
+        fig.add_trace(plot2, row = 0, col=1)
         st.plotly_chart(fig, use_container_width= True)
 
         # Direction

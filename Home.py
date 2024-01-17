@@ -380,8 +380,9 @@ if "data" in st.session_state:
 
             # RIDE COMMENT CODE
             st.markdown("- RIDE COMMENT CODE")
-            df1 = st.session_state["data_v1"].groupby(by = "RIDE COMMENT CODE"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            fig= px.bar(df1, x = "RIDE COMMENT CODE"+st.session_state["suffixes"][0], y = "count")
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "indicator", y = "count")
             st.plotly_chart(fig, use_container_width= True)
 
             # ACP RUT AUTO COMMENT CODE

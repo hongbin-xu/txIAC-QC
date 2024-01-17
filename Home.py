@@ -339,15 +339,20 @@ if "data" in st.session_state:
         
         # count of the filtered data based on SIGNED HWY AND ROADBED ID
         st.markdown("- SIGNED HWY AND ROADBED ID")
-        df_temp = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+"_"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-        fig = px.bar(df_temp, x = "SIGNED HWY AND ROADBED ID"+"_"+st.session_state["suffixes"][0], y = "count")
+        df1 = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig = px.bar(df1, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count")
         st.plotly_chart(fig, use_container_width= True)
 
         # Lane number
         st.markdown("- LANE NUMBER")
         fig = make_subplots(rows= 1, cols = 2)
         st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]] == st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]]
-        
+        df1 = st.session_state["data_v1"].groupby(by = "LANE NUMBER"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        df2 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        plot1 = go.Bar(x = df1["LANE NUMBER"+st.session_state["suffixes"][0]], y = df1["count"], showlegend= False)
+        plot2 = go.Bar(x = df2["indicator"], y = df2["count"], showlegend= False)
+        fig.add_traces(plot1, row = 0, col=0)
+        fig.add_traces(plot2, row = 0, col=1)
         st.plotly_chart(fig, use_container_width= True)
 
         # Direction

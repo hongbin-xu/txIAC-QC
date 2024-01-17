@@ -359,6 +359,9 @@ if "data" in st.session_state:
 
         # County
         st.markdown("- COUNTY")
+        df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+        fig= px.bar(df1, x = "COUNTY"+st.session_state["suffixes"][0], y = "count")
+        st.plotly_chart(fig, use_container_width= True)
 
         # Start time
         st.markdown("- START TIME")

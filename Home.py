@@ -387,8 +387,9 @@ if "data" in st.session_state:
 
             # ACP RUT AUTO COMMENT CODE
             st.markdown("- ACP RUT AUTO COMMENT CODE")
-            df1 = st.session_state["data_v1"].groupby(by = "ACP RUT AUTO COMMENT CODE"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            fig= px.bar(df1, x = "ACP RUT AUTO COMMENT CODE"+st.session_state["suffixes"][0], y = "count")
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "indicator", y = "count")
             st.plotly_chart(fig, use_container_width= True)
 
             # INTERFACE FLAG

@@ -272,7 +272,11 @@ with st.container():
         data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
         if qc_type =="Audit":
             st.subheader("County summary")
-            st.dataframe(data_sum)
+            st.markdown("- Matching number of data")
+            st.dataframe(data_sum[1])
+            st.markdown("- Comparison")
+            st.dataframe(data_sum[0])
+
         if qc_type == "Year by year":
             st.subheader("District summary")
             st.dataframe(data_sum[0])

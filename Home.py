@@ -266,166 +266,166 @@ with st.sidebar:
             st.session_state["data_v1"]= thre_filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
 
 # Main
-try:
-    with st.container():
-        # District level, true when compare year by year
-        if "data" in st.session_state:
-            data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
-            if qc_type =="Audit":
-                st.subheader("County summary")
-                st.markdown("- Matching number of data")
-                st.dataframe(data_sum[1])
-                st.markdown("- Comparison")
-                st.dataframe(data_sum[0])
-
-            if qc_type == "Year by year":
-                st.subheader("District summary")
-                st.dataframe(data_sum[0])
-                st.subheader("County summary")
-                st.markdown("- Matching number of data")
-                st.dataframe(data_sum[2])
-                st.markdown("- Comparison")
-                st.dataframe(data_sum[1])
-
+#try:
+with st.container():
+    # District level, true when compare year by year
     if "data" in st.session_state:
-        # Plot
-        with st.container():
-            st.subheader("Distribution Plots")
-            for p in perf_indx:
-                list_temp = [x for x in perf_indx_list[p] if "UTIL" not in x]
-                rows = int(math.ceil(len(list_temp)/3))
-                st.write(p + " (Pathway - Audit) " + "distribution")
-                fig = make_subplots(rows= rows, cols = 3,
-                                    specs=[[{"secondary_y": True}]*3]*rows)
+        data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
+        if qc_type =="Audit":
+            st.subheader("County summary")
+            st.markdown("- Matching number of data")
+            st.dataframe(data_sum[1])
+            st.markdown("- Comparison")
+            st.dataframe(data_sum[0])
 
-                i = 0
-                for item in list_temp:
-                    if "UTIL" not in item:
-                        row = i//3+1
-                        col = i%3+1
-                        try:
-                            #if qc_type == "Audit":
-                            #    xdata = abs(st.session_state["data"]["diff_"+item])
-                            #if qc_type == "Year by year":
-                            xdata = st.session_state["data"]["diff_"+item]
+        if qc_type == "Year by year":
+            st.subheader("District summary")
+            st.dataframe(data_sum[0])
+            st.subheader("County summary")
+            st.markdown("- Matching number of data")
+            st.dataframe(data_sum[2])
+            st.markdown("- Comparison")
+            st.dataframe(data_sum[1])
 
-                            hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)
-                            ecdf = px.ecdf(xdata)#, x="d_"+item)
-                            ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
-                            fig.add_trace(hist, row=row, col=col, secondary_y = False)
-                            fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
-                            #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                            fig.update_layout(template="simple_white")
-                            fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
-                            fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
-                            fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
-                        except:
-                            break
-                        i+=1
-                    
-                fig.update_layout(height=400*rows)
-                st.plotly_chart(fig, use_container_width= True)
+if "data" in st.session_state:
+    # Plot
+    with st.container():
+        st.subheader("Distribution Plots")
+        for p in perf_indx:
+            list_temp = [x for x in perf_indx_list[p] if "UTIL" not in x]
+            rows = int(math.ceil(len(list_temp)/3))
+            st.write(p + " (Pathway - Audit) " + "distribution")
+            fig = make_subplots(rows= rows, cols = 3,
+                                specs=[[{"secondary_y": True}]*3]*rows)
 
-        # Filtered data
-        with st.container():
-            st.subheader("Filtered data")
-            st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
-            col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:7]] + 
-                            [x+st.session_state["suffixes"][1] for x in inv_list[:7]]+
-                            ["diff_"+x for x in item_list]+
-                            [x+st.session_state["suffixes"][0] for x in item_list]+
-                            [x+st.session_state["suffixes"][1] for x in item_list])
-            st.write(st.session_state["data_v1"][col_heading +[x for x in st.session_state["data_v1"].columns if x not in col_heading]])
-            st.downloa_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
+            i = 0
+            for item in list_temp:
+                if "UTIL" not in item:
+                    row = i//3+1
+                    col = i%3+1
+                    try:
+                        #if qc_type == "Audit":
+                        #    xdata = abs(st.session_state["data"]["diff_"+item])
+                        #if qc_type == "Year by year":
+                        xdata = st.session_state["data"]["diff_"+item]
 
-        # Container for show distribution of outliers across different variables and location
-        with st.container():
-            st.subheader("Distribution of outliers")
-
-            #st.markdown("- Location & Matching")
-            #fig = make_subplots(rows= 1, cols = 2)
-
-            col1, col2 = st.columns(2, gap = "medium")
-
-            with col1:
+                        hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)
+                        ecdf = px.ecdf(xdata)#, x="d_"+item)
+                        ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
+                        fig.add_trace(hist, row=row, col=col, secondary_y = False)
+                        fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
+                        #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
+                        fig.update_layout(template="simple_white")
+                        fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
+                        fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
+                        fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
+                    except:
+                        break
+                    i+=1
                 
-                # County
-                st.markdown("- COUNTY")
-                df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "COUNTY"+st.session_state["suffixes"][0], y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+            fig.update_layout(height=400*rows)
+            st.plotly_chart(fig, use_container_width= True)
 
-                # count of the filtered data based on SIGNED HWY AND ROADBED ID
-                st.markdown("- SIGNED HWY AND ROADBED ID")
-                df1 = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig = px.bar(df1, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+    # Filtered data
+    with st.container():
+        st.subheader("Filtered data")
+        st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
+        col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:7]] + 
+                        [x+st.session_state["suffixes"][1] for x in inv_list[:7]]+
+                        ["diff_"+x for x in item_list]+
+                        [x+st.session_state["suffixes"][0] for x in item_list]+
+                        [x+st.session_state["suffixes"][1] for x in item_list])
+        st.write(st.session_state["data_v1"][col_heading +[x for x in st.session_state["data_v1"].columns if x not in col_heading]])
+        st.downloa_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
 
-                # Lane number
-                st.markdown("- LANE NUMBER")
-                st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
-                df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "indicator", y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+    # Container for show distribution of outliers across different variables and location
+    with st.container():
+        st.subheader("Distribution of outliers")
 
-                # Direction
-                st.markdown("- DIRECTION")     
-                st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
-                df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "indicator", y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+        #st.markdown("- Location & Matching")
+        #fig = make_subplots(rows= 1, cols = 2)
 
-                # Vehicle id
-                st.markdown("- VEHICLE ID")
-                df1 = st.session_state["data_v1"].groupby(by = "VEHICLE ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "VEHICLE ID"+st.session_state["suffixes"][0], y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+        col1, col2 = st.columns(2, gap = "medium")
 
-                # Average speed
-                st.markdown("- AVERAGE SPEED")
-                fig = px.histogram(st.session_state["data_v1"], x = "AVERAGE SPEED"+st.session_state["suffixes"][0])
-                st.plotly_chart(fig, use_container_width= True)
-                st.session_state["data_v1"]["speed_diff"] = st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][1]]
-                fig = px.histogram(st.session_state["data_v1"], x = "speed_diff")
-                st.plotly_chart(fig, use_container_width= True)
+        with col1:
             
-            with col2:
-                # Start time
-                st.markdown("- START TIME")
-                df1 = st.session_state["data_v1"].groupby(by = "START TIME" + st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "START TIME" + st.session_state["suffixes"][0], y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+            # County
+            st.markdown("- COUNTY")
+            df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "COUNTY"+st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
 
-                st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
-                df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                df1["time_diff"] = df1["time_diff"].dt.days
-                fig= px.bar(df1, x = "time_diff", y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+            # count of the filtered data based on SIGNED HWY AND ROADBED ID
+            st.markdown("- SIGNED HWY AND ROADBED ID")
+            df1 = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig = px.bar(df1, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
 
-                # RIDE COMMENT CODE
-                st.markdown("- RIDE COMMENT CODE")
-                st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
-                df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "indicator", y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+            # Lane number
+            st.markdown("- LANE NUMBER")
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "indicator", y = "count")
+            st.plotly_chart(fig, use_container_width= True)
 
-                # ACP RUT AUTO COMMENT CODE
-                st.markdown("- ACP RUT AUTO COMMENT CODE")
-                st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-                df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "indicator", y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+            # Direction
+            st.markdown("- DIRECTION")     
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "indicator", y = "count")
+            st.plotly_chart(fig, use_container_width= True)
 
-                # INTERFACE FLAG
-                st.markdown("- INTERFACE FLAG")
-                df1 = st.session_state["data_v1"].groupby(by = "INTERFACE FLAG"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "INTERFACE FLAG"+st.session_state["suffixes"][0], y = "count")
-                st.plotly_chart(fig, use_container_width= True)
+            # Vehicle id
+            st.markdown("- VEHICLE ID")
+            df1 = st.session_state["data_v1"].groupby(by = "VEHICLE ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "VEHICLE ID"+st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
 
-                # LANE WIDTH
-                st.markdown("- LANE WIDTH")
-                df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-                fig= px.bar(df1, x = "LANE WIDTH"+st.session_state["suffixes"][0], y = "count")
-                st.plotly_chart(fig, use_container_width= True)
-except:
-    pass
+            # Average speed
+            st.markdown("- AVERAGE SPEED")
+            fig = px.histogram(st.session_state["data_v1"], x = "AVERAGE SPEED"+st.session_state["suffixes"][0])
+            st.plotly_chart(fig, use_container_width= True)
+            st.session_state["data_v1"]["speed_diff"] = st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][1]]
+            fig = px.histogram(st.session_state["data_v1"], x = "speed_diff")
+            st.plotly_chart(fig, use_container_width= True)
+        
+        with col2:
+            # Start time
+            st.markdown("- START TIME")
+            df1 = st.session_state["data_v1"].groupby(by = "START TIME" + st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "START TIME" + st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+
+            st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
+            df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            df1["time_diff"] = df1["time_diff"].dt.days
+            fig= px.bar(df1, x = "time_diff", y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+
+            # RIDE COMMENT CODE
+            st.markdown("- RIDE COMMENT CODE")
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "indicator", y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+
+            # ACP RUT AUTO COMMENT CODE
+            st.markdown("- ACP RUT AUTO COMMENT CODE")
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "indicator", y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+
+            # INTERFACE FLAG
+            st.markdown("- INTERFACE FLAG")
+            df1 = st.session_state["data_v1"].groupby(by = "INTERFACE FLAG"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "INTERFACE FLAG"+st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+
+            # LANE WIDTH
+            st.markdown("- LANE WIDTH")
+            df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            fig= px.bar(df1, x = "LANE WIDTH"+st.session_state["suffixes"][0], y = "count")
+            st.plotly_chart(fig, use_container_width= True)
+#except:
+#    pass

@@ -174,6 +174,7 @@ def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+    count_sum = data1.groupby(by = ["COUNTY"]).size().reset_index(name = "count").sort_values(by = "COUNTY")
 
     # District level, true when compare year by year
     if qctype == "Year by year":
@@ -184,9 +185,9 @@ def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
         dist_sum2.rename(columns = dict(zip([x+"_"+suffixes[1] for x in util_list] +["FISCAL YEAR"+"_"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
-        return dist_sum, county_sum
+        return dist_sum, county_sum, count_sum
     else:
-        return county_sum
+        return county_sum, count_sum
 
 # Siderbar
 with st.sidebar:
@@ -276,6 +277,9 @@ with st.container():
             st.subheader("District summary")
             st.dataframe(data_sum[0])
             st.subheader("County summary")
+            st.markdown("- Matching number of data")
+            st.dataframe(data_sum[2])
+            st.markdown("- Comparison")
             st.dataframe(data_sum[1])
 
 if "data" in st.session_state:

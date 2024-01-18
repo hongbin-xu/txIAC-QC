@@ -370,7 +370,7 @@ if "data" in st.session_state:
             # Lane number
             st.markdown("- LANE NUMBER")
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
-            st.session_state["data_v2"]["indicator"]== st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
+            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
             df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
@@ -394,7 +394,7 @@ if "data" in st.session_state:
             # Vehicle id
             st.markdown("- VEHICLE ID")   
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["VEHICLE ID" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["VEHICLE ID" + st.session_state["suffixes"][1]].astype("str")
-            st.session_state["data_v2"]["indicator"]== st.session_state["data_v2"]["VEHICLE ID" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["VEHICLE ID" + st.session_state["suffixes"][1]].astype("str")
+            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["VEHICLE ID" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["VEHICLE ID" + st.session_state["suffixes"][1]].astype("str")
             df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
@@ -437,7 +437,7 @@ if "data" in st.session_state:
             # RIDE COMMENT CODE
             st.markdown("- RIDE COMMENT CODE")
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
-            st.session_state["data_v2"]["indicator"]== st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
+            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
             df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
@@ -449,7 +449,7 @@ if "data" in st.session_state:
             # ACP RUT AUTO COMMENT CODE
             st.markdown("- ACP RUT AUTO COMMENT CODE")
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-            st.session_state["data_v2"]["indicator"]== st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
+            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
             df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
@@ -461,7 +461,7 @@ if "data" in st.session_state:
             # INTERFACE FLAG
             st.markdown("- INTERFACE FLAG")
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
-            st.session_state["data_v2"]["indicator"]== st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
+            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
             df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"

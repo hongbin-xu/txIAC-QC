@@ -92,8 +92,7 @@ def data_merge(data1 = None, data2 = None, qctype = None, inv_list = inv_list, i
     data = data.drop(columns = ["id"+suffixes[0], "id"]).merge(data2_v1, how = "left", left_on = "id"+suffixes[1], right_on = "id", suffixes = suffixes) # merge data
 
     for item in  item_list:
-        if "UTIL" not in item:
-            data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
+        data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
     return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
 

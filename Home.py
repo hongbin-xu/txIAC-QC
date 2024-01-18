@@ -174,7 +174,7 @@ def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
-    count_sum = data1.groupby(by = ["COUNTY"]).size().reset_index(name = "count").sort_values(by = "COUNTY")
+    count_sum = data1.groupby(by = ["COUNTY"+suffixes[0]]).size().reset_index(name = "count").sort_values(by = "COUNTY").rename(columns ={"COUNTY"+suffixes[0]: "COUNTY"})
 
     # District level, true when compare year by year
     if qctype == "Year by year":

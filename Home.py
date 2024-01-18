@@ -353,7 +353,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "COUNTY"+st.session_state["suffixes"][0], y = "count", color = "data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -363,7 +363,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig = px.bar(df, x = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0], y = "count", color="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -375,7 +375,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "indicator", y = "count", color ="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -387,7 +387,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "indicator", y = "count", color ="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -399,7 +399,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "indicator", y = "count", color ="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -418,7 +418,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "START TIME" + st.session_state["suffixes"][0], y = "count",color = "data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -430,7 +430,7 @@ if "data" in st.session_state:
             df2["time_diff"] = df2["time_diff"].dt.days
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "time_diff", y = "count", color = "data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -442,7 +442,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "indicator", y = "count", color ="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -454,7 +454,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "indicator", y = "count", color ="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -466,7 +466,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "indicator", y = "count", color ="data")
             st.plotly_chart(fig, use_container_width= True)
 
@@ -476,7 +476,7 @@ if "data" in st.session_state:
             df2 = st.session_state["data_v2"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat(df1, df2)
+            df = pd.concat([df1, df2])
             fig= px.bar(df, x = "LANE WIDTH"+st.session_state["suffixes"][0], y = "count", color = "data")
             st.plotly_chart(fig, use_container_width= True)
 #except:

@@ -141,7 +141,7 @@ def thre_filter(data= None, thresholds = None, qctype = None):
 
 # Summary by district or county
 @st.cache_data
-def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
+def diff_summary(data= None, qctype = None, item_list = None):
     """
         A function that generates a summary of the data based on the provided parameters.
 
@@ -163,7 +163,7 @@ def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
     if qctype == "Year by year": 
         years = [x for x in data.columns if "FISCAL YEAR" in x]
         suffixes = ["_"+str(years[0][-4:]), "_"+str(years[1][-4:])]
-    data1 = data.loc[data[[x for x in data.columns if "MODIFIED BROAD PAVEMENT TYPE" in x][0]].isin(pavtype)].copy()
+    data1 = data.copy()
     # county level summary (only matched data records)
     county_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in item_list], index= ["COUNTY"+suffixes[0]],aggfunc = "mean").reset_index()
     county_sum1["RATING CYCLE CODE"] = suffixes[0][1:]
@@ -207,20 +207,19 @@ with st.sidebar:
         for distress in perf_indx:
             for item in  perf_indx_list[distress]:
                 item_list = item_list +[item]
-
+        
+        # Pavement type selector
+        if "IRI" in perf_indx:
+            pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = pav_list)
+        else:
+            pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
+        
         # Data loading and merging
         merge_button = st.button("Load and merge data")
         if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
             st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
             st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
-
-        # Pavement type selector
-        if "IRI" in perf_indx:
-            pav_type = st.multiselect(label = "Pavement type", options = pav_list, default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
-        else:
-            pav_type = st.multiselect(label = "Pavement type", options = ["A - ASPHALTIC CONCRETE PAVEMENT (ACP)"], default = "A - ASPHALTIC CONCRETE PAVEMENT (ACP)")
-        if "data" in st.session_state:
-            st.session_state["data_v1"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
+            st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
 
     st.subheader("II: Data filter")
     with st.container():
@@ -270,7 +269,7 @@ with st.sidebar:
 with st.container():
     # District level, true when compare year by year
     if "data" in st.session_state:
-        data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, pavtype = pav_type, item_list = item_list)
+        data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, item_list = item_list)
         if qc_type =="Audit":
             st.subheader("County summary")
             st.markdown("- Matching number of data")
@@ -329,7 +328,7 @@ if "data" in st.session_state:
     # Filtered data
     with st.container():
         st.subheader("Filtered data")
-        st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
+        st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0])+" obtained from "+str(st.session_state["data"].shape[0]) + "rows of the matched data")
         col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:7]] + 
                         [x+st.session_state["suffixes"][1] for x in inv_list[:7]]+
                         ["diff_"+x for x in item_list]+

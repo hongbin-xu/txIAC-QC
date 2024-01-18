@@ -337,7 +337,7 @@ try:
                            [x+st.session_state["suffixes"][0] for x in item_list]+
                            [x+st.session_state["suffixes"][1] for x in item_list])
             st.write(col_heading)
-            st.write([x for x in st.session_state["data_v1"].columns if x not in col_heading])
+            st.write(col_heading +[x for x in st.session_state["data_v1"].columns if x not in col_heading])
             st.write(st.session_state["data_v1"][col_heading +[x for x in st.session_state["data_v1"].columns if x not in col_heading]])
             st.downloadiff_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
 

@@ -29,12 +29,13 @@ perf_indx_list = {  "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) -
                 }
 
 # Information list contains informaiton about location and measurement information
-inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
+inv_list = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY','LANE NUMBER', 
+            'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
             'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
             'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
             'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
-            'RESPONSIBLE DISTRICT', 'COUNTY', 'RESPONSIBLE MAINTENANCE SECTION',
-            'LANE NUMBER', 'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
+             'RESPONSIBLE MAINTENANCE SECTION',
+            'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
             'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
             'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
             'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
@@ -42,7 +43,7 @@ inv_list = ['FISCAL YEAR', 'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE V
             'DISTRESS COMMENT CODE', 'LANE WIDTH',
             'DETAILED PVMNT TYPE ROAD LIFE',
             'DETAILED PVMNT TYPE VISUAL CODE', 
-            'SIGNED HWY AND ROADBED ID', 'DIRECTION','LANE CODE', 'BEGINNING DFO', 'ENDING DFO', 'ATTACHMENT',
+             'DIRECTION','LANE CODE','ATTACHMENT',
             'USER UPDATE', 'DATE UPDATE', 
             'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
             'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM', 'LAST YEAR LANE ERROR']
@@ -56,8 +57,8 @@ def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_i
     data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
     data2 = pd.read_csv(data2_path)#
     data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
-    data1 = data1[inv_list + item_list]
-    data2 = data2[inv_list + item_list]
+    data1 = data1[inv_list[:8] + item_list + inv_list[8:]]
+    data2 = data2[inv_list[:8] + item_list + inv_list[8:]]
     return data1, data2
 
 # Function to merge data1 and data2 based on routename and DFO
@@ -72,8 +73,8 @@ def data_merge(data1 = None, data2 = None, qctype = None, inv_list = inv_list, i
         suffixes = ["_"+str(year1), "_"+str(year2)]
 
     # filter based on pavement type code
-    data1_v1 = data1[inv_list +item_list].reset_index(drop=True)
-    data2_v1 = data2[inv_list +item_list].reset_index(drop=True)
+    data1_v1 = data1.copy()
+    data2_v1 = data2.copy()
     
     # merging data1 and data2
     data1_v1 = data1_v1.loc[data1_v1["COUNTY"].isin(data2_v1["COUNTY"])].reset_index(drop = True)
@@ -330,7 +331,13 @@ try:
         with st.container():
             st.subheader("Filtered data")
             st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
-            st.write(st.session_state["data_v1"])
+            col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:8]] + 
+                           [x+st.session_state["suffixes"][1] for x in inv_list[:8]]+
+                           ["diff_"+x for x in item_list]+
+                           [x+st.session_state["suffixes"][0] for x in item_list]+
+                           [x+st.session_state["suffixes"][1] for x in item_list])
+            
+            st.write(st.session_state["data_v1"][col_heading +[x for x in st.session_state["data_v1"].columns if x not in col_heading]])
             st.downloadiff_button(label="Download filtered data", data=st.session_state["data_v1"].to_csv().encode('utf-8'), file_name="filtered.csv", mime = "csv")
 
         # Container for show distribution of outliers across different variables and location

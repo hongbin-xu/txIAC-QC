@@ -163,7 +163,7 @@ def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
     if qctype == "Year by year": 
         years = [x for x in data.columns if "FISCAL YEAR" in x]
         suffixes = ["_"+str(years[0][-4:]), "_"+str(years[1][-4:])]
-    data1 = data.loc[data[[x for x in data.columns if "MODIFIED BROAD PAVEMENT TYPE" in x][0]].isin(pavtype)]
+    data1 = data.loc[data[[x for x in data.columns if "MODIFIED BROAD PAVEMENT TYPE" in x][0]].isin(pavtype)].copy()
     # county level summary (only matched data records)
     county_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in item_list], index= ["COUNTY"+suffixes[0]],aggfunc = "mean").reset_index()
     county_sum1["RATING CYCLE CODE"] = suffixes[0][1:]

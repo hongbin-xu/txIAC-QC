@@ -57,8 +57,8 @@ def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_i
     data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
     data2 = pd.read_csv(data2_path)#
     data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
-    data1 = data1[inv_list[:8] + item_list + inv_list[8:]]
-    data2 = data2[inv_list[:8] + item_list + inv_list[8:]]
+    data1 = data1[inv_list[:7] + item_list + inv_list[7:]]
+    data2 = data2[inv_list[:7] + item_list + inv_list[7:]]
     return data1, data2
 
 # Function to merge data1 and data2 based on routename and DFO
@@ -330,8 +330,8 @@ try:
         with st.container():
             st.subheader("Filtered data")
             st.write("Number of rows: "+ str(st.session_state["data_v1"].shape[0]))
-            col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:8]] + 
-                            [x+st.session_state["suffixes"][1] for x in inv_list[:8]]+
+            col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:7]] + 
+                            [x+st.session_state["suffixes"][1] for x in inv_list[:7]]+
                             ["diff_"+x for x in item_list]+
                             [x+st.session_state["suffixes"][0] for x in item_list]+
                             [x+st.session_state["suffixes"][1] for x in item_list])

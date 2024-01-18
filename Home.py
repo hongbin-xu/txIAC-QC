@@ -166,10 +166,10 @@ def diff_summary(data= None, qctype = None, pavtype = None, item_list = None):
     data1 = data.loc[data[[x for x in data.columns if "MODIFIED BROAD PAVEMENT TYPE" in x][0]].isin(pavtype)]
     # county level summary (only matched data records)
     county_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in item_list], index= ["COUNTY"+suffixes[0]],aggfunc = "mean").reset_index()
-    county_sum1["RATING CYCLE CODE"] = suffixes[0]
+    county_sum1["RATING CYCLE CODE"] = suffixes[0][1:]
     county_sum1.rename(columns = dict(zip([x+suffixes[0] for x in item_list] +["COUNTY"+suffixes[0]], item_list+["COUNTY"])), inplace = True)
     county_sum2 = data1.pivot_table(values = [x+suffixes[1] for x in item_list], index= ["COUNTY"+suffixes[1]],aggfunc = "mean").reset_index()
-    county_sum2["RATING CYCLE CODE"] = suffixes[1]
+    county_sum2["RATING CYCLE CODE"] = suffixes[1][1:]
     county_sum2.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)

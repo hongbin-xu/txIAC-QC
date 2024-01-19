@@ -448,7 +448,7 @@ if "data" in st.session_state:
             df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-            fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2, color="red"), secondary_y= True)
+            fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2, marker_color="red"), secondary_y= True)
             fig.update_xaxes(title_text="START TIME")
             fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
             fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)

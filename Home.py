@@ -458,6 +458,7 @@ if "data" in st.session_state:
             df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
             df2 = st.session_state["data_v2"].groupby(by = "time_diff").size().reset_index(name = "count_all")
             df = df1.merge(df2, how = "left", on = "time_diff")
+            df["time_diff"] = df["time_diff"].dt.days
             df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
             fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
             fig.add_trace(go.Bar(x =df["time_diff"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
@@ -467,60 +468,70 @@ if "data" in st.session_state:
             fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
             st.plotly_chart(fig, use_container_width= True)
 
-            df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "time_diff").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df1["time_diff"] = df1["time_diff"].dt.days
-            df2["time_diff"] = df2["time_diff"].dt.days
-            df1["data"] = "outlier"
-            df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "time_diff", y = "count", color = "data")
-            st.plotly_chart(fig, use_container_width= True)
-
             # RIDE COMMENT CODE
             st.markdown("- RIDE COMMENT CODE")
-            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
-            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].str[0]+"-"+st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].str[0]
-            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df1["data"] = "outlier"
-            df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "indicator", y = "count", color ="data")
+            st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
+            st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
+            df = df1.merge(df2, how = "left", on = "indicator")
+            df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="RIDE COMMENT CODE")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
 
             # ACP RUT AUTO COMMENT CODE
             st.markdown("- ACP RUT AUTO COMMENT CODE")
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
             st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df1["data"] = "outlier"
-            df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "indicator", y = "count", color ="data")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
+            df = df1.merge(df2, how = "left", on = "indicator")
+            df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="ACP RUT AUTO COMMENT CODE")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
+
 
             # INTERFACE FLAG
             st.markdown("- INTERFACE FLAG")
             st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
             st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
-            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df1["data"] = "outlier"
-            df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "indicator", y = "count", color ="data")
+            df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
+            df = df1.merge(df2, how = "left", on = "indicator")
+            df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="INTERFACE FLAG")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
+            
 
             # LANE WIDTH
             st.markdown("- LANE WIDTH")
-            df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "LANE WIDTH"+st.session_state["suffixes"][0], y = "count", color = "data")
+            df = df1.merge(df2, how = "left", on = "LANE WIDTH"+st.session_state["suffixes"][0]).rename(columns = {"LANE WIDTH"+st.session_state["suffixes"][0]: "LANE WIDTH"})
+            df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="LANE WIDTH")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
 #except:
 #    pass

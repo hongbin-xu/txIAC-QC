@@ -281,7 +281,7 @@ with st.container():
             st.subheader("District summary")
             st.dataframe(data_sum[0])
             st.subheader("County summary")
-            st.markdown("- Matching number of data")
+            st.markdown("- Number of matching data")
             st.dataframe(data_sum[2])
             st.markdown("- Comparison")
             st.dataframe(data_sum[1])
@@ -349,12 +349,18 @@ if "data" in st.session_state:
             st.session_state["data_v2"] = st.session_state["data"].copy()
             # County
             st.markdown("- COUNTY")
-            df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "COUNTY"+st.session_state["suffixes"][0], y = "count", color = "data")
+            df = df1.merge(df2, how = "left", on = "COUNTY"+st.session_state["suffixes"][0]).rename(columns = {"COUNTY"+st.session_state["suffixes"][0]: "COUNTY"})
+            df["Percentage of all matching data"] = 100*df["count_out"]/df["count_all"]
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers"), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all matching data"], name = "Percentage of all matching data"), secondary_y= True)
+            fig.update_xaxes(title_text="COUNTY")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all matching data", secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
 
             # count of the filtered data based on SIGNED HWY AND ROADBED ID

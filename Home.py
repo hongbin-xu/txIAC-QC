@@ -356,8 +356,8 @@ if "data" in st.session_state:
             df = df1.merge(df2, how = "left", on = "COUNTY"+st.session_state["suffixes"][0]).rename(columns = {"COUNTY"+st.session_state["suffixes"][0]: "COUNTY"})
             df["Percentage of all matching data"] = 100*df["count_out"]/df["count_all"]
             fig = make_subplots(specs=[[{"secondary_y": True}]])
-            fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers"), secondary_y= False)
-            fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all matching data"], name = "Percentage of all matching data"), secondary_y= True)
+            fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all matching data"], name = "Percentage of all matching data", offsetgroup=2), secondary_y= True)
             fig.update_xaxes(title_text="COUNTY")
             fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
             fig.update_yaxes(title_text="Percentage of all matching data", secondary_y=True)

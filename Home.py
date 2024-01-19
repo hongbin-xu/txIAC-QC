@@ -446,14 +446,21 @@ if "data" in st.session_state:
             df2["data"] = "all matched"
             df = df1.merge(df2, how = "left", on = "START TIME"+st.session_state["suffixes"][0]).rename(columns = {"START TIME"+st.session_state["suffixes"][0]: "START TIME"})
             df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-            fig = make_subplots(specs=[[{"secondary_y": True}]])
-            fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-            fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2, marker_color="red"), secondary_y= True)
+            fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
+            fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
+            fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row =2, col=1)
             fig.update_xaxes(title_text="START TIME")
-            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+            fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
             st.plotly_chart(fig, use_container_width= True)
 
+            df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            df1["data"] = "outlier"
+            df2["data"] = "all matched"
+            df = pd.concat([df1, df2])
+            fig= px.bar(df, x = "START TIME" + st.session_state["suffixes"][0], y = "count",color = "data")
+            st.plotly_chart(fig, use_container_width= True)
 
             st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
             st.session_state["data_v2"]["time_diff"] = st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][1]]

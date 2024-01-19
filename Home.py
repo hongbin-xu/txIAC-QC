@@ -360,7 +360,7 @@ if "data" in st.session_state:
             fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all matching data"], name = "Percentage of all matching data", offsetgroup=2), secondary_y= True)
             fig.update_xaxes(title_text="COUNTY")
             fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-            fig.update_yaxes(title_text="Percentage of all matching data", secondary_y=True)
+            fig.update_yaxes(title_text="Percentage of all matching data", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
 
             # count of the filtered data based on SIGNED HWY AND ROADBED ID

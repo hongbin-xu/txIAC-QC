@@ -429,7 +429,6 @@ if "data" in st.session_state:
             fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
 
-
             # Average speed
             st.markdown("- AVERAGE SPEED")
             fig = px.histogram(st.session_state["data_v1"], x = "AVERAGE SPEED"+st.session_state["suffixes"][0])
@@ -441,13 +440,20 @@ if "data" in st.session_state:
         with col2:
             # Start time
             st.markdown("- START TIME")
-            df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
-            df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count").sort_values(by = "count", ascending = False)
+            df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
+            df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
             df1["data"] = "outlier"
             df2["data"] = "all matched"
-            df = pd.concat([df1, df2])
-            fig= px.bar(df, x = "START TIME" + st.session_state["suffixes"][0], y = "count",color = "data")
+            df = df1.merge(df2, how = "left", on = "START TIME"+st.session_state["suffixes"][0]).rename(columns = {"START TIME"+st.session_state["suffixes"][0]: "START TIME"})
+            df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="START TIME")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
+
 
             st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
             st.session_state["data_v2"]["time_diff"] = st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][1]]

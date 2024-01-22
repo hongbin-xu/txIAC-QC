@@ -315,7 +315,6 @@ if "data" in st.session_state:
                         fig.add_trace(hist, row=row, col=col, secondary_y = False)
                         fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
                         #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                        fig.update_layout(template="simple_white")
                         fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
                         fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
                         fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
@@ -328,7 +327,7 @@ if "data" in st.session_state:
                         fig.add_trace(hist, row=row, col=col)
                         fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
                     i+=1
-                
+            fig.update_layout(template="simple_white")
             fig.update_layout(height=400*rows)
             st.plotly_chart(fig, use_container_width= True)
 

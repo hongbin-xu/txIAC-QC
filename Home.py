@@ -293,7 +293,7 @@ if "data" in st.session_state:
         for p in perf_indx:
             list_temp = [x for x in perf_indx_list[p] if "UTIL" not in x]
             rows = int(math.ceil(len(list_temp)/3))
-            st.write(p + " (Pathway - Audit) " + "distribution")
+            st.write(p + " (Pathway - Audit/previous year) " + "distribution")
             fig = make_subplots(rows= rows, cols = 3,
                                 specs=[[{"secondary_y": True}]*3]*rows)
 
@@ -467,8 +467,6 @@ if "data" in st.session_state:
             fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
 
-
-        
         with col2:
             # Start time
             st.markdown("- START TIME")
@@ -479,7 +477,7 @@ if "data" in st.session_state:
             fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
             fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
             fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row =2, col=1)
-            fig.update_xaxes(title_text="START TIME")
+            fig.update_xaxes(title_text="START TIME", row=2, col=1)
             fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
             fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
             st.plotly_chart(fig, use_container_width= True)
@@ -495,7 +493,7 @@ if "data" in st.session_state:
             fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
             fig.add_trace(go.Bar(x =df["time_diff"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
             fig.add_trace(go.Bar(x =df["time_diff"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row =2, col=1)
-            fig.update_xaxes(title_text="time_diff")
+            fig.update_xaxes(title_text="time_diff", row=2, col =1)
             fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
             fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
             st.plotly_chart(fig, use_container_width= True)

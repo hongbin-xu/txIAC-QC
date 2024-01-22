@@ -326,7 +326,7 @@ if "data" in st.session_state:
                         xdata = xdata.groupby(by="diff_"+item).size().reset_index(name="count")
                         hist = go.Bar(x = xdata["diff_"+item], y = xdata["count"], showlegend = False)
                         fig.add_trace(hist, row=row, col=col)
-                        st.plotly_chart(fig, use_container_width= True)
+                        fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
                     i+=1
                 
             fig.update_layout(height=400*rows)

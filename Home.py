@@ -302,14 +302,15 @@ if "data" in st.session_state:
                 if "UTIL" not in item:
                     row = i//3+1
                     col = i%3+1
-                    try:
+                    xdata = st.session_state["data"][["diff_"+item]]
+
+                    if p !="IRI":
                         #if qc_type == "Audit":
                         #    xdata = abs(st.session_state["data"]["diff_"+item])
                         #if qc_type == "Year by year":
-                        xdata = st.session_state["data"]["diff_"+item]
 
-                        hist = go.Histogram(x=xdata, nbinsx=50, showlegend = False)
-                        ecdf = px.ecdf(xdata)#, x="d_"+item)
+                        hist = go.Histogram(x=xdata["diff_"+item], nbinsx=50, showlegend = False)
+                        ecdf = px.ecdf(xdata["diff_"+item])#, x="d_"+item)
                         ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
                         fig.add_trace(hist, row=row, col=col, secondary_y = False)
                         fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
@@ -318,8 +319,13 @@ if "data" in st.session_state:
                         fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
                         fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
                         fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
-                    except:
-                        break
+                    if p == "IRI":
+                        iri_diff_bin = {"bins":[-np.inf, -200, -175, -150, -125, -100, -75, -50, -25, 0, 25, 50, 75, 100, 125, 150, 175, 200, np.inf], 
+                                        "labels":["<-200", "-200-175", "-175-150", "-150-125", "-125-100", "-100-75", "-75-50", "-50-25", "-25-0", "0-25", "25-50", "50-75", "75-100", "100-125", "125-150", "150-175", "175-200", ">200"]}
+                        xdata["diff_"+item] = pd.cut(xdata["diff_"+item], bins= iri_diff_bin["bins"], labels = iri_diff_bin["labels"])
+                        xdata = xdata.groupby(by="diff_"+item).size().reset_index(name="count")
+                        fig = px.bar(xdata, x="diff_"+item, y="count")
+                        st.plotly_chart(fig, use_container_width= True)
                     i+=1
                 
             fig.update_layout(height=400*rows)

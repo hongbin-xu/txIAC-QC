@@ -431,11 +431,43 @@ if "data" in st.session_state:
 
             # Average speed
             st.markdown("- AVERAGE SPEED")
-            fig = px.histogram(st.session_state["data_v1"], x = "AVERAGE SPEED"+st.session_state["suffixes"][0])
+
+            speed_avg_bins = {"bins":[0, 10, 20, 30, 40, 50, 60, 70, 80, 90], "labels":["0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90"]}
+            speed_diff_bins = {"bins":[-np.inf, -40, -30, -20, -10, 0, 10, 20, 30, 40, np.inf], "labels":["<-40", "-40-30", "-30-20", "-20-10", "-10-0", "0-10", "10-20", "20-30", "30-40", ">40"]}
+
+            st.session_state["data_v1"]["avg speed bins"] = pd.cut(st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]], bins = speed_avg_bins["bins"], labels = speed_avg_bins["labels"])
+            st.session_state["data_v1"]["diff speed bins"] = pd.cut(st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]] - st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][1]], bins = speed_diff_bins["bins"], labels = speed_diff_bins["labels"])
+
+            st.session_state["data_v2"]["avg speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]], bins = speed_avg_bins["bins"], labels = speed_avg_bins["labels"])
+            st.session_state["data_v2"]["diff speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]] - st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][1]], bins = speed_diff_bins["bins"], labels = speed_diff_bins["labels"])
+
+            df1 = st.session_state["data_v1"].groupby(by = "avg speed bins").size().reset_index(name = "count_out")
+            df2 = st.session_state["data_v2"].groupby(by = "avg speed bins").size().reset_index(name = "count_all")
+
+            df = df1.merge(df2, how = "left", on = "avg speed bins")
+            df["Percentage of all"] = df["count_out"]/df["count_all"]*100
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="AVERAGE SPEED")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
-            st.session_state["data_v1"]["speed_diff"] = st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][1]]
-            fig = px.histogram(st.session_state["data_v1"], x = "speed_diff")
+
+            df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").size().reset_index(name = "count_out")
+            df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").size().reset_index(name = "count_all")
+
+            df = df1.merge(df2, how = "left", on = "diff speed bins")
+            df["Percentage of all"] = df["count_out"]/df["count_all"]*100
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+            fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+            fig.update_xaxes(title_text="AVERAGE SPEED DIFF")
+            fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
+            fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
             st.plotly_chart(fig, use_container_width= True)
+
+
         
         with col2:
             # Start time

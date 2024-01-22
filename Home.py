@@ -324,7 +324,8 @@ if "data" in st.session_state:
                                         "labels":["<-200", "-200-175", "-175-150", "-150-125", "-125-100", "-100-75", "-75-50", "-50-25", "-25-0", "0-25", "25-50", "50-75", "75-100", "100-125", "125-150", "150-175", "175-200", ">200"]}
                         xdata["diff_"+item] = pd.cut(xdata["diff_"+item], bins= iri_diff_bin["bins"], labels = iri_diff_bin["labels"])
                         xdata = xdata.groupby(by="diff_"+item).size().reset_index(name="count")
-                        fig = px.bar(xdata, x="diff_"+item, y="count")
+                        hist = go.Bar(x = xdata["diff_"+item], y = xdata["count"], showlegend = False)
+                        fig.add_trace(hist, row=row, col=col)
                         st.plotly_chart(fig, use_container_width= True)
                     i+=1
                 

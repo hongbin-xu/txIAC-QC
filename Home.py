@@ -89,9 +89,9 @@ def check_password():
 def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_indx_list["RUT"], inv_list = inv_list):
     # File uploading
     data1 = pd.read_csv(data1_path)
-    data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
+    #data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
     data2 = pd.read_csv(data2_path)#
-    data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
+    #data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
     data1 = data1[inv_list[:7] + item_list + inv_list[7:]]
     data2 = data2[inv_list[:7] + item_list + inv_list[7:]]
     return data1, data2

@@ -271,8 +271,8 @@ if st.session_state["allow"]:
             if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
                 st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2, item_list = item_list)
                 st.session_state["suffixes"], st.session_state["data"], z1, z2 = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
-                st.write(z1)
-                st.write(z2)
+                st.write(st.session_state["data1"])
+                st.write(st.session_state["data2"])
                 st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
             if "data" in st.session_state.keys():
                 st.download_button("Download merged data",

@@ -269,7 +269,6 @@ if st.session_state["allow"]:
             if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
                 st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2, item_list = item_list)
                 st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
-                st.write(st.session_state["data1"])
                 st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
             if "data" in st.session_state.keys():
                 st.download_button("Download merged data",
@@ -320,9 +319,7 @@ if st.session_state["allow"]:
             if (filter_button):
                 st.session_state["data_v1"]= thre_filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
 
-
     # Main
-
     with st.container():
         # District level, true when compare year by year
         if "data" in st.session_state:

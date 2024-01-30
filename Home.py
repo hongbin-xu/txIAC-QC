@@ -131,10 +131,8 @@ def data_merge(data1 = None, data2 = None, qctype = None, item_list = None):
     data = data.drop(columns = ["id"+suffixes[0], "id"]).merge(data2_v1, how = "left", left_on = "id"+suffixes[1], right_on = "id", suffixes = suffixes) # merge data
 
     for item in  item_list:
-        x1 = data[item+suffixes[0]].values
-        x2 = data[item+suffixes[1]].values
-        #data["diff_"+item] = data[item+suffixes[0]].values - data[item+suffixes[1]].values
-    return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True), x1, x2
+        data["diff_"+item] = data[item+suffixes[0]].values - data[item+suffixes[1]].values
+    return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
 
 @st.cache_data
@@ -270,9 +268,8 @@ if st.session_state["allow"]:
             merge_button = st.button("Load and merge data")
             if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
                 st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2, item_list = item_list)
-                st.session_state["suffixes"], st.session_state["data"], z1, z2 = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
+                st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
                 st.write(st.session_state["data1"])
-                st.write(st.session_state["data2"])
                 st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
             if "data" in st.session_state.keys():
                 st.download_button("Download merged data",

@@ -131,7 +131,7 @@ def data_merge(data1 = None, data2 = None, qctype = None, item_list = None):
     data = data.drop(columns = ["id"+suffixes[0], "id"]).merge(data2_v1, how = "left", left_on = "id"+suffixes[1], right_on = "id", suffixes = suffixes) # merge data
 
     for item in  item_list:
-        data["diff_"+item] = data[item+suffixes[0]] - data[item+suffixes[1]]
+        data["diff_"+item] = data[item+suffixes[0]].values - data[item+suffixes[1]].values
     return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
 
 

@@ -224,15 +224,17 @@ def diff_summary(data= None, qctype = None, item_list = None):
         util_list = [x for x in item_list if "UTIL" in x]
         dist_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in util_list], 
                                       index= ["FISCAL YEAR"+suffixes[0]],
-                                      aggfunc =  lambda x: np.average(x, weights=data1.loc[x.index, 'sec_len1'])).reset_index()
-        dist_sum1.rename(columns = dict(zip([x+suffixes[0] for x in util_list] +["FISCAL YEAR"+suffixes[0]], util_list+["RATING CYCLE CODE"])), inplace= True)
+                                      aggfunc = lambda x: np.average(x, weights=data1.loc[x.index, 'sec_len1'])).reset_index()
+        dist_sum1.rename(columns = dict(zip([x+suffixes[0] for x in util_list] +["FISCAL YEAR"+suffixes[0]], util_list+["RATING CYCLE CODE"])), 
+                         inplace= True)
         
         dist_sum2 = data1.pivot_table(values = [x+suffixes[1] for x in util_list],
                                       index= ["FISCAL YEAR"+suffixes[1]],
                                       aggfunc = lambda x: np.average(x, weights=data1.loc[x.index, 'sec_len2'])).reset_index()
-        dist_sum2.rename(columns = dict(zip([x+suffixes[1] for x in util_list] +["FISCAL YEAR"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
+        dist_sum2.rename(columns = dict(zip([x+suffixes[1] for x in util_list] +["FISCAL YEAR"+suffixes[1]], util_list+["RATING CYCLE CODE"])), 
+                         inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
-        dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
+        #dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         return dist_sum, county_sum, count_sum
     else:
         return county_sum, count_sum

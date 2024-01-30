@@ -89,15 +89,15 @@ def check_password():
 @ st.cache_data
 def data_load(data1_path, data2_path, item_list = None):
 
-    top_cols = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY']
+    top_cols = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY'] + item_list
 
     # File uploading
     data1 = pd.read_csv(data1_path)
     #data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
     data2 = pd.read_csv(data2_path)#
     #data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
-    data1 = data1[top_cols+ item_list + [x for x in data1.columns if x not in top_cols]]
-    data2 = data2[top_cols + item_list + [x for x in data2.columns if x not in top_cols]]
+    data1 = data1[top_cols+ [x for x in data1.columns if x not in top_cols]]
+    data2 = data2[top_cols+ [x for x in data2.columns if x not in top_cols]]
     return data1, data2
 
 # Function to merge data1 and data2 based on routename and DFO

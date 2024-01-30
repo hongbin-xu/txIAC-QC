@@ -35,7 +35,7 @@ inv_list = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING
             'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
             'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
             'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
-             'RESPONSIBLE MAINTENANCE SECTION',
+            'RESPONSIBLE MAINTENANCE SECTION',
             'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
             'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
             'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
@@ -87,7 +87,7 @@ def check_password():
 
 # Data loading
 @ st.cache_data
-def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_indx_list["RUT"]):
+def data_load(data1_path, data2_path, item_list = None):
 
     top_cols = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY']
 
@@ -102,7 +102,7 @@ def data_load(data1_path, data2_path, item_list = perf_indx_list["IRI"] + perf_i
 
 # Function to merge data1 and data2 based on routename and DFO
 @st.cache_data
-def data_merge(data1 = None, data2 = None, qctype = None, inv_list = inv_list, item_list = None): 
+def data_merge(data1 = None, data2 = None, qctype = None, item_list = None): 
    
     # Suffixes
     if qctype == "Audit":
@@ -267,7 +267,7 @@ if st.session_state["allow"]:
             # Data loading and merging
             merge_button = st.button("Load and merge data")
             if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
-                st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
+                st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2, item_list = item_list)
                 st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
                 st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
             if "data" in st.session_state.keys():

@@ -616,7 +616,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="LANE WIDTH")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                st.plotly_chart(fig, use_container_width= True)+
+                st.plotly_chart(fig, use_container_width= True)
 
                 # RIDE TRAFFIC CAT
                 st.markdown("- RIDE SCORE TRAFFIC LEVEL")

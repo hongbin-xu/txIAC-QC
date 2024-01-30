@@ -199,11 +199,19 @@ def diff_summary(data= None, qctype = None, item_list = None):
         years = [x for x in data.columns if "FISCAL YEAR" in x]
         suffixes = ["_"+str(years[0][-4:]), "_"+str(years[1][-4:])]
     data1 = data.copy()
+    data1["sec_len1"] = data1["BEGINNING DFO"+suffixes[0]] - data1["ENDING DFO"+suffixes[0]]
+    data1["sec_len2"] = data1["BEGINNING DFO"+suffixes[1]] - data1["ENDING DFO"+suffixes[1]]
+
     # county level summary (only matched data records)
-    county_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in item_list], index= ["COUNTY"+suffixes[0]],aggfunc = "mean").reset_index()
+    county_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in item_list], 
+                                    index= ["COUNTY"+suffixes[0]],
+                                    aggfunc = lambda rows: np.average(rows, data1.iloc[rows.index, "sec_len1"])).reset_index()
     county_sum1["RATING CYCLE CODE"] = suffixes[0][1:]
     county_sum1.rename(columns = dict(zip([x+suffixes[0] for x in item_list] +["COUNTY"+suffixes[0]], item_list+["COUNTY"])), inplace = True)
-    county_sum2 = data1.pivot_table(values = [x+suffixes[1] for x in item_list], index= ["COUNTY"+suffixes[1]],aggfunc = "mean").reset_index()
+
+    county_sum2 = data1.pivot_table(values = [x+suffixes[1] for x in item_list],
+                                    index= ["COUNTY"+suffixes[1]],
+                                    aggfunc = lambda rows: np.average(rows, data1.iloc[rows.index, "sec_len1"])).reset_index()
     county_sum2["RATING CYCLE CODE"] = suffixes[1][1:]
     county_sum2.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
@@ -214,16 +222,20 @@ def diff_summary(data= None, qctype = None, item_list = None):
     # District level, true when compare year by year
     if qctype == "Year by year":
         util_list = [x for x in item_list if "UTIL" in x]
-        dist_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in util_list], index= ["FISCAL YEAR"+suffixes[0]],aggfunc = "mean").reset_index()
+        dist_sum1 = data1.pivot_table(values = [x+suffixes[0] for x in util_list], 
+                                      index= ["FISCAL YEAR"+suffixes[0]],
+                                      aggfunc = lambda rows: np.average(rows, data1.iloc[rows.index, "sec_len1"])).reset_index()
         dist_sum1.rename(columns = dict(zip([x+suffixes[0] for x in util_list] +["FISCAL YEAR"+suffixes[0]], util_list+["RATING CYCLE CODE"])), inplace= True)
-        dist_sum2 = data1.pivot_table(values = [x+suffixes[1] for x in util_list], index= ["FISCAL YEAR"+suffixes[1]],aggfunc = "mean").reset_index()
+        
+        dist_sum2 = data1.pivot_table(values = [x+suffixes[1] for x in util_list],
+                                      index= ["FISCAL YEAR"+suffixes[1]],
+                                      aggfunc = lambda rows: np.average(rows, data1.iloc[rows.index, "sec_len1"])).reset_index()
         dist_sum2.rename(columns = dict(zip([x+suffixes[1] for x in util_list] +["FISCAL YEAR"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
         return dist_sum, county_sum, count_sum
     else:
         return county_sum, count_sum
-
 
 st.session_state["allow"] = check_password()
 

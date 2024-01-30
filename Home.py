@@ -132,7 +132,7 @@ def data_merge(data1 = None, data2 = None, qctype = None, item_list = None):
 
     for item in  item_list:
         x = data[item+suffixes[0]].values - data[item+suffixes[1]].values
-        data["diff_"+item] = data[item+suffixes[0]].values - data[item+suffixes[1]].values
+        #data["diff_"+item] = data[item+suffixes[0]].values - data[item+suffixes[1]].values
     return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True), x
 
 

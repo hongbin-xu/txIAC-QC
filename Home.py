@@ -266,7 +266,7 @@ if st.session_state["allow"]:
                 st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
                 st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
                 st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
-            if "data" in st.session_state.keys:
+            if "data" in st.session_state.keys():
                 st.download_button("Download merged data",
                                     data = st.session_state["data"].to_csv().encode('utf-8'),
                                     file_name="merged.csv",

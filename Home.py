@@ -215,7 +215,8 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
     county_sum2["RATING CYCLE CODE"] = suffixes[1][1:]
     county_sum2.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
-    if 
+    if perf_indx == "IRI":
+        x =1
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])

@@ -242,7 +242,7 @@ def diff_summary(data= None, qctype = None, item_list = None):
         dist_sum2.rename(columns = dict(zip([x+suffixes[1] for x in util_list] +["FISCAL YEAR"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
-        return dist_sum, county_sum, count_sum
+        return dist_sum, county_sum, count_sum, county_sum10
     else:
         return county_sum, count_sum
 
@@ -360,6 +360,7 @@ if st.session_state["allow"]:
                 st.dataframe(data_sum[2], use_container_width=True)
                 st.markdown("- Comparison")
                 st.dataframe(data_sum[1], use_container_width=True)
+                st.write(data_sum[3])
 
     # Distribution plots
     with st.container():

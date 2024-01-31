@@ -180,7 +180,7 @@ def thre_filter(data= None, thresholds = None, qctype = None):
 
 # Summary by district or county
 @st.cache_data
-def diff_summary(data= None, qctype = None, item_list = None):
+def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
     """
         A function that generates a summary of the data based on the provided parameters.
 
@@ -215,6 +215,8 @@ def diff_summary(data= None, qctype = None, item_list = None):
     county_sum2["RATING CYCLE CODE"] = suffixes[1][1:]
     county_sum2.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
+    if 
+
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
     count_sum = data1.groupby(by = ["COUNTY"+suffixes[0]]).size().reset_index(name = "count").rename(columns ={"COUNTY"+suffixes[0]: "COUNTY"}).sort_values(by = "COUNTY")
@@ -232,6 +234,7 @@ def diff_summary(data= None, qctype = None, item_list = None):
     else:
         return county_sum, count_sum
 
+# Password checking
 st.session_state["allow"] = check_password()
 
 # Check authentication
@@ -252,7 +255,7 @@ if st.session_state["allow"]:
             st.session_state.path2 = st.file_uploader("Data to compare", type ="csv")         
 
             # performance index Pavement type selector and generate list of items
-            perf_indx = st.multiselect(label = "Select measures", options= perf_indx_list.keys())
+            perf_indx = st.selectbox(label = "Select measures", options= perf_indx_list.keys())
             item_list = []
             for distress in perf_indx:
                 for item in  perf_indx_list[distress]:
@@ -329,7 +332,7 @@ if st.session_state["allow"]:
     with st.container():
         # District level, true when compare year by year
         if "data" in st.session_state:
-            data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, item_list = item_list)
+            data_sum = diff_summary(data= st.session_state["data"], perf_indx= perf_indx, qctype = qc_type, item_list = item_list)
             if qc_type =="Audit":
                 st.subheader("County summary")
                 st.markdown("- Matching number of data")

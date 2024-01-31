@@ -260,9 +260,9 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
         dist_sum2.rename(columns = dict(zip([x+suffixes[1] for x in util_list] +["FISCAL YEAR"+suffixes[1]], util_list+["RATING CYCLE CODE"])), inplace= True)
         dist_sum = pd.concat([dist_sum1, dist_sum2]).reset_index(drop=True)
         dist_sum = dist_sum[["RATING CYCLE CODE"]+util_list].sort_values(by = ["RATING CYCLE CODE"])
-        return dist_sum, county_sum, count_sum
+        return dist_sum, county_sum
     else:
-        return county_sum, count_sum
+        return county_sum
 
 # Password checking
 st.session_state["allow"] = check_password()
@@ -365,18 +365,12 @@ if st.session_state["allow"]:
             data_sum = diff_summary(data= st.session_state["data"], perf_indx= perf_indx, qctype = qc_type, item_list = item_list)
             if qc_type =="Audit":
                 st.subheader("County summary")
-                st.markdown("- Matching number of data")
-                st.dataframe(data_sum[1], use_container_width=True)
-                st.markdown("- Comparison")
                 st.dataframe(data_sum[0], use_container_width=True)
 
             if qc_type == "Year by year":
                 st.subheader("District summary")
                 st.dataframe(data_sum[0], use_container_width=True)
                 st.subheader("County summary")
-                st.markdown("- Number of matching data")
-                st.dataframe(data_sum[2], use_container_width=True)
-                st.markdown("- Comparison")
                 st.dataframe(data_sum[1], use_container_width=True)
 
     # Distribution plots

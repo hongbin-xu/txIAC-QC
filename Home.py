@@ -40,7 +40,6 @@ inv_list = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING
             'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
             'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
             'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
-            "RIDE TRAFFIC CAT",
             "RIDE SCORE TRAFFIC LEVEL",
             'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
             'DISTRESS COMMENT CODE', 'LANE WIDTH',
@@ -218,13 +217,13 @@ def diff_summary(data= None, qctype = None, item_list = None):
 
     iri_list = [x for x in item_list if "IRI" in x]
     county_sum10 = data1.pivot_table(values = [x+suffixes[0] for x in iri_list], 
-                                    index= ["COUNTY"+suffixes[0], "RIDE TRAFFIC CAT"+suffixes[0]],
+                                    index= ["COUNTY"+suffixes[0], "RIDE SCORE TRAFFIC LEVEL"+suffixes[0]],
                                     aggfunc = "mean").reset_index()
     county_sum10["RATING CYCLE CODE"] = suffixes[0][1:]
     #county_sum10.rename(columns = dict(zip([x+suffixes[0] for x in item_list] +["COUNTY"+suffixes[0]], item_list+["COUNTY"])), inplace = True)
 
     county_sum20 = data1.pivot_table(values = [x+suffixes[1] for x in iri_list], 
-                                    index= ["COUNTY"+suffixes[0], "RIDE TRAFFIC CAT"+suffixes[0]],
+                                    index= ["COUNTY"+suffixes[0], "RIDE SCORE TRAFFIC LEVEL"+suffixes[0]],
                                     aggfunc = "mean").reset_index()
     county_sum20["RATING CYCLE CODE"] = suffixes[1][1:]
     #county_sum20.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)

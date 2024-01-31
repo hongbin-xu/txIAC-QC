@@ -285,29 +285,33 @@ if st.session_state["allow"]:
 
             try:
                 thresholds = dict()
+                # for year by year
+                # Based on differnce (not absolute value)
                 if qc_type == "Year by year":        
-                    if out_type == "percentile":
+                    if out_type == "percentile": # 2.5 and 97.5 percentiles
                         for item in item_list:
                             if "UTIL" not in item:
                                 threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [2.5, 97.5])
                                 threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
                                 thresholds[item] = threshold_temp
 
-                    if out_type == "box-style":
+                    if out_type == "box-style": # outliers like the ones in the boxplot
                         for item in item_list:
                             if "UTIL" not in item:
                                 threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [25, 75])
                                 threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
                                 threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
                                 thresholds[item] = threshold_temp
+                # for auditing
+                # based on absolute value
                 if qc_type =="Audit":
-                    if out_type == "percentile":
+                    if out_type == "percentile":# 2.5 and 97.5 percentiles
                         for item in item_list:
                             if "UTIL" not in item:
                                 threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
                                 thresholds[item] = [0, threshold_temp]
 
-                    if out_type == "box-style":
+                    if out_type == "box-style": # outliers like the ones in the boxplot
                         for item in item_list:
                             if "UTIL" not in item:
                                 threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
@@ -315,14 +319,12 @@ if st.session_state["allow"]:
                                 threshold_temp = st.number_input(label = "diff_"+item, value = threvals[1])
                                 thresholds[item] = [0, threshold_temp]          
             except:
-                st.write("Error in generating thresholds")
                 pass
 
             # filter add function
             filter_button = st.button("Apply filter")
             if (filter_button)&("data" in st.session_state):
-                st.session_state["data_v1"]= thre_filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
-
+                    st.session_state["data_v1"]= thre_filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
     # Summary
     with st.container():
         # District level, true when compare year by year

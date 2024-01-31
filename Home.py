@@ -333,18 +333,18 @@ if st.session_state["allow"]:
             if qc_type =="Audit":
                 st.subheader("County summary")
                 st.markdown("- Matching number of data")
-                st.dataframe(data_sum[1])
+                st.dataframe(data_sum[1], use_container_width=True)
                 st.markdown("- Comparison")
-                st.dataframe(data_sum[0])
+                st.dataframe(data_sum[0], use_container_width=True)
 
             if qc_type == "Year by year":
                 st.subheader("District summary")
-                st.dataframe(data_sum[0])
+                st.dataframe(data_sum[0], use_container_width=True)
                 st.subheader("County summary")
                 st.markdown("- Number of matching data")
-                st.dataframe(data_sum[2])
+                st.dataframe(data_sum[2], use_container_width=True)
                 st.markdown("- Comparison")
-                st.dataframe(data_sum[1])
+                st.dataframe(data_sum[1], use_container_width=True)
 
     # Distribution plots
     with st.container():
@@ -398,7 +398,7 @@ if st.session_state["allow"]:
                             ["diff_"+x for x in item_list]+
                             [x+st.session_state["suffixes"][0] for x in item_list]+
                             [x+st.session_state["suffixes"][1] for x in item_list])
-            st.write(st.session_state["data_v1"][heading_cols +[x for x in st.session_state["data_v1"].columns if x not in heading_cols]])
+            st.dataframe(st.session_state["data_v1"][heading_cols +[x for x in st.session_state["data_v1"].columns if x not in heading_cols]],use_container_width=True)
 
     # Container for show distribution of outliers across different variables and location
     with st.container():

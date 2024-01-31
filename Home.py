@@ -246,9 +246,10 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
         county_sum0 = pd.concat([county_sum10, county_sum20]).reset_index(drop=True)
         county_sum = county_sum.merge(county_sum0, left_on= ["COUNTY", "RATING CYCLE CODE"],right_on= ["COUNTY_", "RATING CYCLE CODE_"], how = "left", left_index=False)
     
-    county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+ 
-                            [x for x in county_sum.columns if ("COUNTY" not in x)&("RATING CYCLE CODE" not in x)]].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
     count_sum = data1.groupby(by = ["COUNTY"+suffixes[0]]).size().reset_index(name = "count").rename(columns ={"COUNTY"+suffixes[0]: "COUNTY"}).sort_values(by = "COUNTY")
+    county_sum = county_sum.merge(count_sum, on = "COUNTY", how = "left")
+    county_sum = county_sum[["COUNTY", "RATING CYCLE CODE", "count"]+ 
+                            [x for x in county_sum.columns if ("COUNTY" not in x)&("RATING CYCLE CODE" not in x)]].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
 
     # District level, true when compare year by year
     if qctype == "Year by year":

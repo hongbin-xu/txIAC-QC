@@ -215,7 +215,7 @@ def diff_summary(data= None, qctype = None, item_list = None):
     county_sum2["RATING CYCLE CODE"] = suffixes[1][1:]
     county_sum2.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
-    iri_list = [x for i in item_list if "IRI" in x]
+    iri_list = [x for x in item_list if "IRI" in x]
     county_sum10 = data1.pivot_table(values = [x+suffixes[0] for x in iri_list], 
                                     index= ["COUNTY"+suffixes[0], "RIDE TRAFFIC CAT"+suffixes[0]],
                                     aggfunc = "mean").reset_index()

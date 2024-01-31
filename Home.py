@@ -227,6 +227,7 @@ def diff_summary(data= None, qctype = None, item_list = None):
     county_sum10 = county_sum10.pivot(index=['COUNTY', "RATING CYCLE CODE"], 
                                       columns='RIDE SCORE TRAFFIC LEVEL',
                                       values=iri_list).reset_index()
+    county_sum10.columns = ["_".join(x) for x in county_sum10.columns.to_flat_index()]
 
     county_sum20 = data1.pivot_table(values = [x+suffixes[1] for x in iri_list], 
                                     index= ["COUNTY"+suffixes[0], "RIDE SCORE TRAFFIC LEVEL"+suffixes[0]],

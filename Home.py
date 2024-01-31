@@ -344,7 +344,7 @@ if st.session_state["allow"]:
     with st.container():
         # District level, true when compare year by year
         if "data" in st.session_state:
-            data_sum = diff_summary(data= st.session_state["data"], perf_indx= perf_indx, qctype = qc_type, item_list = item_list)
+            data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, item_list = item_list)
             if qc_type =="Audit":
                 st.subheader("County summary")
                 st.markdown("- Matching number of data")

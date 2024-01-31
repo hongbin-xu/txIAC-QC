@@ -243,8 +243,8 @@ def diff_summary(data= None, qctype = None, item_list = None):
 
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
-    county_sum = county_sum.merge(county_sum10, left_on= ["COUNTY", "RATING CYCLE CODE"],right_on= ["COUNTY_", "RATING CYCLE CODE_"], how = "left")
-    county_sum = county_sum.merge(county_sum20, left_on= ["COUNTY", "RATING CYCLE CODE"],right_on= ["COUNTY_", "RATING CYCLE CODE_"], how = "left")
+    county_sum0 = pd.concat([county_sum10, county_sum20]).reset_index(drop=True)
+    county_sum = county_sum.merge(county_sum0, left_on= ["COUNTY", "RATING CYCLE CODE"],right_on= ["COUNTY_", "RATING CYCLE CODE_"], how = "left")
     
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+ 
                             [x for x in county_sum.columns if x not in ["COUNTY", "RATING CYCLE CODE"]]].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])

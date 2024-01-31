@@ -243,8 +243,9 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
                                         values=iri_list).reset_index()
         county_sum20.columns = ["_".join(x) for x in county_sum20.columns.to_flat_index()]
 
-        county_sum0 = pd.concat([county_sum10, county_sum20]).reset_index(drop=True)
-        county_sum = county_sum.merge(county_sum0, left_on= ["COUNTY", "RATING CYCLE CODE"],right_on= ["COUNTY_", "RATING CYCLE CODE_"], how = "left", left_index=False)
+        county_sum0 = pd.concat([county_sum10, county_sum20]).reset_index(drop=True).rename(columns = {"COUNTY_": "COUNTY", "RATING CYCLE CODE_": "RATING CYCLE CODE"})
+        county_sum = county_sum.merge(county_sum0, on= ["COUNTY", "RATING CYCLE CODE"],
+                                      how = "left", left_index=False)
     
     count_sum = data1.groupby(by = ["COUNTY"+suffixes[0]]).size().reset_index(name = "count").rename(columns ={"COUNTY"+suffixes[0]: "COUNTY"}).sort_values(by = "COUNTY")
     county_sum = county_sum.merge(count_sum, on = "COUNTY", how = "left")

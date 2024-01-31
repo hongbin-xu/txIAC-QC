@@ -216,7 +216,18 @@ def diff_summary(data= None, qctype = None, item_list = None):
     county_sum2.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
 
     if perf_indx == "IRI":
-        x
+        county_sum10 = data1.pivot_table(values = [x+suffixes[0] for x in item_list], 
+                                        index= ["COUNTY"+suffixes[0], "RIDE TRAFFIC CAT"+suffixes[0]],
+                                        aggfunc = "mean").reset_index()
+        county_sum10["RATING CYCLE CODE"] = suffixes[0][1:]
+        #county_sum10.rename(columns = dict(zip([x+suffixes[0] for x in item_list] +["COUNTY"+suffixes[0]], item_list+["COUNTY"])), inplace = True)
+
+        county_sum20 = data1.pivot_table(values = [x+suffixes[1] for x in item_list], 
+                                        index= ["COUNTY"+suffixes[0], "RIDE TRAFFIC CAT"+suffixes[0]],
+                                        aggfunc = "mean").reset_index()
+        county_sum20["RATING CYCLE CODE"] = suffixes[1][1:]
+        #county_sum20.rename(columns = dict(zip([x+suffixes[1] for x in item_list] +["COUNTY"+suffixes[1]], item_list+["COUNTY"])), inplace = True)
+
 
     county_sum = pd.concat([county_sum1, county_sum2]).reset_index(drop=True)
     county_sum = county_sum[["COUNTY", "RATING CYCLE CODE"]+item_list].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])

@@ -248,8 +248,8 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
     
     count_sum = data1.groupby(by = ["COUNTY"+suffixes[0]]).size().reset_index(name = "count").rename(columns ={"COUNTY"+suffixes[0]: "COUNTY"}).sort_values(by = "COUNTY")
     county_sum = county_sum.merge(count_sum, on = "COUNTY", how = "left")
-    county_sum = county_sum[["COUNTY", "RATING CYCLE CODE", "count"]+ 
-                            [x for x in county_sum.columns if ("COUNTY" not in x)&("RATING CYCLE CODE" not in x)]].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+    #county_sum = county_sum[["COUNTY", "RATING CYCLE CODE", "count"]+ 
+    #                        [x for x in county_sum.columns if ("COUNTY" not in x)&("RATING CYCLE CODE" not in x)]].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
 
     # District level, true when compare year by year
     if qctype == "Year by year":

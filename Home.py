@@ -247,10 +247,13 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
         county_sum = county_sum.merge(county_sum0, on= ["COUNTY", "RATING CYCLE CODE"],
                                       how = "left", left_index=False)
     
+
+    
     count_sum = data1.groupby(by = ["COUNTY"+suffixes[0]]).size().reset_index(name = "count").rename(columns ={"COUNTY"+suffixes[0]: "COUNTY"}).sort_values(by = "COUNTY")
     county_sum = county_sum.merge(count_sum, on = "COUNTY", how = "left")
-    #county_sum = county_sum[["COUNTY", "RATING CYCLE CODE", "count"]+ 
-    #                        [x for x in county_sum.columns if ("COUNTY" not in x)&("RATING CYCLE CODE" not in x)]].sort_values(by = ["COUNTY", "RATING CYCLE CODE"])
+    county_sum = county_sum
+    county_sum= county_sum[["COUNTY", "RATING CYCLE CODE", "count"]+
+                           [x for x in county_sum.columns if x not in ["COUNTY", "RATING CYCLE CODE", "count"]]].rename(columns={"count": "Number of matching data"}, inplane=True)
 
     # District level, true when compare year by year
     if qctype == "Year by year":
@@ -420,14 +423,16 @@ if st.session_state["allow"]:
     with st.container():
         st.subheader("Filtered data")
         if ("data_v1" in st.session_state)&("data" in st.session_state):
-            st.write("Based on the selected filter, "+ str(st.session_state["data_v1"].shape[0])+" sections were obtained from "+str(st.session_state["data"].shape[0]) + " sections of the matched data")
-            heading_cols = ([x+st.session_state["suffixes"][0] for x in ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY']] + 
-                            [x+st.session_state["suffixes"][1] for x in ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY']]+
-                            ["diff_"+x for x in item_list]+
-                            [x+st.session_state["suffixes"][0] for x in item_list]+
-                            [x+st.session_state["suffixes"][1] for x in item_list])
-            st.dataframe(st.session_state["data_v1"][heading_cols +[x for x in st.session_state["data_v1"].columns if x not in heading_cols]],use_container_width=True)
-
+            try:
+                st.write("Based on the selected filter, "+ str(st.session_state["data_v1"].shape[0])+" sections were obtained from "+str(st.session_state["data"].shape[0]) + " sections of the matched data")
+                heading_cols = ([x+st.session_state["suffixes"][0] for x in ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY']] + 
+                                [x+st.session_state["suffixes"][1] for x in ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY']]+
+                                ["diff_"+x for x in item_list]+
+                                [x+st.session_state["suffixes"][0] for x in item_list]+
+                                [x+st.session_state["suffixes"][1] for x in item_list])
+                st.dataframe(st.session_state["data_v1"][heading_cols +[x for x in st.session_state["data_v1"].columns if x not in heading_cols]],use_container_width=True)
+            except:
+                pass
     # Container for show distribution of outliers across different variables and location
     with st.container():
         st.subheader("Distribution of outliers")

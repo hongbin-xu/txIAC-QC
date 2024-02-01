@@ -366,13 +366,13 @@ if st.session_state["allow"]:
             data_sum = diff_summary(data= st.session_state["data"], perf_indx= perf_indx, qctype = qc_type, item_list = item_list)
             if qc_type =="Audit":
                 st.subheader("County summary")
-                st.dataframe(data_sum[0], use_container_width=True)
+                st.dataframe(data_sum[0])
 
             if qc_type == "Year by year":
                 st.subheader("District summary")
-                st.dataframe(data_sum[0], use_container_width=True)
+                st.dataframe(data_sum[0])
                 st.subheader("County summary")
-                st.dataframe(data_sum[1], use_container_width=True)
+                st.dataframe(data_sum[1])
 
     # Distribution plots
     with st.container():

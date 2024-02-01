@@ -268,30 +268,17 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
     else:
         return county_sum
 
-<<<<<<< HEAD
-
-=======
 # Password checking
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
 st.session_state["allow"] = check_password()
 
 # Check authentication
 if st.session_state["allow"]: 
-<<<<<<< HEAD
-    # MySQL connection and load data
-        
-    # Siderbar
-    try: 
-        with st.sidebar:
-            st.header("PMIS QC")
-=======
     try:     
         # Siderbar
         with st.sidebar:
             st.header("PMIS QC")
 
             # Loading and merging
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
             st.subheader("I: Data Loading and Merging")
             with st.container():
                 # QC type selector
@@ -317,12 +304,6 @@ if st.session_state["allow"]:
                 # Data loading and merging
                 merge_button = st.button("Load and merge data")
                 if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
-<<<<<<< HEAD
-                    st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2)
-                    st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
-                    st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter
-
-=======
                     try: 
                         del st.session_state["data1"], st.session_state["data2"], st.session_state["data"], st.session_state["data_v1"], st.session_state["data_v2"]
                     except:
@@ -339,58 +320,39 @@ if st.session_state["allow"]:
                                         mime="txt/csv")
             
             # Threshold filters
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
             st.subheader("II: Data filter")
             with st.container():
                 out_type = st.selectbox("Threshold identifier", options=["percentile", "box-style"], key = 1)
 
                 try:
                     thresholds = dict()
-<<<<<<< HEAD
-                    if qc_type == "Year by year":        
-                        if out_type == "percentile":
-=======
                     # for year by year
                     # Based on differnce (not absolute value)
                     if qc_type == "Year by year":        
                         if out_type == "percentile": # 2.5 and 97.5 percentiles
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                             for item in item_list:
                                 if "UTIL" not in item:
                                     threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [2.5, 97.5])
                                     threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
                                     thresholds[item] = threshold_temp
 
-<<<<<<< HEAD
-                        if out_type == "box-style":
-=======
                         if out_type == "box-style": # outliers like the ones in the boxplot
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                             for item in item_list:
                                 if "UTIL" not in item:
                                     threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [25, 75])
                                     threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
                                     threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
                                     thresholds[item] = threshold_temp
-<<<<<<< HEAD
-                    if qc_type =="Audit":
-                        if out_type == "percentile":
-=======
                     # for auditing
                     # based on absolute value
                     if qc_type =="Audit":
                         if out_type == "percentile":# 2.5 and 97.5 percentiles
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                             for item in item_list:
                                 if "UTIL" not in item:
                                     threshold_temp = st.number_input(label = "diff_"+item, value = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), 95))
                                     thresholds[item] = [0, threshold_temp]
 
-<<<<<<< HEAD
-                        if out_type == "box-style":
-=======
                         if out_type == "box-style": # outliers like the ones in the boxplot
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                             for item in item_list:
                                 if "UTIL" not in item:
                                     threvals = np.nanpercentile(abs(st.session_state["data"]["diff_"+item].values), [25, 75])
@@ -400,27 +362,6 @@ if st.session_state["allow"]:
                 except:
                     pass
 
-<<<<<<< HEAD
-                filter_button = st.button("Apply filter")
-                # filter add function
-                if (filter_button):
-                    st.session_state["data_v1"]= thre_filter(data= st.session_state["data"], thresholds = thresholds, qctype= qc_type)
-    except:
-        pass
-
-    # Main
-    try:
-        with st.container():
-            # District level, true when compare year by year
-            if "data" in st.session_state:
-                data_sum = diff_summary(data= st.session_state["data"], qctype = qc_type, item_list = item_list)
-                if qc_type =="Audit":
-                    st.subheader("County summary")
-                    st.markdown("- Matching number of data")
-                    st.dataframe(data_sum[1])
-                    st.markdown("- Comparison")
-                    st.dataframe(data_sum[0])
-=======
                 # filter add function
                 filter_button = st.button("Apply filter")
                 if (filter_button)&("data" in st.session_state):
@@ -433,23 +374,11 @@ if st.session_state["allow"]:
                 if qc_type =="Audit":
                     st.subheader("County summary")
                     st.dataframe(data_sum)
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
 
                 if qc_type == "Year by year":
                     st.subheader("District summary")
                     st.dataframe(data_sum[0])
                     st.subheader("County summary")
-<<<<<<< HEAD
-                    st.markdown("- Number of matching data")
-                    st.dataframe(data_sum[2])
-                    st.markdown("- Comparison")
-                    st.dataframe(data_sum[1])
-
-        if "data" in st.session_state:
-            # Plot
-            with st.container():
-                st.subheader("Distribution Plots")
-=======
                     st.dataframe(data_sum[1])
 
         # Distribution plots
@@ -457,73 +386,12 @@ if st.session_state["allow"]:
             st.subheader("Distribution Plots")
             if "data" in st.session_state:
                 # Plot
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                 for p in perf_indx:
                     list_temp = [x for x in perf_indx_list[p] if "UTIL" not in x]
                     rows = int(math.ceil(len(list_temp)/3))
                     st.write(p + " (Pathway - Audit/previous year) " + "distribution")
                     fig = make_subplots(rows= rows, cols = 3,
                                         specs=[[{"secondary_y": True}]*3]*rows)
-<<<<<<< HEAD
-
-                    i = 0
-                    for item in list_temp:
-                        if "UTIL" not in item:
-                            row = i//3+1
-                            col = i%3+1
-                            xdata = st.session_state["data"][["diff_"+item]]
-
-                            if p !="IRI":
-                                #if qc_type == "Audit":
-                                #    xdata = abs(st.session_state["data"]["diff_"+item])
-                                #if qc_type == "Year by year":
-
-                                hist = go.Histogram(x=xdata["diff_"+item], nbinsx=50, showlegend = False)
-                                ecdf = px.ecdf(xdata["diff_"+item])#, x="d_"+item)
-                                ecdf = go.Scatter(x=ecdf._data[0]["x"], y=ecdf._data[0]['y'], mode='lines',  yaxis='y2', showlegend = False)
-                                fig.add_trace(hist, row=row, col=col, secondary_y = False)
-                                fig.add_trace(ecdf, row=row, col=col, secondary_y = True)
-                                #fig.update_layout(row = row, col = col, yaxis_title='Count', yaxis2=dict(title='cdf', overlaying='y', side='right'))
-                                fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
-                                fig.update_yaxes(title_text="count", row=row, col=col, secondary_y=False)
-                                fig.update_yaxes(title_text='cdf', row=row, col=col, secondary_y=True)
-                            if p == "IRI":
-                                iri_diff_bin = {"bins":[-np.inf, -200, -175, -150, -125, -100, -75, -50, -25, 0, 25, 50, 75, 100, 125, 150, 175, 200, np.inf], 
-                                                "labels":["<-200", "-200-175", "-175-150", "-150-125", "-125-100", "-100-75", "-75-50", "-50-25", "-25-0", "0-25", "25-50", "50-75", "75-100", "100-125", "125-150", "150-175", "175-200", ">200"]}
-                                xdata["diff_"+item] = pd.cut(xdata["diff_"+item], bins= iri_diff_bin["bins"], labels = iri_diff_bin["labels"])
-                                xdata = xdata.groupby(by="diff_"+item).size().reset_index(name="count")
-                                hist = go.Bar(x = xdata["diff_"+item], y = xdata["count"], showlegend = False)
-                                fig.add_trace(hist, row=row, col=col)
-                                fig.update_xaxes(title_text = "diff: "+item, row = row, col = col)
-                            i+=1
-                    fig.update_layout(template="simple_white")
-                    fig.update_layout(height=400*rows)
-                    st.plotly_chart(fig, use_container_width= True)
-
-            # Filtered data
-            with st.container():
-                st.subheader("Filtered data")
-                st.write("Based on the selected filter, "+ str(st.session_state["data_v1"].shape[0])+" sections were obtained from "+str(st.session_state["data"].shape[0]) + " sections of the matched data")
-                col_heading = ([x+st.session_state["suffixes"][0] for x in inv_list[:7]] + 
-                                [x+st.session_state["suffixes"][1] for x in inv_list[:7]]+
-                                ["diff_"+x for x in item_list]+
-                                [x+st.session_state["suffixes"][0] for x in item_list]+
-                                [x+st.session_state["suffixes"][1] for x in item_list])
-                st.write(st.session_state["data_v1"][col_heading +[x for x in st.session_state["data_v1"].columns if x not in col_heading]])
-
-            # Container for show distribution of outliers across different variables and location
-            with st.container():
-                st.subheader("Distribution of outliers")
-
-                #st.markdown("- Location & Matching")
-                #fig = make_subplots(rows= 1, cols = 2)
-
-                col1, col2 = st.columns(2, gap = "medium")
-
-                with col1:
-                    st.session_state["data_v2"] = st.session_state["data"].copy()
-                    # County
-=======
 
                     i = 0
                     for item in list_temp:
@@ -580,7 +448,6 @@ if st.session_state["allow"]:
 
                 # County
                 try: 
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                     st.markdown("- COUNTY")
                     df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
                     df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
@@ -595,107 +462,6 @@ if st.session_state["allow"]:
                     fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
                     st.plotly_chart(fig, use_container_width= True)
-<<<<<<< HEAD
-
-                    # count of the filtered data based on SIGNED HWY AND ROADBED ID
-                    st.markdown("- SIGNED HWY AND ROADBED ID")
-                    df1 = st.session_state["data_v1"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
-                    df1["data"] = "outlier"
-                    df2["data"] = "all matched"
-                    df = df1.merge(df2, how = "left", on = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).rename(columns = {"SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]: "SIGNED HWY AND ROADBED ID"})
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="SIGNED HWY AND ROADBED ID")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    # Lane number
-                    st.markdown("- LANE NUMBER")
-                    st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
-                    st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "indicator")
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="LANE NUMBER")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-                    
-                    # Direction
-                    st.markdown("- DIRECTION")
-                    st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
-                    st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "indicator")
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="DIRECTION")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    # Vehicle id
-                    st.markdown("- VEHICLE ID")   
-                    st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["VEHICLE ID" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["VEHICLE ID" + st.session_state["suffixes"][1]].astype("str")
-                    st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["VEHICLE ID" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["VEHICLE ID" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "indicator")
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="VEHICLE ID")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    # Average speed
-                    st.markdown("- AVERAGE SPEED")
-
-                    speed_avg_bins = {"bins":[0, 10, 20, 30, 40, 50, 60, 70, 80, 90], "labels":["0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90"]}
-                    speed_diff_bins = {"bins":[-np.inf, -40, -30, -20, -10, 0, 10, 20, 30, 40, np.inf], "labels":["<-40", "-40-30", "-30-20", "-20-10", "-10-0", "0-10", "10-20", "20-30", "30-40", ">40"]}
-
-                    st.session_state["data_v1"]["avg speed bins"] = pd.cut(st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]], bins = speed_avg_bins["bins"], labels = speed_avg_bins["labels"])
-                    st.session_state["data_v1"]["diff speed bins"] = pd.cut(st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][0]] - st.session_state["data_v1"]["AVERAGE SPEED"+st.session_state["suffixes"][1]], bins = speed_diff_bins["bins"], labels = speed_diff_bins["labels"])
-
-                    st.session_state["data_v2"]["avg speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]], bins = speed_avg_bins["bins"], labels = speed_avg_bins["labels"])
-                    st.session_state["data_v2"]["diff speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]] - st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][1]], bins = speed_diff_bins["bins"], labels = speed_diff_bins["labels"])
-
-                    df1 = st.session_state["data_v1"].groupby(by = "avg speed bins").size().reset_index(name = "count_out")
-                    df2 = st.session_state["data_v2"].groupby(by = "avg speed bins").size().reset_index(name = "count_all")
-
-                    df = df1.merge(df2, how = "left", on = "avg speed bins")
-                    df["Percentage of all"] = df["count_out"]/df["count_all"]*100
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="AVERAGE SPEED")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").size().reset_index(name = "count_out")
-                    df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").size().reset_index(name = "count_all")
-
-                    df = df1.merge(df2, how = "left", on = "diff speed bins")
-                    df["Percentage of all"] = df["count_out"]/df["count_all"]*100
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="AVERAGE SPEED DIFF")
-=======
                 except:
                     pass
 
@@ -797,107 +563,10 @@ if st.session_state["allow"]:
                     fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
                     fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
                     fig.update_xaxes(title_text="AVERAGE SPEED")
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
                     fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
                     st.plotly_chart(fig, use_container_width= True)
 
-<<<<<<< HEAD
-                with col2:
-                    # Start time
-                    st.markdown("- START TIME")
-                    df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "START TIME"+st.session_state["suffixes"][0]).rename(columns = {"START TIME"+st.session_state["suffixes"][0]: "START TIME"})
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
-                    fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
-                    fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row =2, col=1)
-                    fig.update_xaxes(title_text="START TIME", row=2, col=1)
-                    fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
-                    st.session_state["data_v2"]["time_diff"] = st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][1]]
-
-                    df1 = st.session_state["data_v1"].groupby(by = "time_diff").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "time_diff").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "time_diff")
-                    df["time_diff"] = df["time_diff"].dt.days
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
-                    fig.add_trace(go.Bar(x =df["time_diff"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
-                    fig.add_trace(go.Bar(x =df["time_diff"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row =2, col=1)
-                    fig.update_xaxes(title_text="time_diff", row=2, col =1)
-                    fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    # RIDE COMMENT CODE
-                    st.markdown("- RIDE COMMENT CODE")
-                    st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-                    st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["RIDE COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "indicator")
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="RIDE COMMENT CODE")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    # ACP RUT AUTO COMMENT CODE
-                    st.markdown("- ACP RUT AUTO COMMENT CODE")
-                    st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-                    st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "indicator")
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="ACP RUT AUTO COMMENT CODE")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-
-                    # INTERFACE FLAG
-                    st.markdown("- INTERFACE FLAG")
-                    st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
-                    st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
-                    df = df1.merge(df2, how = "left", on = "indicator")
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="INTERFACE FLAG")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-                    
-                    # LANE WIDTH
-                    st.markdown("- LANE WIDTH")
-                    df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
-                    df1["data"] = "outlier"
-                    df2["data"] = "all matched"
-                    df = df1.merge(df2, how = "left", on = "LANE WIDTH"+st.session_state["suffixes"][0]).rename(columns = {"LANE WIDTH"+st.session_state["suffixes"][0]: "LANE WIDTH"})
-                    df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
-                    fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
-                    fig.update_xaxes(title_text="LANE WIDTH")
-                    fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
-                    fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
-                    st.plotly_chart(fig, use_container_width= True)
-=======
                     df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").size().reset_index(name = "count_out")
                     df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").size().reset_index(name = "count_all")
 
@@ -1042,6 +711,5 @@ if st.session_state["allow"]:
                         st.plotly_chart(fig, use_container_width= True)
                     except:
                         pass
->>>>>>> e3efbdc85e159b6ea764c2211a7660ef5665f4ea
     except:
         pass

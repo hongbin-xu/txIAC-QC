@@ -304,7 +304,10 @@ if st.session_state["allow"]:
             # Data loading and merging
             merge_button = st.button("Load and merge data")
             if merge_button&(st.session_state.path1 is not None)&(st.session_state.path2 is not None):
-                del st.session_state["data1"], st.session_state["data2"], st.session_state["data"], st.session_state["data_v1"], st.session_state["data_v2"]
+                try: 
+                    del st.session_state["data1"], st.session_state["data2"], st.session_state["data"], st.session_state["data_v1"], st.session_state["data_v2"]
+                except:
+                    pass
                 st.session_state["data1"], st.session_state["data2"] = data_load(data1_path= st.session_state.path1, data2_path= st.session_state.path2, item_list = item_list)
                 st.session_state["suffixes"], st.session_state["data"] = data_merge(data1 = st.session_state["data1"], data2 = st.session_state["data2"], qctype = qc_type,  item_list = item_list)
                 st.session_state["data"] = pav_filter(data= st.session_state["data"], pavtype= pav_type) # Pavement type filter

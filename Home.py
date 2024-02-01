@@ -253,7 +253,7 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
     county_sum = county_sum.merge(count_sum, on = "COUNTY", how = "left")
     county_sum = county_sum
     county_sum= county_sum[["COUNTY", "RATING CYCLE CODE", "count"]+
-                           [x for x in county_sum.columns if x not in ["COUNTY", "RATING CYCLE CODE", "count"]]].rename(columns={"count": "Number of matching data"}, inplane=True)
+                           [x for x in county_sum.columns if x not in ["COUNTY", "RATING CYCLE CODE", "count"]]].rename(columns={"count": "Number of matching data"})
 
     # District level, true when compare year by year
     if qctype == "Year by year":

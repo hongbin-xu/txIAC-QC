@@ -120,22 +120,22 @@ def data_merge(data1 = None, data2 = None, qctype = None, item_list = None):
     
     # merging data1 and data2
     data1_v1 = data1_v1.loc[data1_v1["COUNTY"].isin(data2_v1["COUNTY"])].reset_index(drop = True)
-    data1_v1["id"]= np.arange(data1_v1.shape[0])
-    data2_v1["id"] = np.arange(data2_v1.shape[0])
+    data1_v1["idm"]= np.arange(data1_v1.shape[0])
+    data2_v1["idm"] = np.arange(data2_v1.shape[0])
 
-    id_match = data1_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "id"]].merge(data2_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "id"]],
+    id_match = data1_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "idm"]].merge(data2_v1[["SIGNED HWY AND ROADBED ID", "COUNTY", "BEGINNING DFO", "ENDING DFO", "idm"]],
                                                                                                             how ="left", 
                                                                                                             on = ["SIGNED HWY AND ROADBED ID", "COUNTY"],
                                                                                                             suffixes= suffixes)
     id_match = id_match.loc[(abs(id_match["BEGINNING DFO"+suffixes[0]]-id_match["BEGINNING DFO"+suffixes[1]])<0.05)&(abs(id_match["ENDING DFO"+suffixes[0]]-id_match["ENDING DFO"+suffixes[1]])<0.05)]
 
     # id_2024, id_2023, id
-    data = id_match[["id"+suffixes[0], "id"+suffixes[1]]].merge(data1_v1, how = "left", left_on = "id"+suffixes[0], right_on = "id") # merge data
-    data = data.drop(columns = ["id"+suffixes[0], "id"]).merge(data2_v1, how = "left", left_on = "id"+suffixes[1], right_on = "id", suffixes = suffixes) # merge data
+    data = id_match[["idm"+suffixes[0], "idm"+suffixes[1]]].merge(data1_v1, how = "left", left_on = "idm"+suffixes[0], right_on = "idm") # merge data
+    data = data.drop(columns = ["idm"+suffixes[0], "idm"]).merge(data2_v1, how = "left", left_on = "idm"+suffixes[1], right_on = "idm", suffixes = suffixes) # merge data
 
     for item in  item_list:
         data["diff_"+item] = data[item+suffixes[0]].values - data[item+suffixes[1]].values
-    return suffixes, data.drop(columns = ["id"+suffixes[1], "id"]).reset_index(drop = True)
+    return suffixes, data.drop(columns = ["idm"+suffixes[1], "idm"]).reset_index(drop = True)
 
 
 @st.cache_data

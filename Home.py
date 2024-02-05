@@ -30,15 +30,17 @@ perf_indx_list = {  "IRI":['ROUGHNESS (IRI) - LEFT WHEELPATH','ROUGHNESS (IRI) -
                 }
 
 # Information list contains informaiton about location and measurement information
-inv_list = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO', 'RESPONSIBLE DISTRICT', 'COUNTY','LANE NUMBER', 
+inv_list = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING DFO',
+            'RESPONSIBLE DISTRICT', 'COUNTY','LANE NUMBER', 
             'HEADER TYPE', 'START TIME', 'VEHICLE ID', 'VEHICLE VIN',
             'CERTIFICATION DATE', 'TTI CERTIFICATION CODE', 'OPERATOR NAME',
             'SOFTWARE VERSION', 'MAXIMUM SPEED', 'MINIMUM SPEED', 'AVERAGE SPEED',
             'OPERATOR COMMENT', 'RATING CYCLE CODE', 'FILE NAME',
             'RESPONSIBLE MAINTENANCE SECTION',
-            'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
-            'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
-            'BEARING END', 'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
+            #'LATITUDE BEGIN', 'LONGITUDE BEGIN', 'ELEVATION BEGIN',
+            #'BEARING BEGIN', 'LATITUDE END', 'LONGITUDE END', 'ELEVATION END',
+            #'BEARING END', 
+            'BROAD PAVEMENT TYPE', 'MODIFIED BROAD PAVEMENT TYPE',
             'BROAD PAVEMENT TYPE SHAPEFILE', 'RIDE COMMENT CODE',
             "RIDE SCORE TRAFFIC LEVEL",
             'ACP RUT AUTO COMMENT CODE', 'RATER NAME1', 'INTERFACE FLAG', 'RATER NAME2',
@@ -47,8 +49,9 @@ inv_list = ['FISCAL YEAR', 'SIGNED HWY AND ROADBED ID', 'BEGINNING DFO', 'ENDING
             'DETAILED PVMNT TYPE VISUAL CODE', 
              'DIRECTION','LANE CODE','ATTACHMENT',
             'USER UPDATE', 'DATE UPDATE', 
-            'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
-            'DFO FROM', 'DFO TO', 'PMIS HIGHWAY SYSTEM', 'LAST YEAR LANE ERROR']
+            #'CALCULATED LATITUDE', 'CALCULATED LONGITUDE',
+            #'DFO FROM', 'DFO TO', 
+            'PMIS HIGHWAY SYSTEM', 'LAST YEAR LANE ERROR']
 
 def check_password():
     """Returns `True` if the user had a correct password."""
@@ -93,9 +96,9 @@ def data_load(data1_path, data2_path, item_list = None):
 
     # File uploading
     data1 = pd.read_csv(data1_path)
-    #data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
+    data1['START TIME'] = pd.to_datetime(data1['START TIME'], format='%Y%m%d%H%M%S')
     data2 = pd.read_csv(data2_path)#
-    #data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
+    data2['START TIME'] = pd.to_datetime(data2['START TIME'], format='%Y%m%d%H%M%S')
     data1 = data1[heading_cols+ [x for x in data1.columns if x not in heading_cols]]
     data2 = data2[heading_cols+ [x for x in data2.columns if x not in heading_cols]]
     return data1, data2

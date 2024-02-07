@@ -601,6 +601,7 @@ if st.session_state["allow"]:
                     fig.update_xaxes(title_text="START TIME", row=2, col=1)
                     fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
+                    fig.update_layout(hovermode="x unified")
                     st.plotly_chart(fig, use_container_width= True)
 
                     st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
@@ -617,6 +618,7 @@ if st.session_state["allow"]:
                     fig.update_xaxes(title_text="time_diff", row=2, col =1)
                     fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
+                    fig.update_layout(hovermode="x unified")
                     st.plotly_chart(fig, use_container_width= True)
                 except:
                     pass

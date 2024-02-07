@@ -484,6 +484,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="SIGNED HWY AND ROADBED ID", row=2, col =1)
                 fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
+                fig.update_layout(hovermode="x unified")
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass

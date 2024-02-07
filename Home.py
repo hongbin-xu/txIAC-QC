@@ -327,26 +327,26 @@ if st.session_state["allow"]:
         st.subheader("II: Data filter")
         with st.container():
             out_type = st.selectbox("Threshold identifier", options=["percentile", "box-style"], key = 1)
-
+            filter_items = st.multiselect(label = "Select measures to filter",
+                                          options= [x for x in item_list if "UTIL" not in x], 
+                                          default = [x for x in item_list if "UTIL" not in x])
             try:
                 thresholds = dict()
                 # for year by year
                 # Based on differnce (not absolute value)
                 if qc_type == "Year by year":        
                     if out_type == "percentile": # 2.5 and 97.5 percentiles
-                        for item in item_list:
-                            if "UTIL" not in item:
-                                threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [2.5, 97.5])
-                                threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
-                                thresholds[item] = threshold_temp
+                        for item in filter_items:
+                            threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [2.5, 97.5])
+                            threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
+                            thresholds[item] = threshold_temp
 
                     if out_type == "box-style": # outliers like the ones in the boxplot
-                        for item in item_list:
-                            if "UTIL" not in item:
-                                threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [25, 75])
-                                threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
-                                threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
-                                thresholds[item] = threshold_temp
+                        for item in filter_items:
+                            threvals = np.nanpercentile(st.session_state["data"]["diff_"+item].values, [25, 75])
+                            threvals = [threvals[0]-1.5*(threvals[1]-threvals[0]), threvals[1]+1.5*(threvals[1]-threvals[0])]
+                            threshold_temp = [st.number_input(label = "diff_"+item+"_lower", value = threvals[0]), st.number_input(label = "diff_"+item+"_upper", value = threvals[1])]
+                            thresholds[item] = threshold_temp
                 # for auditing
                 # based on absolute value
                 if qc_type =="Audit":

@@ -481,10 +481,9 @@ if st.session_state["allow"]:
                 fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
                 fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row=1, col=1)
                 fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row=2, col=1)
-                fig.update_xaxes(title_text="SIGNED HWY AND ROADBED ID")
+                fig.update_xaxes(title_text="SIGNED HWY AND ROADBED ID", row=2, col =1)
                 fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
-
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass

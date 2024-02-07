@@ -247,10 +247,9 @@ def diff_summary(data= None, perf_indx= None, qctype = None, item_list = None):
                                         values="SECTION LENGTH").reset_index()
 
         county_sum0 = pd.concat([county_sum10, county_sum20]).reset_index(drop=True)
-        county_sum0[["COUNTY", "RATING CYCLE CODE", "LOW", "MEDIUM", "HIGH"]].rename(columns = {"LOW":"MILES OF LOW RIDE TRIFFIC", 
-                                                                                                 "MEDIUM": "MILES OF MEDIUM RIDE TRIFFIC",
-                                                                                                 "HIGH": "MILES OF HIGH RIDE TRIFFIC"},
-                                                                                    inplace = True)
+        county_sum0 = county_sum0[["COUNTY", "RATING CYCLE CODE", "LOW", "MEDIUM", "HIGH"]].rename(columns = {"LOW":"MILES OF LOW RIDE TRIFFIC", 
+                                                                                                            "MEDIUM": "MILES OF MEDIUM RIDE TRIFFIC",
+                                                                                                            "HIGH": "MILES OF HIGH RIDE TRIFFIC"})
         county_sum = county_sum.merge(county_sum0, on= ["COUNTY", "RATING CYCLE CODE"],
                                       how = "left", left_index=False)
     

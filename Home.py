@@ -454,21 +454,21 @@ if st.session_state["allow"]:
             try: 
                 st.markdown("- COUNTY")
                 df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).agg(count_out = ("COUNTY"+st.session_state["suffixes"][0], "count"),
-                                                                                                             miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index().sort_values(by = "count_out", ascending = False)
+                                                                                                             miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 
                 df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).agg(count_all = ("COUNTY"+st.session_state["suffixes"][0], "count"),
                                                                                                              miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
-                df2["data"] = "all matched"
-                df = df1.merge(df2, how = "left", on = "COUNTY"+st.session_state["suffixes"][0]).rename(columns = {"COUNTY"+st.session_state["suffixes"][0]: "COUNTY"})
+                df = df1.merge(df2, how = "left", on = "COUNTY"+st.session_state["suffixes"][0]).rename(columns = {"COUNTY"+st.session_state["suffixes"][0]: "COUNTY"}).sort_values(by = "count_out", ascending = False)
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", customdata = df["miles_out"],
-                                     hovertemplate ='<b>Outlier data</b>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{customdata:.2f}', offsetgroup=1), 
+                                     hovertemplate ='<b>Outlier data</b>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>OutlierMiles</b>:%{customdata:.2f}', offsetgroup=1), 
                              secondary_y= False)                          
                 
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
-                                     hovertemplate ='<b>PCT</b>: %{y:.1f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>All data</b>:%{customdata[0]:.0f}'+'<b>All Miles</b>:%{customdata[1]:.2f}', offsetgroup=2),
+                                     hovertemplate ='<b>Outlier PCT</b>: %{y:.1f}'+'<br><b>COUNTY</b>: %{x}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', offsetgroup=2),
                              secondary_y= True)
+                
                 fig.update_xaxes(title_text="COUNTY")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
@@ -486,8 +486,14 @@ if st.session_state["allow"]:
                 df = df1.merge(df2, how = "left", on = "SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]).rename(columns = {"SIGNED HWY AND ROADBED ID"+st.session_state["suffixes"][0]: "SIGNED HWY AND ROADBED ID"})
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
-                fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row=1, col=1)
-                fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row=2, col=1)
+                fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["count_out"], name = "Number of outliers",
+                                     customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
+                                     hovertemplate ='<b>PCT</b>: %{y:.1f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>All data</b>:%{customdata[0]:.0f}<br>'+'<b>All Miles</b>:%{customdata[1]:.2f}'), 
+                              row=1, col=1)
+                
+                fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["Percentage of all"], name = "Percentage of all"), 
+                              row=2, col=1)
+                
                 fig.update_xaxes(title_text="SIGNED HWY AND ROADBED ID", row=2, col =1)
                 fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)

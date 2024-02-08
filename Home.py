@@ -684,13 +684,26 @@ if st.session_state["allow"]:
                 # Start time
                 try: 
                     st.markdown("- START TIME")
-                    df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
+                    df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).agg(count_out = ("indicator", "count"),
+                                                                                                                     miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                    df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).agg(count_all = ("indicator", "count"),
+                                                                                                                     miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+
                     df = df1.merge(df2, how = "left", on = "START TIME"+st.session_state["suffixes"][0]).rename(columns = {"START TIME"+st.session_state["suffixes"][0]: "START TIME"})
                     df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+                    df.sort_values(by = "count_out", ascending = False, inplace = True)
+
                     fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
-                    fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), row = 1, col=1)
-                    fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), row =2, col=1)
+                    fig.add_trace(go.Bar(x =df["START TIME"], y = df["count_out"], name = "Number of outliers", 
+                                         customdata = df["miles_out"],
+                                         hovertemplate ='<b>Speed DIFF</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}', 
+                                         offsetgroup=1), 
+                                  row = 1, col=1)
+                    fig.add_trace(go.Bar(x =df["START TIME"], y = df["Percentage of all"], name = "Percentage of all", 
+                                         customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                         hovertemplate ='<b>Speed DIFF</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
+                                         offsetgroup=2), 
+                                  row =2, col=1)
                     fig.update_xaxes(title_text="START TIME", row=2, col=1)
                     fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)

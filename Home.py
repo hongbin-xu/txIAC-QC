@@ -466,7 +466,7 @@ if st.session_state["allow"]:
                                      hovertemplate ='<b>Outlier data</b>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{customdata:.2f}', offsetgroup=1), 
                              secondary_y= False)                          
                 
-                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", customdata = np.dstack((df["count_all"], df["miles_out"])),
+                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
                                      hovertemplate ='<b>PCT</b>: %{y:.1f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>All data</b>:%{customdata[0]:.0f}'+'<b>All Miles</b>:%{customdata[1]:.2f}', offsetgroup=2),
                              secondary_y= True)
                 fig.update_xaxes(title_text="COUNTY")

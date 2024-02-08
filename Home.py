@@ -463,7 +463,7 @@ if st.session_state["allow"]:
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", 
-                                     hovertemplate ='<i>Outlier</i>: $%{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{miles_out}', offsetgroup=1), 
+                                     hovertemplate ='<i>Outlier</i>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{df["miles_out"]}', offsetgroup=1), 
                              secondary_y= False)                          
                 
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)

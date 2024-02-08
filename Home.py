@@ -629,9 +629,9 @@ if st.session_state["allow"]:
                 st.session_state["data_v2"]["avg speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]], bins = speed_avg_bins["bins"], labels = speed_avg_bins["labels"])
                 st.session_state["data_v2"]["diff speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]] - st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][1]], bins = speed_diff_bins["bins"], labels = speed_diff_bins["labels"])
 
-                df1 = st.session_state["data_v1"].groupby(by = "avg speed bins").agg(count_out = ("indicator", "count"),
+                df1 = st.session_state["data_v1"].groupby(by = "avg speed bins").agg(count_out = ("avg speed bins", "count"),
                                                                                      miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
-                df2 = st.session_state["data_v2"].groupby(by = "avg speed bins").agg(count_all = ("indicator", "count"),
+                df2 = st.session_state["data_v2"].groupby(by = "avg speed bins").agg(count_all = ("avg speed bins", "count"),
                                                                                      miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 df = df1.merge(df2, how = "left", on = "avg speed bins")
                 df["Percentage of all"] = df["count_out"]/df["count_all"]*100
@@ -654,9 +654,9 @@ if st.session_state["allow"]:
 
                 st.plotly_chart(fig, use_container_width= True)
 
-                df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").agg(count_out = ("indicator", "count"),
+                df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").agg(count_out = ("diff speed bins", "count"),
                                                                                       miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
-                df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").agg(count_all = ("indicator", "count"),
+                df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").agg(count_all = ("diff speed bins", "count"),
                                                                                       miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
 
                 df = df1.merge(df2, how = "left", on = "diff speed bins")
@@ -684,9 +684,9 @@ if st.session_state["allow"]:
                 # Start time
                 try: 
                     st.markdown("- START TIME")
-                    df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).agg(count_out = ("indicator", "count"),
+                    df1 = st.session_state["data_v1"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).agg(count_out = ("START TIME"+st.session_state["suffixes"][0], "count"),
                                                                                                                      miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
-                    df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).agg(count_all = ("indicator", "count"),
+                    df2 = st.session_state["data_v2"].groupby(by = "START TIME"+st.session_state["suffixes"][0]).agg(count_all = ("START TIME"+st.session_state["suffixes"][0], "count"),
                                                                                                                      miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
 
                     df = df1.merge(df2, how = "left", on = "START TIME"+st.session_state["suffixes"][0]).rename(columns = {"START TIME"+st.session_state["suffixes"][0]: "START TIME"})
@@ -713,9 +713,9 @@ if st.session_state["allow"]:
                     st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]
                     st.session_state["data_v2"]["time_diff"] = st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v2"]["START TIME"+st.session_state["suffixes"][1]]
 
-                    df1 = st.session_state["data_v1"].groupby(by = "time_diff").agg(count_out = ("indicator", "count"),
+                    df1 = st.session_state["data_v1"].groupby(by = "time_diff").agg(count_out = ("time_diff", "count"),
                                                                                     miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
-                    df2 = st.session_state["data_v2"].groupby(by = "time_diff").agg(count_all = ("indicator", "count"),
+                    df2 = st.session_state["data_v2"].groupby(by = "time_diff").agg(count_all = ("time_diff", "count"),
                                                                                     miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                     df = df1.merge(df2, how = "left", on = "time_diff")
                     df["time_diff"] = df["time_diff"].dt.days
@@ -780,13 +780,25 @@ if st.session_state["allow"]:
                         st.markdown("- ACP RUT AUTO COMMENT CODE")
                         st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
                         st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["ACP RUT AUTO COMMENT CODE" + st.session_state["suffixes"][1]].astype("str")
-                        df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                        df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
+                        df1 = st.session_state["data_v1"].groupby(by = "indicator").agg(count_out = ("indicator", "count"),
+                                                                                        miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                        df2 = st.session_state["data_v2"].groupby(by = "indicator").agg(count_all = ("indicator", "count"),
+                                                                                        miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                         df = df1.merge(df2, how = "left", on = "indicator")
                         df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+                        df.sort_values(by = "count_out", ascending = False, inplace = True)
+
                         fig = make_subplots(specs=[[{"secondary_y": True}]])
-                        fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                        fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                        fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", 
+                                             customdata = df["miles_out"],
+                                             hovertemplate ='<b>RUT COMMENT</b>: %{x}'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}',
+                                             offsetgroup=1), 
+                                      secondary_y= False)
+                        fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", 
+                                             customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                             hovertemplate ='<b>RUT COMMENT</b>: %{x}'+'<b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}',
+                                             offsetgroup=2), 
+                                      secondary_y= True)
                         fig.update_xaxes(title_text="ACP RUT AUTO COMMENT CODE")
                         fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                         fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
@@ -801,13 +813,25 @@ if st.session_state["allow"]:
                     st.markdown("- INTERFACE FLAG")
                     st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
                     st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["INTERFACE FLAG" + st.session_state["suffixes"][1]].astype("str")
-                    df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
+                    df1 = st.session_state["data_v1"].groupby(by = "indicator").agg(count_out = ("indicator", "count"),
+                                                                                    miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                    df2 = st.session_state["data_v2"].groupby(by = "indicator").agg(count_all = ("indicator", "count"),
+                                                                                    miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                     df = df1.merge(df2, how = "left", on = "indicator")
                     df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+                    df.sort_values(by = "count_out", ascending = False, inplace = True)
+
                     fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                    fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", 
+                                         customdata = df["miles_out"],
+                                         hovertemplate ='<b>Interface</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}',
+                                         offsetgroup=1), 
+                                  secondary_y= False)
+                    fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", 
+                                         customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                         hovertemplate ='<b>Interface</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
+                                         offsetgroup=2), 
+                                  secondary_y= True)
                     fig.update_xaxes(title_text="INTERFACE FLAG")
                     fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
@@ -819,15 +843,26 @@ if st.session_state["allow"]:
                 # LANE WIDTH
                 try:
                     st.markdown("- LANE WIDTH")
-                    df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                    df2 = st.session_state["data_v2"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
-                    df1["data"] = "outlier"
-                    df2["data"] = "all matched"
+                    df1 = st.session_state["data_v1"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).agg(count_out = ("LANE WIDTH"+st.session_state["suffixes"][0], "count"),
+                                                                                                                    miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                    df2 = st.session_state["data_v2"].groupby(by = "LANE WIDTH"+st.session_state["suffixes"][0]).agg(count_all = ("LANE WIDTH"+st.session_state["suffixes"][0], "count"),
+                                                                                                                    miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+
                     df = df1.merge(df2, how = "left", on = "LANE WIDTH"+st.session_state["suffixes"][0]).rename(columns = {"LANE WIDTH"+st.session_state["suffixes"][0]: "LANE WIDTH"})
                     df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+                    df.sort_values(by = "count_out", ascending = False, inplace = True)
+
                     fig = make_subplots(specs=[[{"secondary_y": True}]])
-                    fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                    fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                    fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["count_out"], name = "Number of outliers", 
+                                         customdata = df["miles_out"],
+                                         hovertemplate ='<b>LANE WIDTH</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}',
+                                         offsetgroup=1), 
+                                  secondary_y= False)
+                    fig.add_trace(go.Bar(x =df["LANE WIDTH"], y = df["Percentage of all"], name = "Percentage of all", 
+                                         customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                         hovertemplate ='<b>LANE WIDTH</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
+                                         offsetgroup=2), 
+                                  secondary_y= True)
                     fig.update_xaxes(title_text="LANE WIDTH")
                     fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
@@ -840,15 +875,26 @@ if st.session_state["allow"]:
                 try:
                     if "IRI" in perf_indx:
                         st.markdown("- RIDE SCORE TRAFFIC LEVEL")
-                        df1 = st.session_state["data_v1"].groupby(by = "RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                        df2 = st.session_state["data_v2"].groupby(by = "RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
-                        df1["data"] = "outlier"
+                        df1 = st.session_state["data_v1"].groupby(by = "RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0]).agg(count_out = ("RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0], "count"),
+                                                                                                                                        miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                        df2 = st.session_state["data_v2"].groupby(by = "RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0]).agg(count_all = ("RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0], "count"),
+                                                                                                                                        miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                         df2["data"] = "all matched"
                         df = df1.merge(df2, how = "left", on = "RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0]).rename(columns = {"RIDE SCORE TRAFFIC LEVEL"+st.session_state["suffixes"][0]: "RIDE SCORE TRAFFIC LEVEL"})
                         df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+                        df.sort_values(by = "count_out", ascending = False, inplace = True)
+
                         fig = make_subplots(specs=[[{"secondary_y": True}]])
-                        fig.add_trace(go.Bar(x =df["RIDE SCORE TRAFFIC LEVEL"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                        fig.add_trace(go.Bar(x =df["RIDE SCORE TRAFFIC LEVEL"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                        fig.add_trace(go.Bar(x =df["RIDE SCORE TRAFFIC LEVEL"], y = df["count_out"], name = "Number of outliers", 
+                                             customdata = df["miles_out"],
+                                             hovertemplate ='<b>RIDE TRAFFIC</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}',
+                                             offsetgroup=1), 
+                                      secondary_y= False)
+                        fig.add_trace(go.Bar(x =df["RIDE SCORE TRAFFIC LEVEL"], y = df["Percentage of all"], name = "Percentage of all", 
+                                             customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                             hovertemplate ='<b>RIDE TRAFFIC</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}',
+                                             offsetgroup=2), 
+                                      secondary_y= True)
                         fig.update_xaxes(title_text="RIDE SCORE TRAFFIC LEVEL")
                         fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                         fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)

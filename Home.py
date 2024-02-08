@@ -521,10 +521,10 @@ if st.session_state["allow"]:
                 st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["LANE NUMBER" + st.session_state["suffixes"][1]].astype("str")
                 
                 df1 = st.session_state["data_v1"].groupby(by = "indicator").agg(count_out = ("indicator", "count"),
-                                                                                miles_out = ("SECTION LENGTH", "sum")).reset_index()
+                                                                                miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 
                 df2 = st.session_state["data_v2"].groupby(by = "indicator").agg(count_all = ("indicator", "count"),
-                                                                                miles_all = ("SECTION LENGTH", "sum")).reset_index()
+                                                                                miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 df = df1.merge(df2, how = "left", on = "indicator")
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 df.sort_values(by = "count_out", ascending = False, inplace = True)

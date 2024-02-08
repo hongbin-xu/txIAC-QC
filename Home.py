@@ -626,14 +626,24 @@ if st.session_state["allow"]:
                 st.session_state["data_v2"]["avg speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]], bins = speed_avg_bins["bins"], labels = speed_avg_bins["labels"])
                 st.session_state["data_v2"]["diff speed bins"] = pd.cut(st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][0]] - st.session_state["data_v2"]["AVERAGE SPEED"+st.session_state["suffixes"][1]], bins = speed_diff_bins["bins"], labels = speed_diff_bins["labels"])
 
-                df1 = st.session_state["data_v1"].groupby(by = "avg speed bins").size().reset_index(name = "count_out")
-                df2 = st.session_state["data_v2"].groupby(by = "avg speed bins").size().reset_index(name = "count_all")
-
+                df1 = st.session_state["data_v1"].groupby(by = "avg speed bins").agg(count_out = ("indicator", "count"),
+                                                                                     miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                df2 = st.session_state["data_v2"].groupby(by = "avg speed bins").agg(count_all = ("indicator", "count"),
+                                                                                     miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 df = df1.merge(df2, how = "left", on = "avg speed bins")
                 df["Percentage of all"] = df["count_out"]/df["count_all"]*100
+
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
-                fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["count_out"], name = "Number of outliers", 
+                                     customdata = df["miles_out"],
+                                     hovertemplate ='<b>Speed</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}', 
+                                     offsetgroup=1), 
+                              secondary_y= False)
+                fig.add_trace(go.Bar(x =df["avg speed bins"], y = df["Percentage of all"], name = "Percentage of all", 
+                                     customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                     hovertemplate ='<b>Speed</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
+                                     offsetgroup=2), 
+                              secondary_y= True)
                 fig.update_xaxes(title_text="AVERAGE SPEED")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)

@@ -499,12 +499,12 @@ if st.session_state["allow"]:
                 fig = make_subplots(rows = 2, cols = 1, shared_xaxes= True)
                 fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["count_out"], name = "Number of outliers",
                                      customdata = df["miles_out"],
-                                     hovertemplate ='<b>Outlier data</b>: %{y:.0f}'+'<br><b>HIGHWAY ID</b>: %{x}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}'), 
+                                     hovertemplate ='<b>HIGHWAY ID</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}'), 
                               row=1, col=1)
                 
                 fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["Percentage of all"], name = "Percentage of all", 
                                      customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
-                                     hovertemplate ='<b>Outlier PCT</b>: %{y:.1f}'+'<br><b>HIGHWAY ID</b>: %{x}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}'), 
+                                     hovertemplate ='<b>HIGHWAY ID</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}'), 
                               row=2, col=1)
                 
                 fig.update_xaxes(title_text="SIGNED HWY AND ROADBED ID", row=2, col =1)

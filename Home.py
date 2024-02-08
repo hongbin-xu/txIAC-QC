@@ -453,14 +453,19 @@ if st.session_state["allow"]:
             # County
             try: 
                 st.markdown("- COUNTY")
-                df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).size().reset_index(name = "count_all")
-                df1["data"] = "outlier"
+                df1 = st.session_state["data_v1"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).agg(count_out = ("COUNTY"+st.session_state["suffixes"][0], "count"),
+                                                                                                             miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index().sort_values(by = "count_out", ascending = False)
+                
+                df2 = st.session_state["data_v2"].groupby(by = "COUNTY"+st.session_state["suffixes"][0]).agg(count_all = ("COUNTY"+st.session_state["suffixes"][0], "count"),
+                                                                                                             miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 df2["data"] = "all matched"
                 df = df1.merge(df2, how = "left", on = "COUNTY"+st.session_state["suffixes"][0]).rename(columns = {"COUNTY"+st.session_state["suffixes"][0]: "COUNTY"})
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
-                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
+                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", 
+                                     hovertemplate ='<i>Outlier</i>: $%{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{miles_out}', offsetgroup=1), 
+                             secondary_y= False)                          
+                
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
                 fig.update_xaxes(title_text="COUNTY")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
@@ -601,7 +606,6 @@ if st.session_state["allow"]:
                     fig.update_xaxes(title_text="START TIME", row=2, col=1)
                     fig.update_yaxes(title_text="Number of outliers", row =1, col =1)
                     fig.update_yaxes(title_text="Percentage of all", range = [0, 100], row = 2, col=1)
-                    fig.update_layout(hovermode="x unified")
                     st.plotly_chart(fig, use_container_width= True)
 
                     st.session_state["data_v1"]["time_diff"] = st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][0]]-st.session_state["data_v1"]["START TIME"+st.session_state["suffixes"][1]]

@@ -472,6 +472,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="COUNTY")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+                fig.update_layout(hoverlabel_align = 'left')
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass

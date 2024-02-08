@@ -544,6 +544,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="LANE NUMBER")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+                fig.update_layout(hoverlabel_align = 'left')
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass
@@ -576,6 +577,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="DIRECTION")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+                fig.update_layout(hoverlabel_align = 'left')
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass
@@ -609,6 +611,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="VEHICLE ID")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+                fig.update_layout(hoverlabel_align = 'left')
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass
@@ -647,6 +650,8 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="AVERAGE SPEED")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+                fig.update_layout(hoverlabel_align = 'left')
+
                 st.plotly_chart(fig, use_container_width= True)
 
                 df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").agg(count_out = ("indicator", "count"),
@@ -670,6 +675,7 @@ if st.session_state["allow"]:
                 fig.update_xaxes(title_text="AVERAGE SPEED DIFF")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
+                fig.update_layout(hoverlabel_align = 'left')
                 st.plotly_chart(fig, use_container_width= True)
             except:
                 pass

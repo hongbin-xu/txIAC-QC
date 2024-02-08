@@ -649,14 +649,24 @@ if st.session_state["allow"]:
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)
                 st.plotly_chart(fig, use_container_width= True)
 
-                df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").size().reset_index(name = "count_out")
-                df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").size().reset_index(name = "count_all")
+                df1 = st.session_state["data_v1"].groupby(by = "diff speed bins").agg(count_out = ("indicator", "count"),
+                                                                                      miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                df2 = st.session_state["data_v2"].groupby(by = "diff speed bins").agg(count_all = ("indicator", "count"),
+                                                                                      miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
 
                 df = df1.merge(df2, how = "left", on = "diff speed bins")
                 df["Percentage of all"] = df["count_out"]/df["count_all"]*100
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
-                fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["count_out"], name = "Number of outliers", 
+                                     customdata = df["miles_out"],
+                                     hovertemplate ='<b>Speed DIFF</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}', 
+                                     offsetgroup=1), 
+                              secondary_y= False)
+                fig.add_trace(go.Bar(x =df["diff speed bins"], y = df["Percentage of all"], name = "Percentage of all", 
+                                     customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                     hovertemplate ='<b>Speed DIFF</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
+                                     offsetgroup=2), 
+                              secondary_y= True)
                 fig.update_xaxes(title_text="AVERAGE SPEED DIFF")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)

@@ -502,7 +502,7 @@ if st.session_state["allow"]:
                               row=1, col=1)
                 
                 fig.add_trace(go.Bar(x =df["SIGNED HWY AND ROADBED ID"], y = df["Percentage of all"], name = "Percentage of all", 
-                                     customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
+                                     customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
                                      hovertemplate ='<b>HIGHWAY ID</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}'), 
                               row=2, col=1)
                 
@@ -537,7 +537,7 @@ if st.session_state["allow"]:
                              secondary_y= False)
                 
                 fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", 
-                                     customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
+                                     customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
                                      hovertemplate ='<b>indicator</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
                                      offsetgroup=2), 
                               secondary_y= True)

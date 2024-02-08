@@ -468,7 +468,7 @@ if st.session_state["allow"]:
                              secondary_y= False)                          
                 
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", 
-                                     customdata = np.stack((df["count_all"], df["miles_out"]), axis = -1),
+                                     customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
                                      hovertemplate ='<b>COUNTY</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', offsetgroup=2),
                              secondary_y= True)
                 
@@ -553,13 +553,26 @@ if st.session_state["allow"]:
                 st.markdown("- DIRECTION")
                 st.session_state["data_v1"]["indicator"] = st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v1"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
                 st.session_state["data_v2"]["indicator"]= st.session_state["data_v2"]["DIRECTION" + st.session_state["suffixes"][0]].astype("str")+"-"+st.session_state["data_v2"]["DIRECTION" + st.session_state["suffixes"][1]].astype("str")
-                df1 = st.session_state["data_v1"].groupby(by = "indicator").size().reset_index(name = "count_out").sort_values(by = "count_out", ascending = False)
-                df2 = st.session_state["data_v2"].groupby(by = "indicator").size().reset_index(name = "count_all")
+                df1 = st.session_state["data_v1"].groupby(by = "indicator").agg(count_out = ("indicator", "count"),
+                                                                                miles_out = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
+                df2 = st.session_state["data_v2"].groupby(by = "indicator").agg(count_all = ("indicator", "count"),
+                                                                                miles_all = ("SECTION LENGTH"+st.session_state["suffixes"][0], "sum")).reset_index()
                 df = df1.merge(df2, how = "left", on = "indicator")
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
+                df.sort_values(by = "count_out", ascending = False, inplace = True)
+
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
-                fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", offsetgroup=1), secondary_y= False)
-                fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                fig.add_trace(go.Bar(x =df["indicator"], y = df["count_out"], name = "Number of outliers", 
+                                     customdata = df["miles_out"],
+                                     hovertemplate ='<b>indicator</b>: %{x}<br>'+'<b>Outlier data</b>: %{y:.0f}<br>'+'<b>Outlier Miles</b>:%{customdata:.2f}', 
+                                     offsetgroup=1),
+                             secondary_y= False)
+                
+                fig.add_trace(go.Bar(x =df["indicator"], y = df["Percentage of all"], name = "Percentage of all", 
+                                     customdata = np.stack((df["count_all"], df["miles_all"]), axis = -1),
+                                     hovertemplate ='<b>indicator</b>: %{x}'+'<br><b>Outlier PCT</b>: %{y:.1f}'+'<br><b>All data</b>:%{customdata[0]:.0f}'+'<br><b>Total Miles</b>:%{customdata[1]:.2f}', 
+                                     offsetgroup=2),
+                              secondary_y= True)
                 fig.update_xaxes(title_text="DIRECTION")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)

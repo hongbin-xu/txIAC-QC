@@ -463,10 +463,12 @@ if st.session_state["allow"]:
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", customdata = df["miles_out"],
-                                     hovertemplate ='<i>Outlier</i>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{customdata:.2}', offsetgroup=1), 
+                                     hovertemplate ='<b>Outlier data</b>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{customdata:.2f}', offsetgroup=1), 
                              secondary_y= False)                          
                 
-                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
+                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", customdata = np.dstack((df["count_all"], df["miles_out"])),
+                                     hovertemplate ='<b>PCT</b>: %{y:.1f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>All data</b>:%{customdata[0]:.0f}'+'<b>All Miles</b>:%{customdata[1]:.2f}', offsetgroup=2),
+                             secondary_y= True)
                 fig.update_xaxes(title_text="COUNTY")
                 fig.update_yaxes(title_text="Number of outliers", secondary_y=False)
                 fig.update_yaxes(title_text="Percentage of all", range = [0, 100], secondary_y=True)

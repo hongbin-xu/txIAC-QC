@@ -462,8 +462,8 @@ if st.session_state["allow"]:
                 df = df1.merge(df2, how = "left", on = "COUNTY"+st.session_state["suffixes"][0]).rename(columns = {"COUNTY"+st.session_state["suffixes"][0]: "COUNTY"})
                 df["Percentage of all"] = 100*df["count_out"]/df["count_all"]
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
-                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", 
-                                     hovertemplate ='<i>Outlier</i>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{df["miles_out"]}', offsetgroup=1), 
+                fig.add_trace(go.Bar(x =df["COUNTY"], y = df["count_out"], name = "Number of outliers", text = df["miles_out"],
+                                     hovertemplate ='<i>Outlier</i>: %{y:.0f}'+'<br><b>COUNTY</b>: %{x}<br>'+'<b>Miles</b>:%{text}', offsetgroup=1), 
                              secondary_y= False)                          
                 
                 fig.add_trace(go.Bar(x =df["COUNTY"], y = df["Percentage of all"], name = "Percentage of all", offsetgroup=2), secondary_y= True)
